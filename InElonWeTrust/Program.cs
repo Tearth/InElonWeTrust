@@ -1,4 +1,4 @@
-﻿using System;
+﻿using InElonWeTrust.Core;
 
 namespace InElonWeTrust
 {
@@ -6,7 +6,7 @@ namespace InElonWeTrust
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            new Bot().Run();
         }
     }
 }
