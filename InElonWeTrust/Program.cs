@@ -1,4 +1,5 @@
-﻿using InElonWeTrust.Core;
+﻿using System;
+using InElonWeTrust.Core;
 
 namespace InElonWeTrust
 {
@@ -6,7 +7,8 @@ namespace InElonWeTrust
     {
         static void Main(string[] args)
         {
-            new Bot().Run();
+            new Bot().Run().GetAwaiter().GetResult();
+            while (Console.ReadLine() != "quit");
         }
     }
 }

@@ -7,6 +7,6 @@ namespace InElonWeTrust.Core.Configs
     public class ConfigContainer
     {
         public string Token { get; set; }
-        public string Prefix { get; set; }
+        public List<string> Prefixes { get; set; }
     }
 }
