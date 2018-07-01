@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using InElonWeTrust.Core.Attributes;
 
 namespace InElonWeTrust.Core.Commands
 {
+    [Commands("Other")]
     public class PingCommand
     {
         [Command("ping")]

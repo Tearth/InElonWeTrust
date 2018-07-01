@@ -5,7 +5,7 @@ namespace InElonWeTrust.Core.Configs
 {
     public class SettingsLoader
     {
-        private const string ConfigsPatch = "Configs/";
+        private const string ConfigsPatch = "Settings/";
 
         public SettingsContainer Load()
         {

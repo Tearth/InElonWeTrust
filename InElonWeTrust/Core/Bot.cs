@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -7,6 +9,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
+using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.Configs;
 
@@ -33,7 +36,7 @@ namespace InElonWeTrust.Core
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
 
-            _commands.RegisterCommands<PingCommand>();
+            RegisterCommands();
 
             await _client.ConnectAsync();
             await Task.Delay(-1);
@@ -74,6 +77,24 @@ namespace InElonWeTrust.Core
             }
 
             return Task.FromResult(-1);
+        }
+
+        private void RegisterCommands()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var assemblyTypes = assembly.GetTypes();
+
+            var registerCommandsMethod = _commands.GetType().GetMethods().FirstOrDefault(p => p.Name == "RegisterCommands" && p.IsGenericMethod);
+
+            foreach (var type in assemblyTypes)
+            {
+                var attributes = type.GetCustomAttributes();
+                if (attributes.Any(p => p.GetType() == typeof(CommandsAttribute)))
+                {
+                    var genericRegisterCommandMethod = registerCommandsMethod.MakeGenericMethod(type);
+                    genericRegisterCommandMethod.Invoke(_commands, null);
+                }
+            }
         }
 
         private Task Client_Ready(ReadyEventArgs e)
