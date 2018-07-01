@@ -1,32 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 namespace InElonWeTrust.Core.Configs
 {
-    public static class ConfigManager
+    public class SettingsLoader
     {
-        public static ConfigContainer Data { get; private set; }
-
         private const string ConfigsPatch = "Configs/";
 
-        static ConfigManager()
-        {
-            Load();
-        }
-
-        private static void Load()
+        public SettingsContainer Load()
         {
             using (var jsonReader = new StreamReader(GetConfigPatch()))
             {
                 var jsonContent = jsonReader.ReadToEnd();
-                Data = JsonConvert.DeserializeObject<ConfigContainer>(jsonContent);
+                return JsonConvert.DeserializeObject<SettingsContainer>(jsonContent);
             }
         }
 
-        private static string GetConfigPatch()
+        private string GetConfigPatch()
         {
 #if DEBUG
             var configName = "debug.json";

@@ -14,25 +14,28 @@ namespace InElonWeTrust.Core
 {
     public class Bot
     {
-        public DiscordClient Client { get; set; }
-        public CommandsNextModule Commands { get; set; }
+        private DiscordClient _client { get; set; }
+        private CommandsNextModule _commands { get; set; }
+        private SettingsContainer _settings { get; set; }
 
         public async Task Run()
         {
-            Client = new DiscordClient(GetClientConfiguration());
-            Client.SetWebSocketClient<WebSocket4NetCoreClient>();
+            _settings = new SettingsLoader().Load();
 
-            Client.Ready += Client_Ready;
-            Client.GuildAvailable += Client_GuildAvailable;
-            Client.ClientErrored += Client_ClientError;
+            _client = new DiscordClient(GetClientConfiguration());
+            _client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
-            Commands = Client.UseCommandsNext(GetCommandsConfiguration());
-            Commands.CommandExecuted += Commands_CommandExecuted;
-            Commands.CommandErrored += Commands_CommandErrored;
+            _client.Ready += Client_Ready;
+            _client.GuildAvailable += Client_GuildAvailable;
+            _client.ClientErrored += Client_ClientError;
 
-            Commands.RegisterCommands<PingCommand>();
+            _commands = _client.UseCommandsNext(GetCommandsConfiguration());
+            _commands.CommandExecuted += Commands_CommandExecuted;
+            _commands.CommandErrored += Commands_CommandErrored;
 
-            await Client.ConnectAsync();
+            _commands.RegisterCommands<PingCommand>();
+
+            await _client.ConnectAsync();
             await Task.Delay(-1);
         }
 
@@ -40,7 +43,7 @@ namespace InElonWeTrust.Core
         {
             return new DiscordConfiguration
             {
-                Token = ConfigManager.Data.Token,
+                Token = _settings.Token,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
@@ -62,7 +65,7 @@ namespace InElonWeTrust.Core
 
         private Task<int> CustomPrefixPredicate(DiscordMessage msg)
         {
-            foreach (var prefix in ConfigManager.Data.Prefixes)
+            foreach (var prefix in _settings.Prefixes)
             {
                 if (msg.Content.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -75,7 +78,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_Ready(ReadyEventArgs e)
         {
-            e.Client.DebugLogger.LogMessage(LogLevel.Info, "ExampleBot", "Client is ready to process events.", DateTime.Now);
+            e.Client.DebugLogger.LogMessage(LogLevel.Info, "ExampleBot", "_client is ready to process events.", DateTime.Now);
             return Task.CompletedTask;
         }
 

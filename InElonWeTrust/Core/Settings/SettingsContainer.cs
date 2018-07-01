@@ -4,7 +4,7 @@ using System.Text;
 
 namespace InElonWeTrust.Core.Configs
 {
-    public class ConfigContainer
+    public class SettingsContainer
     {
         public string Token { get; set; }
         public List<string> Prefixes { get; set; }
