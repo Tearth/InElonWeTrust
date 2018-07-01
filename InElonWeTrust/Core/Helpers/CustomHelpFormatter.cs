@@ -20,8 +20,6 @@ namespace InElonWeTrust.Core.Helpers
         private List<string> _parameters;
         private Dictionary<string, List<string>> _subCommands;
 
-        private const string Color = "#5588EE";
-
         public CustomHelpFormatter()
         {
             _aliases = new List<string>();
@@ -116,8 +114,8 @@ namespace InElonWeTrust.Core.Helpers
         {
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Color),
-                ThumbnailUrl = "https://cdn.discordapp.com/attachments/422538798602256385/462957163778670602/awatar.jpg"
+                Color = new DiscordColor(Constants.EmbedColor),
+                ThumbnailUrl = Constants.ThumbnailImage
             };
 
             return _commandName == null ? BuildGeneralHelp(embed) : BuildCommandHelp(embed);
