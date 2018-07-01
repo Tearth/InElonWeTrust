@@ -3,9 +3,9 @@ using InElonWeTrust.Core;
 
 namespace InElonWeTrust
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             new Bot().Run().GetAwaiter().GetResult();
             while (Console.ReadLine() != "quit");

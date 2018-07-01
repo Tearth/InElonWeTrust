@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace InElonWeTrust.Core.Configs
+namespace InElonWeTrust.Core.Settings
 {
     public class SettingsLoader
     {

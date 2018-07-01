@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -10,9 +8,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
-using InElonWeTrust.Core.Commands;
-using InElonWeTrust.Core.Configs;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Settings;
 
 namespace InElonWeTrust.Core
 {

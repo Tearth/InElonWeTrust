@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace InElonWeTrust.Core.Configs
+namespace InElonWeTrust.Core.Settings
 {
     public class SettingsContainer
     {
