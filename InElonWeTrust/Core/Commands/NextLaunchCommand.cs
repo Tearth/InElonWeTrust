@@ -7,6 +7,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.LinkShortener;
 using Oddity;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
@@ -18,10 +19,12 @@ namespace InElonWeTrust.Core.Commands
     public class NextLaunchCommand
     {
         private OddityCore _oddity;
+        private LinkShortenerService _linkShortenerService;
 
         public NextLaunchCommand()
         {
             _oddity = new OddityCore();
+            _linkShortenerService = new LinkShortenerService();
         }
 
         [Command("nextlaunch")]
@@ -43,7 +46,7 @@ namespace InElonWeTrust.Core.Commands
             embed.AddField($"Payloads ({nextLaunchData.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(nextLaunchData.Rocket.SecondStage.Payloads), true);
             embed.AddField("Launchpad:", nextLaunchData.LaunchSite.SiteName, true);
             embed.AddField($"First stages ({nextLaunchData.Rocket.FirstStage.Cores.Count}):", GetCoresData(nextLaunchData.Rocket.FirstStage.Cores), true);
-            embed.AddField("Links:", GetLinksData(nextLaunchData.Links));
+            embed.AddField("Links:", await GetLinksData(nextLaunchData.Links));
 
             await ctx.RespondAsync("", false, embed);
         }
@@ -87,12 +90,12 @@ namespace InElonWeTrust.Core.Commands
             return coresDataBuilder.ToString();
         }
 
-        private string GetLinksData(LinksInfo links)
+        private async Task<string> GetLinksData(LinksInfo links)
         {
             var linksDataBuilder = new StringBuilder();
-            linksDataBuilder.Append($"Reddit: {links.RedditLaunch}\r\n");
-            linksDataBuilder.Append($"Presskit: {links.Presskit}\r\n");
-            linksDataBuilder.Append($"YouTube: {links.VideoLink}\r\n");
+            linksDataBuilder.Append($"Reddit: {await _linkShortenerService.GetShortcutLinkAsync(links.RedditLaunch)}\r\n");
+            linksDataBuilder.Append($"Presskit: {await _linkShortenerService.GetShortcutLinkAsync(links.Presskit)}\r\n");
+            linksDataBuilder.Append($"YouTube: {await _linkShortenerService.GetShortcutLinkAsync(links.VideoLink)}\r\n");
 
             return linksDataBuilder.ToString();
         }

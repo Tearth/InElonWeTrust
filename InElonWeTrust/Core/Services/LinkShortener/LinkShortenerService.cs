@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -39,7 +40,7 @@ namespace InElonWeTrust.Core.Services.LinkShortener
         private async Task<string> GetShortcutFromApiAsync(string link)
         {
             var httpClient = new HttpClient();
-            var response = await httpClient.GetStringAsync(link);
+            var response = await httpClient.GetStringAsync($"https://api.waa.ai/shorten?url={link}&key={SettingsLoader.Data.WaaAiToken}");
 
             var responseJson = JsonConvert.DeserializeObject<ShortcutResponse>(response);
             return responseJson.Data.Url;

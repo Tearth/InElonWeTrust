@@ -17,12 +17,9 @@ namespace InElonWeTrust.Core
     {
         private DiscordClient _client { get; set; }
         private CommandsNextModule _commands { get; set; }
-        private SettingsContainer _settings { get; set; }
 
         public async Task Run()
         {
-            _settings = new SettingsLoader().Load();
-
             _client = new DiscordClient(GetClientConfiguration());
             _client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
@@ -45,7 +42,7 @@ namespace InElonWeTrust.Core
         {
             return new DiscordConfiguration
             {
-                Token = _settings.Token,
+                Token = SettingsLoader.Data.Token,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
@@ -67,7 +64,7 @@ namespace InElonWeTrust.Core
 
         private Task<int> CustomPrefixPredicate(DiscordMessage msg)
         {
-            foreach (var prefix in _settings.Prefixes)
+            foreach (var prefix in SettingsLoader.Data.Prefixes)
             {
                 if (msg.Content.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                 {

@@ -3,20 +3,26 @@ using Newtonsoft.Json;
 
 namespace InElonWeTrust.Core.Settings
 {
-    public class SettingsLoader
+    public static class SettingsLoader
     {
+        public static SettingsContainer Data { get; private set; }
         private const string ConfigsPatch = "Settings/";
 
-        public SettingsContainer Load()
+        static SettingsLoader()
+        {
+            Load();
+        }
+
+        public static void Load()
         {
             using (var jsonReader = new StreamReader(GetConfigPatch()))
             {
                 var jsonContent = jsonReader.ReadToEnd();
-                return JsonConvert.DeserializeObject<SettingsContainer>(jsonContent);
+                Data = JsonConvert.DeserializeObject<SettingsContainer>(jsonContent);
             }
         }
 
-        private string GetConfigPatch()
+        private static string GetConfigPatch()
         {
 #if DEBUG
             var configName = "debug.json";
