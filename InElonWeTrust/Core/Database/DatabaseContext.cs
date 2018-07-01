@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using InElonWeTrust.Core.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InElonWeTrust.Core.Database
 {
     public class DatabaseContext : DbContext
     {
+        public DbSet<CachedLink> CachedLinks { get; set; }
+
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
         {
 
