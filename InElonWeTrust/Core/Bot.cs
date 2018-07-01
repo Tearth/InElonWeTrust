@@ -12,6 +12,7 @@ using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.Configs;
+using InElonWeTrust.Core.Helpers;
 
 namespace InElonWeTrust.Core
 {
@@ -35,6 +36,7 @@ namespace InElonWeTrust.Core
             _commands = _client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
+            _commands.SetHelpFormatter<CustomHelpFormatter>();
 
             RegisterCommands();
 
