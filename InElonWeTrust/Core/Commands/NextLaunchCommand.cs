@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -34,21 +35,36 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var nextLaunchData = await _oddity.Launches.GetLatest().ExecuteAsync();
+            var nextLaunchData = await _oddity.Launches.GetNext().ExecuteAsync();
+            await DisplayLaunchInfo(ctx, nextLaunchData);
+        }
+
+        private async Task DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
+        {
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = nextLaunchData.Links.MissionPatch ?? Constants.SpaceXLogoImage
+                ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            embed.AddField($"{nextLaunchData.MissionName} ({nextLaunchData.Rocket.RocketName} {nextLaunchData.Rocket.RocketType})", nextLaunchData.Details);
-            embed.AddField("Launch date:", nextLaunchData.LaunchDateUtc.Value.ToLongDateString(), true);
-            embed.AddField($"Payloads ({nextLaunchData.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(nextLaunchData.Rocket.SecondStage.Payloads), true);
-            embed.AddField("Launchpad:", nextLaunchData.LaunchSite.SiteName, true);
-            embed.AddField($"First stages ({nextLaunchData.Rocket.FirstStage.Cores.Count}):", GetCoresData(nextLaunchData.Rocket.FirstStage.Cores), true);
-            embed.AddField("Links:", await GetLinksData(nextLaunchData.Links));
+            embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details ?? "*No description at this moment :(*");
+            embed.AddField(":clock4: Launch date:", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F"), true);
+            embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
+            embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
+            embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
+            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
 
-            await ctx.RespondAsync("", false, embed);
+            var linksData = await GetLinksData(launch);
+            if(linksData.Length > 0)
+            {
+                embed.AddField(":newspaper: Links:", linksData);
+            }
+
+            await ctx.RespondAsync(launch.Links.VideoLink, false, embed);
+            if(launch.Links.VideoLink != null)
+            {
+                await ctx.RespondAsync("**YouTube stream:** " + launch.Links.VideoLink);
+            }
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)
@@ -57,6 +73,7 @@ namespace InElonWeTrust.Core.Commands
             foreach (var payload in payloads)
             {
                 payloadsDataBuilder.Append(payload.PayloadId);
+
                 if (payload.PayloadMassKilograms != null)
                 {
                     payloadsDataBuilder.Append($" ({payload.PayloadMassKilograms} kg)");
@@ -84,20 +101,74 @@ namespace InElonWeTrust.Core.Commands
                     coresDataBuilder.Append($", landing on {core.LandingVehicle}");
                 }
 
+                if (core.LandSuccess != null)
+                {
+                    coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
+                }
+
                 coresDataBuilder.Append("\r\n");
             }
 
             return coresDataBuilder.ToString();
         }
 
-        private async Task<string> GetLinksData(LinksInfo links)
+        private async Task<string> GetLinksData(LaunchInfo info)
         {
             var linksDataBuilder = new StringBuilder();
-            linksDataBuilder.Append($"Reddit: {await _linkShortenerService.GetShortcutLinkAsync(links.RedditLaunch)}\r\n");
-            linksDataBuilder.Append($"Presskit: {await _linkShortenerService.GetShortcutLinkAsync(links.Presskit)}\r\n");
-            linksDataBuilder.Append($"YouTube: {await _linkShortenerService.GetShortcutLinkAsync(links.VideoLink)}\r\n");
+
+            if (info.Links.RedditLaunch != null)
+            {
+                linksDataBuilder.Append($"Reddit: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.RedditLaunch)}\r\n");
+            }
+
+            if (info.Links.Presskit != null)
+            {
+                linksDataBuilder.Append($"Presskit: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.Presskit)}\r\n");
+            }
+
+            if (info.Telemetry.FlightClub != null)
+            {
+                linksDataBuilder.Append($"Telemetry: {await _linkShortenerService.GetShortcutLinkAsync(info.Telemetry.FlightClub)}\r\n");
+            }
+
+            if (info.Links.VideoLink != null)
+            {
+                linksDataBuilder.Append($"YouTube: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.VideoLink)}\r\n");
+            }
 
             return linksDataBuilder.ToString();
+        }
+
+        private string GetReusedPartsData(ReuseInfo reused)
+        {
+            var reusedPartsList = new List<string>();
+
+            if (reused.Core.HasValue && reused.Core.Value)
+            {
+                reusedPartsList.Add("Core");
+            }
+
+            if (reused.Capsule.HasValue && reused.Capsule.Value)
+            {
+                reusedPartsList.Add("Capsule");
+            }
+
+            if (reused.Fairings.HasValue && reused.Fairings.Value)
+            {
+                reusedPartsList.Add("Fairings");
+            }
+
+            if (reused.FirstSideCore.HasValue && reused.FirstSideCore.Value)
+            {
+                reusedPartsList.Add("First side core");
+            }
+
+            if (reused.SecondSideCore.HasValue && reused.SecondSideCore.Value)
+            {
+                reusedPartsList.Add("Second side core");
+            }
+
+            return reusedPartsList.Count > 0 ? string.Join(", ", reusedPartsList) : "none";
         }
     }
 }
