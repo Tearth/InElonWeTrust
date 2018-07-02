@@ -35,8 +35,30 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var nextLaunchData = await _oddity.Launches.GetNext().ExecuteAsync();
-            await DisplayLaunchInfo(ctx, nextLaunchData);
+            var launchData = await _oddity.Launches.GetNext().ExecuteAsync();
+            await DisplayLaunchInfo(ctx, launchData);
+        }
+
+        [Command("latestlaunch")]
+        [Aliases("latest", "ll")]
+        [Description("Get information about the latest launch.")]
+        public async Task LatestLaunch(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var launchData = await _oddity.Launches.GetLatest().ExecuteAsync();
+            await DisplayLaunchInfo(ctx, launchData);
+        }
+
+        [Command("randomlaunch")]
+        [Aliases("random", "rl")]
+        [Description("Get information about random launch.")]
+        public async Task RandomLaunch(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
+            await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
         }
 
         private async Task DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
@@ -105,6 +127,8 @@ namespace InElonWeTrust.Core.Commands
                 {
                     coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
                 }
+
+                coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
 
                 coresDataBuilder.Append("\r\n");
             }
