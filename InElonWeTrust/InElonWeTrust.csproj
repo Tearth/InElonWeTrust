@@ -27,4 +27,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\Services\PaginationService\" />
+  </ItemGroup>
+
 </Project>

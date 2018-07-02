@@ -17,12 +17,12 @@ using Oddity.API.Models.Launch.Rocket.SecondStage;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands("Launches")]
-    public class NextLaunchCommand
+    public class SingleLaunchCommands
     {
         private OddityCore _oddity;
         private LinkShortenerService _linkShortenerService;
 
-        public NextLaunchCommand()
+        public SingleLaunchCommands()
         {
             _oddity = new OddityCore();
             _linkShortenerService = new LinkShortenerService();
@@ -127,8 +127,6 @@ namespace InElonWeTrust.Core.Commands
                 {
                     coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
                 }
-
-                coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
 
                 coresDataBuilder.Append("\r\n");
             }
