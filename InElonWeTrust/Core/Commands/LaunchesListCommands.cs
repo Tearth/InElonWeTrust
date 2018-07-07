@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Commands
 
             _listHeader = new Dictionary<PaginationContentType, string>
             {
-                {PaginationContentType.NextLaunches, "List of all upcoming launches:"},
+                {PaginationContentType.UpcomingLaunches, "List of all upcoming launches:"},
                 {PaginationContentType.PastLaunches, "List of all past launches:"},
                 {PaginationContentType.AllLaunches, "List of all launches:"}
             };
@@ -53,12 +53,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task UpcomingLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-
-            var launchData = await _oddity.Launches.GetUpcoming().ExecuteAsync();
-            var launchesList = DisplayLaunchesList(launchData, PaginationContentType.NextLaunches, 1);
-
-            var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, PaginationContentType.NextLaunches);
+            await DisplayLaunches(ctx, PaginationContentType.UpcomingLaunches);
         }
 
         [Command("pastlaunches")]
@@ -67,12 +62,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task PastLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-
-            var launchData = await _oddity.Launches.GetPast().ExecuteAsync();
-            var launchesList = DisplayLaunchesList(launchData, PaginationContentType.PastLaunches, 1);
-
-            var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, PaginationContentType.PastLaunches);
+            await DisplayLaunches(ctx, PaginationContentType.PastLaunches);
         }
 
         [Command("alllaunches")]
@@ -81,15 +71,33 @@ namespace InElonWeTrust.Core.Commands
         public async Task AllLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-
-            var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
-            var launchesList = DisplayLaunchesList(launchData, PaginationContentType.AllLaunches, 1);
-
-            var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, PaginationContentType.AllLaunches);
+            await DisplayLaunches(ctx, PaginationContentType.AllLaunches);
         }
 
-        private string DisplayLaunchesList(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)
+        private async Task DisplayLaunches(CommandContext ctx, PaginationContentType contentType)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var launchData = await GetLaunches(contentType);
+            var launchesList = GetLaunchesTable(launchData, contentType, 1);
+
+            var message = await ctx.RespondAsync(launchesList);
+            await _pagination.InitPagination(message, contentType);
+        }
+
+        private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType)
+        {
+            switch (contentType)
+            {
+                case PaginationContentType.UpcomingLaunches: return await _oddity.Launches.GetUpcoming().ExecuteAsync();
+                case PaginationContentType.PastLaunches: return await _oddity.Launches.GetPast().ExecuteAsync();
+                case PaginationContentType.AllLaunches: return await _oddity.Launches.GetAll().ExecuteAsync();
+            }
+
+            return null;
+        }
+
+        private string GetLaunchesTable(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)
         {
             var launchesListBuilder = new StringBuilder();
             launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");
@@ -137,29 +145,14 @@ namespace InElonWeTrust.Core.Commands
                 var contentType = _pagination.GetContentTypeForMessage(e.Message);
                 var previousCurrentPage = _pagination.GetCurrentPage(e.Message);
 
-                List<LaunchInfo> items = null;
-
-                switch (contentType)
-                {
-                    case PaginationContentType.NextLaunches:
-                        items = await _oddity.Launches.GetUpcoming().ExecuteAsync();
-                        break;
-
-                    case PaginationContentType.PastLaunches:
-                        items = await _oddity.Launches.GetPast().ExecuteAsync();
-                        break;
-
-                    case PaginationContentType.AllLaunches:
-                        items = await _oddity.Launches.GetAll().ExecuteAsync();
-                        break;
-                }
+                var items = await GetLaunches(contentType);
 
                 _pagination.DoAction(e.Message, e.Emoji, items.Count);
                 var currentPage = _pagination.GetCurrentPage(e.Message);
 
                 if (currentPage != previousCurrentPage)
                 {
-                    var launchesList = DisplayLaunchesList(items, contentType, currentPage);
+                    var launchesList = GetLaunchesTable(items, contentType, currentPage);
                     await e.Message.ModifyAsync(launchesList);
                 }
 

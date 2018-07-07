@@ -61,6 +61,17 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
         }
 
+        [Command("getlaunch")]
+        [Aliases("getl", "gl")]
+        [Description("Get information about launch with the specified flight number.")]
+        public async Task GetLaunch(CommandContext ctx, int id)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
+            await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
+        }
+
         private async Task DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
         {
             var embed = new DiscordEmbedBuilder
@@ -117,7 +128,12 @@ namespace InElonWeTrust.Core.Commands
             var coresDataBuilder = new StringBuilder();
             foreach (var core in cores)
             {
-                coresDataBuilder.Append($"{core.CoreSerial} (block {core.Block})");
+                coresDataBuilder.Append($"{core.CoreSerial}");
+                if (core.Block != null)
+                {
+                    coresDataBuilder.Append($" (block {core.Block})");
+                }
+
                 if (core.LandingType != null && core.LandingType != LandingType.Ocean)
                 {
                     coresDataBuilder.Append($", landing on {core.LandingVehicle}");
