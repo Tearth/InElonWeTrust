@@ -9,6 +9,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Description;
 using InElonWeTrust.Core.Settings;
 
 namespace InElonWeTrust.Core
@@ -16,7 +17,9 @@ namespace InElonWeTrust.Core
     public class Bot
     {
         public static DiscordClient Client { get; set; }
+
         private CommandsNextModule _commands { get; set; }
+        private DescriptionService _description { get; set; }
 
         public async Task Run()
         {
@@ -35,7 +38,9 @@ namespace InElonWeTrust.Core
             RegisterCommands();
 
             await Client.ConnectAsync();
-            await Task.Delay(-1);
+
+            _description = new DescriptionService();
+            _description.Run();
         }
 
         private DiscordConfiguration GetClientConfiguration()
