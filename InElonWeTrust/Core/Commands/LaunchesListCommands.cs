@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
 using Oddity.API.Models.Launch;
@@ -21,6 +23,7 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
         private PaginationService _pagination;
+        private CacheService<PaginationContentType, List<LaunchInfo>> _cacheService;
 
         private const int _missionNumberLength = 4;
         private const int _missionNameLength = 23;
@@ -36,6 +39,7 @@ namespace InElonWeTrust.Core.Commands
         {
             _oddity = new OddityCore();
             _pagination = new PaginationService();
+            _cacheService = new CacheService<PaginationContentType, List<LaunchInfo>>();
 
             _listHeader = new Dictionary<PaginationContentType, string>
             {
@@ -107,16 +111,32 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType)
         {
+            Func<Task<List<LaunchInfo>>> dataProviderDelegate = null;
+
             switch (contentType)
             {
-                case PaginationContentType.UpcomingLaunches: return await _oddity.Launches.GetUpcoming().ExecuteAsync();
-                case PaginationContentType.PastLaunches: return await _oddity.Launches.GetPast().ExecuteAsync();
-                case PaginationContentType.AllLaunches: return await _oddity.Launches.GetAll().ExecuteAsync();
-                case PaginationContentType.FailedStarts: return await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync();
-                case PaginationContentType.FailedLandings: return await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
+                case PaginationContentType.UpcomingLaunches:
+                    dataProviderDelegate = async () => await _oddity.Launches.GetUpcoming().ExecuteAsync();
+                    break;
+
+                case PaginationContentType.PastLaunches:
+                    dataProviderDelegate = async () => await _oddity.Launches.GetPast().ExecuteAsync();
+                    break;
+
+                case PaginationContentType.AllLaunches:
+                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().ExecuteAsync();
+                    break;
+
+                case PaginationContentType.FailedStarts:
+                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync();
+                    break;
+
+                case PaginationContentType.FailedLandings:
+                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
+                    break;
             }
 
-            return null;
+            return await _cacheService.GetAndUpdate(contentType, dataProviderDelegate);
         }
 
         private string GetLaunchesTable(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)
