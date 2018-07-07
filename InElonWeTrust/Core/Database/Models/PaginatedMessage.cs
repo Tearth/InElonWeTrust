@@ -6,7 +6,8 @@ namespace InElonWeTrust.Core.Database.Models
     {
         public int ID { get; set; }
         public string MessageID { get; set; }
-        public PaginationContentType ContentType { get; set; } 
+        public PaginationContentType ContentType { get; set; }
+        public string Parameter { get; set; }
         public int CurrentPage { get; set; }
     }
 }

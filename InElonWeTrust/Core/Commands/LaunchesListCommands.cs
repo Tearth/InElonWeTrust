@@ -15,6 +15,7 @@ using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
+using Oddity.API.Models.Launch.Rocket.SecondStage.Orbit;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -47,7 +48,8 @@ namespace InElonWeTrust.Core.Commands
                 {PaginationContentType.PastLaunches, "List of all past launches:"},
                 {PaginationContentType.AllLaunches, "List of all launches:"},
                 {PaginationContentType.FailedStarts, "List of all failed starts:"},
-                {PaginationContentType.FailedLandings, "List of all failed landings:"}
+                {PaginationContentType.FailedLandings, "List of all failed landings:"},
+                {PaginationContentType.LaunchesWithOrbit, "List of launches with the specified orbit:"}
             };
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
@@ -98,18 +100,27 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.FailedLandings);
         }
 
-        private async Task DisplayLaunches(CommandContext ctx, PaginationContentType contentType)
+        [Command("launcheswithorbit")]
+        [Aliases("orbit", "o")]
+        [Description("Get information about all launches with the specified orbit.")]
+        public async Task LaunchesWithOrbit(CommandContext ctx, string orbitType)
+        {
+            await ctx.TriggerTypingAsync();
+            await DisplayLaunches(ctx, PaginationContentType.LaunchesWithOrbit, orbitType);
+        }
+
+        private async Task DisplayLaunches(CommandContext ctx, PaginationContentType contentType, string parameter = null)
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await GetLaunches(contentType);
+            var launchData = await GetLaunches(contentType, parameter);
             var launchesList = GetLaunchesTable(launchData, contentType, 1);
 
             var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, contentType);
+            await _pagination.InitPagination(message, contentType, parameter);
         }
 
-        private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType)
+        private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType, string parameter = null)
         {
             Func<Task<List<LaunchInfo>>> dataProviderDelegate = null;
 
@@ -133,6 +144,12 @@ namespace InElonWeTrust.Core.Commands
 
                 case PaginationContentType.FailedLandings:
                     dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
+                    break;
+
+                case PaginationContentType.LaunchesWithOrbit:
+                    var orbitType = (OrbitType)Enum.Parse(typeof(OrbitType), parameter, true);
+
+                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithOrbit(orbitType).ExecuteAsync();
                     break;
             }
 
@@ -184,17 +201,13 @@ namespace InElonWeTrust.Core.Commands
         {
             if (!e.User.IsBot && _pagination.IsPaginationSet(e.Message))
             {
-                var contentType = _pagination.GetContentTypeForMessage(e.Message);
-                var previousCurrentPage = _pagination.GetCurrentPage(e.Message);
+                var paginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                var items = await GetLaunches(paginationData.ContentType);
 
-                var items = await GetLaunches(contentType);
-
-                _pagination.DoAction(e.Message, e.Emoji, items.Count);
-                var currentPage = _pagination.GetCurrentPage(e.Message);
-
-                if (currentPage != previousCurrentPage)
+                if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
                 {
-                    var launchesList = GetLaunchesTable(items, contentType, currentPage);
+                    var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                    var launchesList = GetLaunchesTable(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
                     await e.Message.ModifyAsync(launchesList);
                 }
 

@@ -17,7 +17,7 @@ namespace InElonWeTrust.Core.Services.Pagination
         private const string LastEmojiName = ":track_next:";
         private const int ItemsPerPage = 15;
 
-        public async Task InitPagination(DiscordMessage message, PaginationContentType contentType)
+        public async Task InitPagination(DiscordMessage message, PaginationContentType contentType, string parameter)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -25,6 +25,7 @@ namespace InElonWeTrust.Core.Services.Pagination
                 {
                     MessageID = message.Id.ToString(),
                     ContentType = contentType,
+                    Parameter = parameter,
                     CurrentPage = 1
                 };
 
@@ -57,25 +58,12 @@ namespace InElonWeTrust.Core.Services.Pagination
             return (int)Math.Ceiling((double)totalItemsCount / ItemsPerPage);
         }
 
-        public int GetCurrentPage(DiscordMessage message)
+        public PaginatedMessage GetPaginationDataForMessage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
-
-                return pagination.CurrentPage;
-            }
-        }
-
-        public PaginationContentType GetContentTypeForMessage(DiscordMessage message)
-        {
-            using (var databaseContext = new DatabaseContext())
-            {
-                var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
-
-                return pagination.ContentType;
+                return databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
             }
         }
 
@@ -84,18 +72,20 @@ namespace InElonWeTrust.Core.Services.Pagination
             return $"page {currentPage} from {maxPagesCount}";
         }
 
-        public void DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
+        public bool DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
         {
             switch (clickedEmoji.GetDiscordName())
             {
-                case RightEmojiName: GoToNextPage(message, totalItemsCount); break;
-                case LeftEmojiName: GoToPreviousPage(message); break;
-                case FirstEmojiName: GoToFirstPage(message); break;
-                case LastEmojiName: GoToLastPage(message, totalItemsCount); break;
+                case RightEmojiName: return GoToNextPage(message, totalItemsCount);
+                case LeftEmojiName: return GoToPreviousPage(message);
+                case FirstEmojiName: return GoToFirstPage(message);
+                case LastEmojiName: return GoToLastPage(message, totalItemsCount);
             }
+
+            return false;
         }
 
-        private void GoToNextPage(DiscordMessage message, int totalItemsCount)
+        private bool GoToNextPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -106,11 +96,15 @@ namespace InElonWeTrust.Core.Services.Pagination
                 {
                     pagination.CurrentPage++;
                     databaseContext.SaveChanges();
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        private void GoToPreviousPage(DiscordMessage message)
+        private bool GoToPreviousPage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -121,11 +115,15 @@ namespace InElonWeTrust.Core.Services.Pagination
                 {
                     pagination.CurrentPage--;
                     databaseContext.SaveChanges();
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        private void GoToFirstPage(DiscordMessage message)
+        private bool GoToFirstPage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -134,10 +132,14 @@ namespace InElonWeTrust.Core.Services.Pagination
 
                 pagination.CurrentPage = 1;
                 databaseContext.SaveChanges();
+
+                return true;
             }
+
+            return false;
         }
 
-        private void GoToLastPage(DiscordMessage message, int totalItemsCount)
+        private bool GoToLastPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -146,7 +148,11 @@ namespace InElonWeTrust.Core.Services.Pagination
 
                 pagination.CurrentPage = GetPagesCount(totalItemsCount);
                 databaseContext.SaveChanges();
+
+                return true;
             }
+
+            return false;
         }
     }
 }

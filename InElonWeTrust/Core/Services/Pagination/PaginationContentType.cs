@@ -10,6 +10,7 @@ namespace InElonWeTrust.Core.Services.Pagination
         PastLaunches,
         UpcomingLaunches,
         FailedStarts,
-        FailedLandings
+        FailedLandings,
+        LaunchesWithOrbit
     }
 }
