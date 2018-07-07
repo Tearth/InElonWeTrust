@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.Services.Pagination
     public enum PaginationContentType
     {
         AllLaunches,
-        PreviousLaunches,
+        PastLaunches,
         NextLaunches
     }
 }

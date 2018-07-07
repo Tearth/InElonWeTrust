@@ -19,5 +19,10 @@ namespace InElonWeTrust.Core.Helpers
             var index = _random.Next(0, enumerable.Count() - 1);
             return enumerable[index];
         }
+
+        public static string ShortenString(this string str, int maxLength)
+        {
+            return str.Length > maxLength ? str.Substring(0, maxLength).Insert(maxLength, "...") : str;
+        }
     }
 }
