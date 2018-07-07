@@ -12,7 +12,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Oddity" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Oddity">
+      <HintPath>..\..\Oddity\Oddity\bin\Release\netstandard1.1\Oddity.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

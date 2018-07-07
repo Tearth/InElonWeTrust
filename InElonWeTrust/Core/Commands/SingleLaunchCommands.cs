@@ -69,7 +69,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
+            await DisplayLaunchInfo(ctx, launchData.First());
         }
 
         private async Task DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
