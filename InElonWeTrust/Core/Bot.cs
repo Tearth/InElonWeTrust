@@ -15,26 +15,26 @@ namespace InElonWeTrust.Core
 {
     public class Bot
     {
-        private DiscordClient _client { get; set; }
+        public static DiscordClient Client { get; set; }
         private CommandsNextModule _commands { get; set; }
 
         public async Task Run()
         {
-            _client = new DiscordClient(GetClientConfiguration());
-            _client.SetWebSocketClient<WebSocket4NetCoreClient>();
+            Client = new DiscordClient(GetClientConfiguration());
+            Client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
-            _client.Ready += Client_Ready;
-            _client.GuildAvailable += Client_GuildAvailable;
-            _client.ClientErrored += Client_ClientError;
+            Client.Ready += Client_Ready;
+            Client.GuildAvailable += Client_GuildAvailable;
+            Client.ClientErrored += Client_ClientError;
 
-            _commands = _client.UseCommandsNext(GetCommandsConfiguration());
+            _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
             _commands.SetHelpFormatter<CustomHelpFormatter>();
 
             RegisterCommands();
 
-            await _client.ConnectAsync();
+            await Client.ConnectAsync();
             await Task.Delay(-1);
         }
 

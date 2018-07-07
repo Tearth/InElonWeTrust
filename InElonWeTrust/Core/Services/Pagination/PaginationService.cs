@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
@@ -14,9 +15,9 @@ namespace InElonWeTrust.Core.Services.Pagination
         private const string LeftEmojiName = ":arrow_left:";
         private const string RightEmojiName = ":arrow_right:";
         private const string LastEmojiName = ":track_next:";
-        private const int ItemsPerPage = 10;
+        private const int ItemsPerPage = 1;
 
-        public async void InitPagination(DiscordMessage message, PaginationContentType contentType)
+        public async Task InitPagination(DiscordMessage message, PaginationContentType contentType)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -27,8 +28,8 @@ namespace InElonWeTrust.Core.Services.Pagination
                     CurrentPage = 1
                 };
 
-                databaseContext.PaginatedMessages.Add(paginatedMessage);
-                databaseContext.SaveChanges();
+                await databaseContext.PaginatedMessages.AddAsync(paginatedMessage);
+                await databaseContext.SaveChangesAsync();
             }
 
             await message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, FirstEmojiName));
@@ -37,13 +38,23 @@ namespace InElonWeTrust.Core.Services.Pagination
             await message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, LastEmojiName));
         }
 
-        public bool IsPaginationSet(DiscordMessage message, PaginationContentType contentType)
+        public bool IsPaginationSet(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                return databaseContext.PaginatedMessages.Any(p => p.MessageID == messageIdString && p.ContentType == contentType);
+                return databaseContext.PaginatedMessages.Any(p => p.MessageID == messageIdString);
             }
+        }
+
+        public List<T> GetItemsToDisplay<T>(List<T> items, int page)
+        {
+            return items.Skip((page - 1) * ItemsPerPage).Take(ItemsPerPage).ToList();
+        }
+
+        public int GetPagesCount(int totalItemsCount)
+        {
+            return totalItemsCount / ItemsPerPage + 1;
         }
 
         public int GetCurrentPage(DiscordMessage message)
@@ -57,7 +68,40 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
         }
 
-        public void GoToNextPage(DiscordMessage message, int totalItemsCount)
+        public PaginationContentType GetContentTypeForMessage(DiscordMessage message)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var messageIdString = message.Id.ToString();
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+
+                return pagination.ContentType;
+            }
+        }
+
+        public string GetPaginationFooter(int currentPage, int maxPagesCount)
+        {
+            return $"{currentPage}/{maxPagesCount}";
+        }
+
+        public void DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var messageIdString = message.Id.ToString();
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+
+                switch (clickedEmoji.GetDiscordName())
+                {
+                    case RightEmojiName: GoToNextPage(message, totalItemsCount); break;
+                    case LeftEmojiName: GoToPreviousPage(message, totalItemsCount); break;
+                    case FirstEmojiName: GoToFirstPage(message, totalItemsCount); break;
+                    case LastEmojiName: GoToLastPage(message, totalItemsCount); break;
+                }
+            }
+        }
+
+        private void GoToNextPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -72,7 +116,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
         }
 
-        public void GoToPreviousPage(DiscordMessage message, int totalItemsCount)
+        private void GoToPreviousPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -87,7 +131,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
         }
 
-        public void GoToFirstPage(DiscordMessage message, int totalItemsCount)
+        private void GoToFirstPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -99,14 +143,14 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
         }
 
-        public void GoToLastPage(DiscordMessage message, int totalItemsCount)
+        private void GoToLastPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
                 var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
 
-                pagination.CurrentPage = totalItemsCount / ItemsPerPage + 1;
+                pagination.CurrentPage = totalItemsCount / ItemsPerPage;
                 databaseContext.SaveChanges();
             }
         }
