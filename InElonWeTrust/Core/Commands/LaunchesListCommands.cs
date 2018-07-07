@@ -41,7 +41,9 @@ namespace InElonWeTrust.Core.Commands
             {
                 {PaginationContentType.UpcomingLaunches, "List of all upcoming launches:"},
                 {PaginationContentType.PastLaunches, "List of all past launches:"},
-                {PaginationContentType.AllLaunches, "List of all launches:"}
+                {PaginationContentType.AllLaunches, "List of all launches:"},
+                {PaginationContentType.FailedStarts, "List of all failed starts:"},
+                {PaginationContentType.FailedLandings, "List of all failed landings:"}
             };
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
@@ -74,6 +76,24 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.AllLaunches);
         }
 
+        [Command("failedstarts")]
+        [Aliases("faileds", "fs")]
+        [Description("Get information about all failed launches.")]
+        public async Task FailedStarts(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await DisplayLaunches(ctx, PaginationContentType.FailedStarts);
+        }
+
+        [Command("failedlandings")]
+        [Aliases("failedl", "fl")]
+        [Description("Get information about all failed launches.")]
+        public async Task FailedLandings(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await DisplayLaunches(ctx, PaginationContentType.FailedLandings);
+        }
+
         private async Task DisplayLaunches(CommandContext ctx, PaginationContentType contentType)
         {
             await ctx.TriggerTypingAsync();
@@ -92,6 +112,8 @@ namespace InElonWeTrust.Core.Commands
                 case PaginationContentType.UpcomingLaunches: return await _oddity.Launches.GetUpcoming().ExecuteAsync();
                 case PaginationContentType.PastLaunches: return await _oddity.Launches.GetPast().ExecuteAsync();
                 case PaginationContentType.AllLaunches: return await _oddity.Launches.GetAll().ExecuteAsync();
+                case PaginationContentType.FailedStarts: return await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync();
+                case PaginationContentType.FailedLandings: return await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
             }
 
             return null;

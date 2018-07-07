@@ -8,6 +8,8 @@ namespace InElonWeTrust.Core.Services.Pagination
     {
         AllLaunches,
         PastLaunches,
-        UpcomingLaunches
+        UpcomingLaunches,
+        FailedStarts,
+        FailedLandings
     }
 }

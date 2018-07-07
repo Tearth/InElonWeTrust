@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.Services.Pagination
 
         public int GetPagesCount(int totalItemsCount)
         {
-            return totalItemsCount / ItemsPerPage + 1;
+            return (int)Math.Ceiling((double)totalItemsCount / ItemsPerPage);
         }
 
         public int GetCurrentPage(DiscordMessage message)
