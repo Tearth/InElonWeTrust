@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public class SubscriptionsService
     {
-        public async Task<bool> AddSubscription(long channelID, SubscriptionType type)
+        public async Task<bool> AddSubscription(ulong channelID, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -34,7 +34,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             return true;
         }
 
-        public async Task<bool> RemoveSubscription(long channelID, SubscriptionType type)
+        public async Task<bool> RemoveSubscription(ulong channelID, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
