@@ -55,6 +55,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
             _stream = Stream.CreateFilteredStream();
+
             foreach (var user in _twitterUsers)
             {
                 _stream.AddFollow(User.GetUserFromScreenName(user.Value));
@@ -68,7 +69,10 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         private void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
         {
-            OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
+            if (e.MatchOn == MatchOn.Follower)
+            {
+                OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
+            }
         }
 
         public ITweet GetRandomTweet(TwitterUserType userType)
