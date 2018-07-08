@@ -24,5 +24,14 @@ namespace InElonWeTrust.Core.Helpers
         {
             return str.Length > maxLength ? str.Substring(0, maxLength).Insert(maxLength, "...") : str;
         }
+
+        public static long NextLong(this Random random, long min, long max)
+        {
+            var buf = new byte[8];
+            random.NextBytes(buf);
+
+            var longRand = BitConverter.ToInt64(buf, 0);
+            return (Math.Abs(longRand % (max - min)) + min);
+        }
     }
 }
