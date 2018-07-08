@@ -33,6 +33,8 @@ namespace InElonWeTrust.Core.Services.Description
 
         private async void DescriptionRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            _descriptionRefreshTimer.Interval = IntervalMinutes * 1000 * 60;
+
             var nextLaunch = await _oddity.Launches.GetNext().ExecuteAsync();
             var description = "";
 
@@ -47,8 +49,6 @@ namespace InElonWeTrust.Core.Services.Description
             }
 
             await Bot.Client.UpdateStatusAsync(new DiscordGame(description));
-
-            _descriptionRefreshTimer.Interval = IntervalMinutes * 1000 * 60;
         }
     }
 }
