@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.Services.Twitter
     {
         public event EventHandler<ITweet> OnNewTweet;
 
-        private Dictionary<string, TweetRanges> _tweetRanges;
+        private Dictionary<string, List<long>> _tweetIDs;
         private Dictionary<TwitterUserType, string> _twitterUsers;
         private Timer _tweetRangesUpdateTimer;
         private Random _random;
@@ -30,11 +30,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public TwitterService()
         {
-            _tweetRanges = new Dictionary<string, TweetRanges>
-            {
-                {"elonmusk", new TweetRanges()},
-                {"SpaceX", new TweetRanges()}
-            };
+            _tweetIDs = new Dictionary<string, List<long>>();
 
             _twitterUsers = new Dictionary<TwitterUserType, string>
             {
@@ -79,16 +75,10 @@ namespace InElonWeTrust.Core.Services.Twitter
         {
             var username = _twitterUsers[userType];
 
-            var tweetRanges = _tweetRanges[username];
-            var randomId = _random.NextLong(tweetRanges.MinTweetId, tweetRanges.MaxTweetId);
+            var tweets = _tweetIDs[username];
+            var randomId = tweets.GetRandomItem();
 
-            var messages = Timeline.GetUserTimeline(username, new UserTimelineParameters
-            {
-                MaxId = randomId,
-                MaximumNumberOfTweetsToRetrieve = 1
-            });
-
-            return messages.First();
+            return Tweet.GetTweet(randomId);
         }
 
         private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -99,16 +89,20 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         private void UpdateTweetRanges()
         {
-            Parallel.ForEach(_tweetRanges, account =>
+            _tweetIDs.Clear();
+
+            Parallel.ForEach(_twitterUsers, account =>
             {
-                account.Value.Reset();
+                _tweetIDs.Add(account.Value, new List<long>());
 
                 var firstRequest = true;
+                var minTweetId = long.MaxValue;
+
                 while (true)
                 {
-                    var messages = Timeline.GetUserTimeline(account.Key, new UserTimelineParameters
+                    var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
                     {
-                        MaxId = firstRequest ? -1 : account.Value.MinTweetId - 1,
+                        MaxId = firstRequest ? -1 : minTweetId - 1,
                         MaximumNumberOfTweetsToRetrieve = 200
                     });
 
@@ -117,9 +111,9 @@ namespace InElonWeTrust.Core.Services.Twitter
                         break;
                     }
 
-                    account.Value.MinTweetId = Math.Min(account.Value.MinTweetId, messages.Min(p => p.Id));
-                    account.Value.MaxTweetId = Math.Max(account.Value.MaxTweetId, messages.Max(p => p.Id));
+                    _tweetIDs[account.Value].AddRange(messages.Select(p => p.Id));
 
+                    minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
                     firstRequest = false;
                 }
             });
