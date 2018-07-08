@@ -7,6 +7,7 @@ namespace InElonWeTrust.Core.Database
     {
         public DbSet<CachedLink> CachedLinks { get; set; }
         public DbSet<PaginatedMessage> PaginatedMessages { get; set; }
+        public DbSet<SubscribedChannel> SubscribedChannels { get; set; }
 
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
         {
