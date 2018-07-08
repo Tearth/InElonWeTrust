@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
@@ -73,7 +74,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         private void UpdateTweetRanges()
         {
-            foreach (var account in _tweetRanges)
+            Parallel.ForEach(_tweetRanges, account =>
             {
                 account.Value.Reset();
 
@@ -96,7 +97,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
                     firstRequest = false;
                 }
-            }
+            });
         }
     }
 }
