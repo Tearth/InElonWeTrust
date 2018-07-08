@@ -27,6 +27,8 @@ namespace InElonWeTrust.Core.Commands
         {
             _twitter = new TwitterService();
             _subscriptions = new SubscriptionsService();
+
+            _twitter.OnNewTweet += Twitter_OnOnNewTweet;
         }
 
         [Command("addtwitterchannel")]
@@ -92,10 +94,10 @@ namespace InElonWeTrust.Core.Commands
         public async Task RandomSpaceXTweet(CommandContext ctx)
         {
             var tweet = _twitter.GetRandomTweet(TwitterUserType.SpaceX);
-            await DisplayTweet(ctx, tweet);
+            await DisplayTweet(ctx.Channel, tweet);
         }
 
-        private async Task DisplayTweet(CommandContext ctx, ITweet tweet)
+        private async Task DisplayTweet(DiscordChannel channel, ITweet tweet)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -111,7 +113,17 @@ namespace InElonWeTrust.Core.Commands
 
             embed.AddField($"{tweet.CreatedBy.Name} at {tweet.CreatedAt}", contentBuilder.ToString());
 
-            await ctx.RespondAsync("", false, embed);
+            await channel.SendMessageAsync("", false, embed);
+        }
+
+        private async void Twitter_OnOnNewTweet(object sender, ITweet tweet)
+        {
+            var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Twitter);
+            foreach (var channelID in channels)
+            {
+                var channel = await Bot.Client.GetChannelAsync(channelID);
+                await DisplayTweet(channel, tweet);
+            }
         }
     }
 }
