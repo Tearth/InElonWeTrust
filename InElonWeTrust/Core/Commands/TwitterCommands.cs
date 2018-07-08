@@ -88,6 +88,15 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
+        [Command("randomelontweet")]
+        [Aliases("randomet", "ret")]
+        [Description("Get random Elon's tweet.")]
+        public async Task RandomElonTweet(CommandContext ctx)
+        {
+            var tweet = _twitter.GetRandomTweet(TwitterUserType.ElonMusk);
+            await DisplayTweet(ctx.Channel, tweet);
+        }
+
         [Command("randomspacextweet")]
         [Aliases("randomst", "rst")]
         [Description("Get random SpaceX's tweet.")]
