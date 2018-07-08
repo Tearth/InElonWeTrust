@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -34,6 +35,15 @@ namespace InElonWeTrust.Core.Commands
             await DisplayTweet(ctx, tweet);
         }
 
+        [Command("randomspacextweet")]
+        [Aliases("randomst", "rst")]
+        [Description("Get random SpaceX's tweet.")]
+        public async Task RandomSpaceXTweet(CommandContext ctx)
+        {
+            var tweet = _twitter.GetRandomTweet(TwitterUserType.SpaceX);
+            await DisplayTweet(ctx, tweet);
+        }
+
         private async Task DisplayTweet(CommandContext ctx, ITweet tweet)
         {
             var embed = new DiscordEmbedBuilder
@@ -44,7 +54,7 @@ namespace InElonWeTrust.Core.Commands
             };
 
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append(System.Web.HttpUtility.HtmlDecode(tweet.FullText));
+            contentBuilder.Append(HttpUtility.HtmlDecode(tweet.FullText));
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
