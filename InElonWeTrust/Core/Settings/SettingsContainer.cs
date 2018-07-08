@@ -22,5 +22,11 @@ namespace InElonWeTrust.Core.Settings
 
         [JsonProperty("twitter_access_token_secret")]
         public string TwitterAccessTokenSecret { get; set; }
+
+        [JsonProperty("flickr_key")]
+        public string FlickrKey { get; set; }
+
+        [JsonProperty("flickr_secret")]
+        public string FlickrSecret { get; set; }
     }
 }
