@@ -7,6 +7,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
@@ -14,10 +15,12 @@ namespace InElonWeTrust.Core.Commands
     [Commands("Flicks")]
     public class FlickrCommands
     {
+        private FlickrService _flickr;
         private SubscriptionsService _subscriptions;
 
         public FlickrCommands()
         {
+            _flickr = new FlickrService();
             _subscriptions = new SubscriptionsService();
         }
 
