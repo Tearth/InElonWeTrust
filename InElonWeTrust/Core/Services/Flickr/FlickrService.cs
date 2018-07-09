@@ -59,5 +59,15 @@ namespace InElonWeTrust.Core.Services.Flickr
                 currentPage++;
             }
         }
+
+        private async Task<string> GetImageUrl(string photoId)
+        {
+            var httpClient = new HttpClient();
+
+            var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.photos.getSizes&api_key={SettingsLoader.Data.FlickrKey}&photo_id={photoId}&format=json&nojsoncallback=1");
+            var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoSizesResponse>(response);
+
+            return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
+        }
     }
 }
