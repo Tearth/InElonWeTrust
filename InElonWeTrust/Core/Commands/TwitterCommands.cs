@@ -106,13 +106,13 @@ namespace InElonWeTrust.Core.Commands
             await DisplayTweet(ctx.Channel, tweet);
         }
 
-        private async Task DisplayTweet(DiscordChannel channel, ITweet tweet)
+        private async Task DisplayTweet(DiscordChannel channel, SlimTweet tweet)
         {
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = tweet.CreatedBy.ProfileImageUrl400x400,
-                ImageUrl = tweet.Media.Count > 0 ? tweet.Media[0].MediaURL : ""
+                ThumbnailUrl = tweet.AvatarUrl,
+                ImageUrl = tweet.ImageUrl
             };
 
             var contentBuilder = new StringBuilder();
@@ -120,7 +120,7 @@ namespace InElonWeTrust.Core.Commands
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
-            embed.AddField($"{tweet.CreatedBy.Name} at {tweet.CreatedAt}", contentBuilder.ToString());
+            embed.AddField($"{tweet.CreatedBy} at {tweet.CreatedAt}", contentBuilder.ToString());
 
             await channel.SendMessageAsync("", false, embed);
         }
@@ -131,7 +131,7 @@ namespace InElonWeTrust.Core.Commands
             foreach (var channelID in channels)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelID);
-                await DisplayTweet(channel, tweet);
+                await DisplayTweet(channel, new SlimTweet(tweet));
             }
         }
     }

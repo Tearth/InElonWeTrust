@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
 using Tweetinvi;
@@ -19,29 +21,19 @@ namespace InElonWeTrust.Core.Services.Twitter
     {
         public event EventHandler<ITweet> OnNewTweet;
 
-        private Dictionary<string, List<long>> _tweetIDs;
-        private Dictionary<TwitterUserType, string> _twitterUsers;
-        private Timer _tweetRangesUpdateTimer;
-        private Random _random;
+        private Dictionary<TwitterUserType, string> _users;
+        private ConcurrentDictionary<TwitterUserType, List<SlimTweet>> _tweets;
         private IFilteredStream _stream;
-
-        private const int InitialIntervalSeconds = 2;
-        private const int IntervalMinutes = 60 * 12;
 
         public TwitterService()
         {
-            _tweetIDs = new Dictionary<string, List<long>>();
+            _tweets = new ConcurrentDictionary<TwitterUserType, List<SlimTweet>>();
 
-            _twitterUsers = new Dictionary<TwitterUserType, string>
+            _users = new Dictionary<TwitterUserType, string>
             {
                 {TwitterUserType.ElonMusk, "elonmusk"},
                 {TwitterUserType.SpaceX, "SpaceX"}
             };
-
-            _tweetRangesUpdateTimer = new Timer(InitialIntervalSeconds);
-            _tweetRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
-
-            _random = new Random();
 
             var consumerKey = SettingsLoader.Data.TwitterConsumerKey;
             var consumerSecret = SettingsLoader.Data.TwitterConsumerSecret;
@@ -50,50 +42,47 @@ namespace InElonWeTrust.Core.Services.Twitter
 
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
+            Task.Run(() => DownloadAllTweets());
+            InitStream();
+        }
+
+        private void InitStream()
+        {
             _stream = Stream.CreateFilteredStream();
 
-            foreach (var user in _twitterUsers)
+            foreach (var user in _users)
             {
                 _stream.AddFollow(User.GetUserFromScreenName(user.Value));
             }
 
             _stream.MatchingTweetReceived += Stream_MatchingTweetReceived;
             _stream.StartStreamMatchingAllConditionsAsync();
-
-            _tweetRangesUpdateTimer.Start();
         }
 
         private void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
         {
             if (e.MatchOn == MatchOn.Follower)
             {
+                var userType = _users.First(p => p.Value == e.Tweet.CreatedBy.ScreenName).Key;
+                _tweets[userType].Add(new SlimTweet(e.Tweet));
+
                 OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
             }
         }
 
-        public ITweet GetRandomTweet(TwitterUserType userType)
+        public SlimTweet GetRandomTweet(TwitterUserType userType)
         {
-            var username = _twitterUsers[userType];
-
-            var tweets = _tweetIDs[username];
-            var randomId = tweets.GetRandomItem();
-
-            return Tweet.GetTweet(randomId);
+            var tweets = _tweets[userType];
+            return tweets.GetRandomItem();
         }
 
-        private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void DownloadAllTweets()
         {
-            _tweetRangesUpdateTimer.Interval = IntervalMinutes * 60 * 1000;
-            UpdateTweetRanges();
-        }
+            Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
 
-        private void UpdateTweetRanges()
-        {
-            _tweetIDs.Clear();
-
-            Parallel.ForEach(_twitterUsers, account =>
+            Parallel.ForEach(_users, account =>
             {
-                _tweetIDs.Add(account.Value, new List<long>());
+                _tweets.TryAdd(account.Key, new List<SlimTweet>());
 
                 var firstRequest = true;
                 var minTweetId = long.MaxValue;
@@ -111,12 +100,15 @@ namespace InElonWeTrust.Core.Services.Twitter
                         break;
                     }
 
-                    _tweetIDs[account.Value].AddRange(messages.Select(p => p.Id));
+                    _tweets[account.Key].AddRange(messages.Select(p => new SlimTweet(p)));
 
                     minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
                     firstRequest = false;
                 }
             });
+
+            var tweetsCount = _tweets.Sum(p => p.Value.Count);
+            Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets loaded)", DateTime.Now);
         }
     }
 }
