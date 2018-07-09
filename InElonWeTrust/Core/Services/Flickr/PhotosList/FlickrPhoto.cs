@@ -10,6 +10,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public string Owner { get; set; }
         public string Secret { get; set; }
         public string Server { get; set; }
+        public string Source { get; set; }
         public int Farm { get; set; }
         public string Title { get; set; }
         public bool IsPublic { get; set; }

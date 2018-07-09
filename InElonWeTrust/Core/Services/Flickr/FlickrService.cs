@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
 using Newtonsoft.Json;
 using Tweetinvi;
@@ -29,6 +30,14 @@ namespace InElonWeTrust.Core.Services.Flickr
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
 
             _imageRangesUpdateTimer.Start();
+        }
+
+        public async Task<FlickrPhoto> GetRandomPhoto()
+        {
+            var randomPhoto = _photos.GetRandomItem();
+            randomPhoto.Source = await GetImageUrl(randomPhoto.Id);
+
+            return randomPhoto;
         }
 
         private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)

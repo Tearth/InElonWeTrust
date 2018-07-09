@@ -80,5 +80,26 @@ namespace InElonWeTrust.Core.Commands
 
             await ctx.RespondAsync("", false, embed);
         }
+
+        [Command("randomflickrphoto")]
+        [Aliases("randomfp", "rfp")]
+        [Description("Get random Elon's tweet.")]
+        public async Task RandomElonTweet(CommandContext ctx)
+        {
+            var tweet = await _flickr.GetRandomPhoto();
+            await DisplayPhoto(ctx.Channel, tweet);
+        }
+
+        private async Task DisplayPhoto(DiscordChannel channel, FlickrPhoto photo)
+        {
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(Constants.EmbedColor),
+                ImageUrl = photo.Source
+            };
+
+            embed.AddField(photo.Title, $"https://www.flickr.com/photos/spacex/{photo.Id}");
+            await channel.SendMessageAsync("", false, embed);
+        }
     }
 }
