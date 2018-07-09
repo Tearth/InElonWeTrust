@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Flickr.PhotoInfo;
 using InElonWeTrust.Core.Settings;
 using Newtonsoft.Json;
 using Tweetinvi;
@@ -36,6 +37,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             var randomPhoto = _photos.GetRandomItem();
             randomPhoto.Source = await GetImageUrl(randomPhoto.Id);
+            randomPhoto.UploadDate = await GetImageUploadDate(randomPhoto.Id);
 
             return randomPhoto;
         }
@@ -49,7 +51,6 @@ namespace InElonWeTrust.Core.Services.Flickr
         private async Task UpdateTweetRanges()
         {
             var httpClient = new HttpClient();
-
             _photos.Clear();
 
             var currentPage = 1;
@@ -77,6 +78,16 @@ namespace InElonWeTrust.Core.Services.Flickr
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoSizesResponse>(response);
 
             return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
+        }
+
+        private async Task<string> GetImageUploadDate(string photoId)
+        {
+            var httpClient = new HttpClient();
+
+            var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.photos.getInfo&api_key={SettingsLoader.Data.FlickrKey}&photo_id={photoId}&format=json&nojsoncallback=1");
+            var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoInfoResponse>(response);
+
+            return new DateTime().UnixTimeStampToDateTime(long.Parse(parsedResponse.Photo.DateUploaded)).ToString();
         }
     }
 }

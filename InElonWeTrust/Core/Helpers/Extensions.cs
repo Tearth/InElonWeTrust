@@ -33,5 +33,13 @@ namespace InElonWeTrust.Core.Helpers
             var longRand = BitConverter.ToInt64(buf, 0);
             return (Math.Abs(longRand % (max - min)) + min);
         }
+
+        public static DateTime UnixTimeStampToDateTime(this DateTime dateTime, double unixTimeStamp)
+        {
+            var convertedDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            convertedDateTime = convertedDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+
+            return convertedDateTime;
+        }
     }
 }
