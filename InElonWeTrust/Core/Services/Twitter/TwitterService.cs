@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus;
+using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
 using Tweetinvi;
@@ -22,13 +24,10 @@ namespace InElonWeTrust.Core.Services.Twitter
         public event EventHandler<ITweet> OnNewTweet;
 
         private Dictionary<TwitterUserType, string> _users;
-        private ConcurrentDictionary<TwitterUserType, List<SlimTweet>> _tweets;
         private IFilteredStream _stream;
 
         public TwitterService()
         {
-            _tweets = new ConcurrentDictionary<TwitterUserType, List<SlimTweet>>();
-
             _users = new Dictionary<TwitterUserType, string>
             {
                 {TwitterUserType.ElonMusk, "elonmusk"},
@@ -41,8 +40,6 @@ namespace InElonWeTrust.Core.Services.Twitter
             var accessTokenSecret = SettingsLoader.Data.TwitterAccessTokenSecret;
 
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-
-            Task.Run(() => DownloadAllTweets());
             InitStream();
         }
 
@@ -59,56 +56,76 @@ namespace InElonWeTrust.Core.Services.Twitter
             _stream.StartStreamMatchingAllConditionsAsync();
         }
 
+        public CachedTweet GetRandomTweet(TwitterUserType userType)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var username = _users[userType];
+                return databaseContext.CachedTweets.Where(p => p.CreatedByRealName == username).OrderBy(r => Guid.NewGuid()).First();
+            }
+        }
+
+        public void ReloadCachedTweets()
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
+
+                databaseContext.CachedTweets.RemoveRange(databaseContext.CachedTweets);
+                databaseContext.SaveChanges();
+
+                foreach (var account in _users)
+                {
+                    var firstRequest = true;
+                    var minTweetId = long.MaxValue;
+
+                    while (true)
+                    {
+                        var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
+                        {
+                            MaxId = firstRequest ? -1 : minTweetId - 1,
+                            MaximumNumberOfTweetsToRetrieve = 200
+                        });
+
+                        if (!messages.Any())
+                        {
+                            break;
+                        }
+
+                        foreach (var msg in messages)
+                        {
+                            if (!databaseContext.CachedTweets.Any(p => p.ID == msg.Id))
+                            {
+                                databaseContext.CachedTweets.Add(new CachedTweet(msg));
+                            }
+                        }
+
+                        minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
+                        firstRequest = false;
+                    }
+
+                    Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter user ({account.Value}) done", DateTime.Now);
+                }
+
+                databaseContext.SaveChanges();
+
+                var tweetsCount = databaseContext.CachedTweets.Count();
+                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets downloaded)", DateTime.Now);
+            }
+        }
+
         private void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
         {
             if (e.MatchOn == MatchOn.Follower)
             {
-                var userType = _users.First(p => p.Value == e.Tweet.CreatedBy.ScreenName).Key;
-                _tweets[userType].Add(new SlimTweet(e.Tweet));
+                using (var databaseContext = new DatabaseContext())
+                {
+                    databaseContext.CachedTweets.Add(new CachedTweet(e.Tweet));
+                    databaseContext.SaveChanges();
+                }
 
                 OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
             }
-        }
-
-        public SlimTweet GetRandomTweet(TwitterUserType userType)
-        {
-            var tweets = _tweets[userType];
-            return tweets.GetRandomItem();
-        }
-
-        private void DownloadAllTweets()
-        {
-            Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
-
-            Parallel.ForEach(_users, account =>
-            {
-                _tweets.TryAdd(account.Key, new List<SlimTweet>());
-
-                var firstRequest = true;
-                var minTweetId = long.MaxValue;
-
-                while (true)
-                {
-                    var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
-                    {
-                        MaxId = firstRequest ? -1 : minTweetId - 1,
-                        MaximumNumberOfTweetsToRetrieve = 200
-                    });
-
-                    if (!messages.Any())
-                    {
-                        break;
-                    }
-
-                    _tweets[account.Key].AddRange(messages.Select(p => new SlimTweet(p)));
-
-                    minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
-                    firstRequest = false;
-                }
-            });
-
-            var tweetsCount = _tweets.Sum(p => p.Value.Count);
-            Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets loaded)", DateTime.Now);
         }
     }
 }

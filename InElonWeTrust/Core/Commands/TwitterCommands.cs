@@ -7,6 +7,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
@@ -106,7 +107,17 @@ namespace InElonWeTrust.Core.Commands
             await DisplayTweet(ctx.Channel, tweet);
         }
 
-        private async Task DisplayTweet(DiscordChannel channel, SlimTweet tweet)
+        [Command("reloadcachedtweets")]
+        [Aliases("reloadct", "rct")]
+        [Description("Get random SpaceX's tweet.")]
+        public async Task ReloadCachedTweets(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("Reload cached tweets starts");
+            _twitter.ReloadCachedTweets();
+            await ctx.Channel.SendMessageAsync("Reload cached tweets finished");
+        }
+
+        private async Task DisplayTweet(DiscordChannel channel, CachedTweet tweet)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -120,7 +131,7 @@ namespace InElonWeTrust.Core.Commands
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
-            embed.AddField($"{tweet.CreatedBy} at {tweet.CreatedAt}", contentBuilder.ToString());
+            embed.AddField($"{tweet.CreatedByDisplayName} at {tweet.CreatedAt}", contentBuilder.ToString());
 
             await channel.SendMessageAsync("", false, embed);
         }
@@ -131,7 +142,7 @@ namespace InElonWeTrust.Core.Commands
             foreach (var channelID in channels)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelID);
-                await DisplayTweet(channel, new SlimTweet(tweet));
+                await DisplayTweet(channel, new CachedTweet(tweet));
             }
         }
     }

@@ -4,22 +4,29 @@ using System.Linq;
 using System.Text;
 using Tweetinvi.Models;
 
-namespace InElonWeTrust.Core.Services.Twitter
+namespace InElonWeTrust.Core.Database.Models
 {
-    public class SlimTweet
+    public class CachedTweet
     {
-        public long Id { get; set; }
-        public string CreatedBy { get; set; }
+        public long ID { get; set; }
+        public string CreatedByRealName { get; set; }
+        public string CreatedByDisplayName { get; set; }
         public string AvatarUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public string FullText { get; set; }
         public string Url { get; set; }
         public string ImageUrl { get; set; }
 
-        public SlimTweet(ITweet tweet)
+        public CachedTweet()
         {
-            Id = tweet.Id;
-            CreatedBy = tweet.CreatedBy.Name;
+
+        }
+
+        public CachedTweet(ITweet tweet)
+        {
+            ID = tweet.Id;
+            CreatedByRealName = tweet.CreatedBy.ScreenName;
+            CreatedByDisplayName = tweet.CreatedBy.Name;
             AvatarUrl = tweet.CreatedBy.ProfileImageUrl400x400;
             CreatedAt = tweet.CreatedAt;
             FullText = tweet.FullText;
