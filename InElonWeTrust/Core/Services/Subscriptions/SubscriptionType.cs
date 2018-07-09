@@ -6,6 +6,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public enum SubscriptionType
     {
-        Twitter
+        Twitter,
+        Flickr
     }
 }
