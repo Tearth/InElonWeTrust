@@ -153,7 +153,7 @@ namespace InElonWeTrust.Core.Commands
                     break;
             }
 
-            return await _cacheService.GetAndUpdate(contentType, dataProviderDelegate);
+            return await _cacheService.GetAndUpdateAsync(contentType, dataProviderDelegate);
         }
 
         private string GetLaunchesTable(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)

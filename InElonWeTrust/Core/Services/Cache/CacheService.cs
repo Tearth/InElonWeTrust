@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.Services.Cache
             _items = new Dictionary<T, CacheItem<D>>();
         }
 
-        public async Task<D> GetAndUpdate(T type, Func<Task<D>> dataProviderDelegate)
+        public async Task<D> GetAndUpdateAsync(T type, Func<Task<D>> dataProviderDelegate)
         {
             if (!_items.ContainsKey(type))
             {

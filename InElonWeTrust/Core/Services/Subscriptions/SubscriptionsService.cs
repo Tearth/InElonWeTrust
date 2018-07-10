@@ -5,18 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public class SubscriptionsService
     {
-        public async Task<bool> AddSubscription(ulong channelId, SubscriptionType type)
+        public async Task<bool> AddSubscriptionAsync(ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var fixedChannelId = channelId.ToString();
-                if (databaseContext.SubscribedChannels.Any(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type))
+                if (await databaseContext.SubscribedChannels.AnyAsync(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type))
                 {
                     return false;
                 }
@@ -34,12 +35,12 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             return true;
         }
 
-        public async Task<bool> RemoveSubscription(ulong channelId, SubscriptionType type)
+        public async Task<bool> RemoveSubscriptionAsync(ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var fixedChannelId = channelId.ToString();
-                var subscribedChannel = databaseContext.SubscribedChannels.FirstOrDefault(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type);
+                var subscribedChannel = await databaseContext.SubscribedChannels.FirstOrDefaultAsync(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type);
 
                 if (subscribedChannel == null)
                 {

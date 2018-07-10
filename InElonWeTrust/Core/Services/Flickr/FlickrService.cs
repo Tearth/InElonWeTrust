@@ -11,6 +11,7 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr.PhotoInfo;
 using InElonWeTrust.Core.Settings;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Tweetinvi;
 using Tweetinvi.Parameters;
@@ -30,19 +31,18 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             _imageRangesUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
-
             _imageRangesUpdateTimer.Start();
         }
 
-        public async Task<CachedFlickrPhoto> GetRandomPhoto()
+        public async Task<CachedFlickrPhoto> GetRandomPhotoAsync()
         {
             using (var databaseContext = new DatabaseContext())
             {
-                return databaseContext.CachedFlickrPhotos.OrderBy(r => Guid.NewGuid()).First();
+                return await databaseContext.CachedFlickrPhotos.OrderBy(r => Guid.NewGuid()).FirstAsync();
             }
         }
 
-        public async Task ReloadCachedPhotos(bool sendNotifyWhenNewPhoto)
+        public async Task ReloadCachedPhotosAsync(bool sendNotifyWhenNewPhoto)
         {
             var httpClient = new HttpClient();
 
@@ -58,13 +58,13 @@ namespace InElonWeTrust.Core.Services.Flickr
 
                     foreach (var photo in parsedResponse.Photos.Photo)
                     {
-                        if (!databaseContext.CachedFlickrPhotos.Any(p => p.Id == photo.Id))
+                        if (!await databaseContext.CachedFlickrPhotos.AnyAsync(p => p.Id == photo.Id))
                         {
-                            var source = await GetImageUrl(photo.Id);
-                            var date = await GetImageUploadDate(photo.Id);
+                            var source = await GetImageUrlAsync(photo.Id);
+                            var date = await GetImageUploadDateAsync(photo.Id);
 
                             var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
-                            databaseContext.CachedFlickrPhotos.Add(cachedPhoto);
+                            await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
 
                             if (sendNotifyWhenNewPhoto)
                             {
@@ -84,19 +84,19 @@ namespace InElonWeTrust.Core.Services.Flickr
                     currentPage++;
                 }
 
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
 
-                var photosCount = databaseContext.CachedFlickrPhotos.Count();
+                var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr download finished ({photosCount} photos downloaded)", DateTime.Now);
             }
         }
 
-        private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            ReloadCachedPhotos(true);
+            await ReloadCachedPhotosAsync(true);
         }
 
-        private async Task<string> GetImageUrl(string photoId)
+        private async Task<string> GetImageUrlAsync(string photoId)
         {
             var httpClient = new HttpClient();
 
@@ -106,7 +106,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
         }
 
-        private async Task<DateTime> GetImageUploadDate(string photoId)
+        private async Task<DateTime> GetImageUploadDateAsync(string photoId)
         {
             var httpClient = new HttpClient();
 

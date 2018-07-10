@@ -10,6 +10,7 @@ using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
+using Microsoft.EntityFrameworkCore;
 using Tweetinvi;
 using Tweetinvi.Events;
 using Tweetinvi.Models;
@@ -56,16 +57,16 @@ namespace InElonWeTrust.Core.Services.Twitter
             _stream.StartStreamMatchingAllConditionsAsync();
         }
 
-        public CachedTweet GetRandomTweet(TwitterUserType userType)
+        public async Task<CachedTweet> GetRandomTweetAsync(TwitterUserType userType)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var username = _users[userType];
-                return databaseContext.CachedTweets.Where(p => p.CreatedByRealName == username).OrderBy(r => Guid.NewGuid()).First();
+                return await databaseContext.CachedTweets.Where(p => p.CreatedByRealName == username).OrderBy(r => Guid.NewGuid()).FirstAsync();
             }
         }
 
-        public void ReloadCachedTweets()
+        public async void ReloadCachedTweetsAsync()
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -91,7 +92,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
                         foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)))
                         {
-                            databaseContext.CachedTweets.Add(new CachedTweet(msg));
+                            await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
                         }
 
                         minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
@@ -101,21 +102,21 @@ namespace InElonWeTrust.Core.Services.Twitter
                     Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter user ({account.Value}) done", DateTime.Now);
                 }
 
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
 
-                var tweetsCount = databaseContext.CachedTweets.Count();
+                var tweetsCount = await databaseContext.CachedTweets.CountAsync();
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets downloaded)", DateTime.Now);
             }
         }
 
-        private void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
+        private async void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
         {
             if (e.MatchOn == MatchOn.Follower)
             {
                 using (var databaseContext = new DatabaseContext())
                 {
-                    databaseContext.CachedTweets.Add(new CachedTweet(e.Tweet));
-                    databaseContext.SaveChanges();
+                    await databaseContext.CachedTweets.AddAsync(new CachedTweet(e.Tweet));
+                    await databaseContext.SaveChangesAsync();
                 }
 
                 OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);

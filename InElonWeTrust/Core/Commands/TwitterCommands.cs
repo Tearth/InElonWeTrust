@@ -44,7 +44,7 @@ namespace InElonWeTrust.Core.Commands
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
-            if (await _subscriptions.AddSubscription(ctx.Channel.Id, SubscriptionType.Twitter))
+            if (await _subscriptions.AddSubscriptionAsync(ctx.Channel.Id, SubscriptionType.Twitter))
             {
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!",
@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core.Commands
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
-            if (await _subscriptions.RemoveSubscription(ctx.Channel.Id, SubscriptionType.Twitter))
+            if (await _subscriptions.RemoveSubscriptionAsync(ctx.Channel.Id, SubscriptionType.Twitter))
             {
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!",
@@ -96,7 +96,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = _twitter.GetRandomTweet(TwitterUserType.ElonMusk);
+            var tweet = _twitter.GetRandomTweetAsync(TwitterUserType.ElonMusk);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
@@ -107,7 +107,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = _twitter.GetRandomTweet(TwitterUserType.SpaceX);
+            var tweet = _twitter.GetRandomTweetAsync(TwitterUserType.SpaceX);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
@@ -118,7 +118,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Reload cached tweets starts");
-            _twitter.ReloadCachedTweets();
+            _twitter.ReloadCachedTweetsAsync();
             await ctx.Channel.SendMessageAsync("Reload cached tweets finished");
         }
 

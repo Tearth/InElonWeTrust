@@ -30,8 +30,8 @@ namespace InElonWeTrust.Core.Services.LinkShortener
                     Shortcut = shortcut
                 };
 
-                databaseContext.CachedLinks.Add(newCachedLink);
-                databaseContext.SaveChanges();
+                await databaseContext.CachedLinks.AddAsync(newCachedLink);
+                await databaseContext.SaveChangesAsync();
 
                 return shortcut;
             }

@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Commands
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
-            if (await _subscriptions.AddSubscription(ctx.Channel.Id, SubscriptionType.Flickr))
+            if (await _subscriptions.AddSubscriptionAsync(ctx.Channel.Id, SubscriptionType.Flickr))
             {
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!",
@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.Commands
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
-            if (await _subscriptions.RemoveSubscription(ctx.Channel.Id, SubscriptionType.Flickr))
+            if (await _subscriptions.RemoveSubscriptionAsync(ctx.Channel.Id, SubscriptionType.Flickr))
             {
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!",
@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random photo from SpaceX Flickr profile.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
-            var photo = await _flickr.GetRandomPhoto();
+            var photo = await _flickr.GetRandomPhotoAsync();
             await DisplayPhoto(ctx.Channel, photo);
         }
 
@@ -100,7 +100,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
-            await _flickr.ReloadCachedPhotos(false);
+            await _flickr.ReloadCachedPhotosAsync(false);
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos finished");
         }
 
