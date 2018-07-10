@@ -92,12 +92,9 @@ namespace InElonWeTrust.Core.Services.Twitter
                             break;
                         }
 
-                        foreach (var msg in messages)
+                        foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.ID == msg.Id)))
                         {
-                            if (!databaseContext.CachedTweets.Any(p => p.ID == msg.Id))
-                            {
-                                databaseContext.CachedTweets.Add(new CachedTweet(msg));
-                            }
+                            databaseContext.CachedTweets.Add(new CachedTweet(msg));
                         }
 
                         minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));

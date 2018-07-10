@@ -94,6 +94,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random Elon's tweet.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             var tweet = _twitter.GetRandomTweet(TwitterUserType.ElonMusk);
             await DisplayTweet(ctx.Channel, tweet);
         }
@@ -103,6 +105,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random SpaceX's tweet.")]
         public async Task RandomSpaceXTweet(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             var tweet = _twitter.GetRandomTweet(TwitterUserType.SpaceX);
             await DisplayTweet(ctx.Channel, tweet);
         }
