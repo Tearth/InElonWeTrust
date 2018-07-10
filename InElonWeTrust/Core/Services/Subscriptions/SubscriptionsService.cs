@@ -11,19 +11,19 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public class SubscriptionsService
     {
-        public async Task<bool> AddSubscription(ulong channelID, SubscriptionType type)
+        public async Task<bool> AddSubscription(ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
-                var fixedChannelId = channelID.ToString();
-                if (databaseContext.SubscribedChannels.Any(p => p.ChannelID == fixedChannelId && p.SubscriptionType == type))
+                var fixedChannelId = channelId.ToString();
+                if (databaseContext.SubscribedChannels.Any(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type))
                 {
                     return false;
                 }
 
                 var subscribedChannel = new SubscribedChannel
                 {
-                    ChannelID = channelID.ToString(),
+                    ChannelId = channelId.ToString(),
                     SubscriptionType = type
                 };
 
@@ -34,12 +34,12 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             return true;
         }
 
-        public async Task<bool> RemoveSubscription(ulong channelID, SubscriptionType type)
+        public async Task<bool> RemoveSubscription(ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
-                var fixedChannelId = channelID.ToString();
-                var subscribedChannel = databaseContext.SubscribedChannels.FirstOrDefault(p => p.ChannelID == fixedChannelId && p.SubscriptionType == type);
+                var fixedChannelId = channelId.ToString();
+                var subscribedChannel = databaseContext.SubscribedChannels.FirstOrDefault(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type);
 
                 if (subscribedChannel == null)
                 {
@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                 return databaseContext.SubscribedChannels
                     .Where(p => p.SubscriptionType == type)
                     .ToList()
-                    .Select(p => ulong.Parse(p.ChannelID))
+                    .Select(p => ulong.Parse(p.ChannelId))
                     .ToList();
             }
         }

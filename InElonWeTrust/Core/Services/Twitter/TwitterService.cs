@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                             break;
                         }
 
-                        foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.ID == msg.Id)))
+                        foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)))
                         {
                             databaseContext.CachedTweets.Add(new CachedTweet(msg));
                         }

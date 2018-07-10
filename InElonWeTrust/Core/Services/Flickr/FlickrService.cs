@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
                     foreach (var photo in parsedResponse.Photos.Photo)
                     {
-                        if (!databaseContext.CachedFlickrPhotos.Any(p => p.ID == photo.Id))
+                        if (!databaseContext.CachedFlickrPhotos.Any(p => p.Id == photo.Id))
                         {
                             var source = await GetImageUrl(photo.Id);
                             var date = await GetImageUploadDate(photo.Id);

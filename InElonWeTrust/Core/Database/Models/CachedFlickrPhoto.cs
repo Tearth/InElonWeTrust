@@ -8,7 +8,7 @@ namespace InElonWeTrust.Core.Database.Models
 {
     public class CachedFlickrPhoto
     {
-        public string ID { get; set; }
+        public string Id { get; set; }
         public DateTime UploadDate { get; set; }
         public string Source { get; set; }
         public string Title { get; set; }
@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Database.Models
 
         public CachedFlickrPhoto(FlickrPhoto photo, DateTime uploadDate, string source)
         {
-            ID = photo.Id;
+            Id = photo.Id;
             UploadDate = uploadDate;
             Source = source;
             Title = photo.Title;

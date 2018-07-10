@@ -107,9 +107,9 @@ namespace InElonWeTrust.Core.Commands
         private async void Flickr_OnNewFlickrPhoto(object sender, CachedFlickrPhoto e)
         {
             var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Flickr);
-            foreach (var channelID in channels)
+            foreach (var channelId in channels)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelID);
+                var channel = await Bot.Client.GetChannelAsync(channelId);
                 await DisplayPhoto(channel, e);
             }
         }
@@ -122,7 +122,7 @@ namespace InElonWeTrust.Core.Commands
                 ImageUrl = photo.Source
             };
 
-            embed.AddField($"{photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.ID}");
+            embed.AddField($"{photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
             await channel.SendMessageAsync("", false, embed);
         }
     }

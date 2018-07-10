@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             {
                 var paginatedMessage = new PaginatedMessage
                 {
-                    MessageID = message.Id.ToString(),
+                    MessageId = message.Id.ToString(),
                     ContentType = contentType,
                     Parameter = parameter,
                     CurrentPage = 1
@@ -44,7 +44,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                return databaseContext.PaginatedMessages.Any(p => p.MessageID == messageIdString);
+                return databaseContext.PaginatedMessages.Any(p => p.MessageId == messageIdString);
             }
         }
 
@@ -63,7 +63,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                return databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+                return databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
             }
         }
 
@@ -90,7 +90,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
 
                 if (pagination.CurrentPage < GetPagesCount(totalItemsCount))
                 {
@@ -109,7 +109,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
 
                 if (pagination.CurrentPage > 1)
                 {
@@ -128,7 +128,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
 
                 pagination.CurrentPage = 1;
                 databaseContext.SaveChanges();
@@ -144,7 +144,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageID == messageIdString);
+                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
 
                 pagination.CurrentPage = GetPagesCount(totalItemsCount);
                 databaseContext.SaveChanges();

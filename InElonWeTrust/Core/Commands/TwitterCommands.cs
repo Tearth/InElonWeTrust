@@ -144,9 +144,9 @@ namespace InElonWeTrust.Core.Commands
         private async void Twitter_OnOnNewTweet(object sender, ITweet tweet)
         {
             var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Twitter);
-            foreach (var channelID in channels)
+            foreach (var channelId in channels)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelID);
+                var channel = await Bot.Client.GetChannelAsync(channelId);
                 await DisplayTweet(channel, new CachedTweet(tweet));
             }
         }

@@ -8,7 +8,7 @@ namespace InElonWeTrust.Core.Database.Models
 {
     public class CachedTweet
     {
-        public long ID { get; set; }
+        public long Id { get; set; }
         public string CreatedByRealName { get; set; }
         public string CreatedByDisplayName { get; set; }
         public string AvatarUrl { get; set; }
@@ -24,7 +24,7 @@ namespace InElonWeTrust.Core.Database.Models
 
         public CachedTweet(ITweet tweet)
         {
-            ID = tweet.Id;
+            Id = tweet.Id;
             CreatedByRealName = tweet.CreatedBy.ScreenName;
             CreatedByDisplayName = tweet.CreatedBy.Name;
             AvatarUrl = tweet.CreatedBy.ProfileImageUrl400x400;

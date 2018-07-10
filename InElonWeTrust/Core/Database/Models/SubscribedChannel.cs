@@ -7,8 +7,8 @@ namespace InElonWeTrust.Core.Database.Models
 {
     public class SubscribedChannel
     {
-        public int ID { get; set; }
-        public string ChannelID { get; set; }
+        public int Id { get; set; }
+        public string ChannelId { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
     }
 }
