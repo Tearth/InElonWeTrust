@@ -111,6 +111,7 @@ namespace InElonWeTrust.Core.Commands
             await DisplayTweet(ctx.Channel, tweet);
         }
 
+        [HiddenCommand]
         [Command("reloadcachedtweets")]
         [Aliases("reloadct", "rct")]
         [Description("Get random SpaceX's tweet.")]

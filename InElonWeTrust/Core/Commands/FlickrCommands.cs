@@ -13,7 +13,7 @@ using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("Flicks")]
+    [Commands("SpaceX Flickr")]
     public class FlickrCommands
     {
         private FlickrService _flickr;
@@ -27,9 +27,9 @@ namespace InElonWeTrust.Core.Commands
             _flickr.OnNewFlickrPhoto += Flickr_OnNewFlickrPhoto;
         }
 
-        [Command("addflickrchannel")]
-        [Aliases("addfc", "afc")]
-        [Description("Get random Elon's tweet.")]
+        [Command("subscribeflickr")]
+        [Aliases("subflickr", "sf")]
+        [Description("Subscribe SpaceX Flickr profile (bot will post all new photos).")]
         public async Task AddFlickrChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -56,9 +56,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
-        [Command("removeflickrchannel")]
-        [Aliases("removefc", "rfc")]
-        [Description("Get random Elon's tweet.")]
+        [Command("unsubscribeflickr")]
+        [Aliases("unsubflickr", "usf")]
+        [Description("Removes SpaceX Flickr subscription.")]
         public async Task RemoveFlickrChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -86,16 +86,17 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("randomflickrphoto")]
         [Aliases("randomfp", "rfp")]
-        [Description("Get random Elon's tweet.")]
+        [Description("Get random photo from SpaceX Flickr profile.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
             var photo = await _flickr.GetRandomPhoto();
             await DisplayPhoto(ctx.Channel, photo);
         }
 
+        [HiddenCommand]
         [Command("reloadcachedflickrphotos")]
         [Aliases("reloadcfp", "rcfp")]
-        [Description("Get random SpaceX's tweet.")]
+        [Description("Reload cached Flickr photos in database.")]
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
