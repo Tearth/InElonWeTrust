@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using DSharpPlus;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
@@ -16,7 +13,6 @@ using Tweetinvi.Events;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
 using Tweetinvi.Streaming;
-using Tweetinvi.Streams;
 
 namespace InElonWeTrust.Core.Services.Twitter
 {

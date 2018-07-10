@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus;
@@ -10,11 +8,11 @@ using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr.PhotoInfo;
+using InElonWeTrust.Core.Services.Flickr.PhotosList;
+using InElonWeTrust.Core.Services.Flickr.PhotoSizes;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Tweetinvi;
-using Tweetinvi.Parameters;
 
 namespace InElonWeTrust.Core.Services.Flickr
 {

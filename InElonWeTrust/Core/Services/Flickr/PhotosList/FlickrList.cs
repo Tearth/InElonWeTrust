@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace InElonWeTrust.Core.Services.Flickr
+namespace InElonWeTrust.Core.Services.Flickr.PhotosList
 {
     public class FlickrList
     {

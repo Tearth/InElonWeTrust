@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InElonWeTrust.Core.Services.Flickr;
-using Microsoft.EntityFrameworkCore.Storage;
+using InElonWeTrust.Core.Services.Flickr.PhotosList;
 
 namespace InElonWeTrust.Core.Database.Models
 {

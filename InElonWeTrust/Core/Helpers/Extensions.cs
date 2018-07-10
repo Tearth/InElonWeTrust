@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace InElonWeTrust.Core.Helpers
 {
@@ -16,7 +14,7 @@ namespace InElonWeTrust.Core.Helpers
 
         public static T GetRandomItem<T>(this List<T> enumerable)
         {
-            var index = _random.Next(0, enumerable.Count() - 1);
+            var index = _random.Next(0, enumerable.Count - 1);
             return enumerable[index];
         }
 

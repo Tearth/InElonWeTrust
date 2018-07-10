@@ -39,7 +39,6 @@ namespace InElonWeTrust.Core
             await Client.ConnectAsync();
 
             _description = new DescriptionService();
-            _description.Run();
         }
 
         private DiscordConfiguration GetClientConfiguration()

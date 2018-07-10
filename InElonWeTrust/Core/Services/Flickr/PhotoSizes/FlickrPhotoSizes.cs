@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InElonWeTrust.Core.Services.Flickr.PhotoSizes;
+﻿using System.Collections.Generic;
 
-namespace InElonWeTrust.Core.Services.Flickr
+namespace InElonWeTrust.Core.Services.Flickr.PhotoSizes
 {
     public class FlickrPhotoSizes
     {

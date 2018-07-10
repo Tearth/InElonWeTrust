@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
@@ -135,8 +134,6 @@ namespace InElonWeTrust.Core.Services.Pagination
 
                 return true;
             }
-
-            return false;
         }
 
         private bool GoToLastPage(DiscordMessage message, int totalItemsCount)
@@ -151,8 +148,6 @@ namespace InElonWeTrust.Core.Services.Pagination
 
                 return true;
             }
-
-            return false;
         }
     }
 }

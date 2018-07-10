@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InElonWeTrust.Core.Services.Pagination
+﻿namespace InElonWeTrust.Core.Services.Pagination
 {
     public enum PaginationContentType
     {

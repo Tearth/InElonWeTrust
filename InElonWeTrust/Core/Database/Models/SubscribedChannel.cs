@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InElonWeTrust.Core.Services.Subscriptions;
+﻿using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Database.Models
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using DSharpPlus.CommandsNext;
@@ -11,10 +9,7 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
-using InElonWeTrust.Core.Settings;
-using Tweetinvi;
 using Tweetinvi.Models;
-using Tweetinvi.Parameters;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -96,7 +91,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = _twitter.GetRandomTweetAsync(TwitterUserType.ElonMusk);
+            var tweet = await _twitter.GetRandomTweetAsync(TwitterUserType.ElonMusk);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
@@ -107,7 +102,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = _twitter.GetRandomTweetAsync(TwitterUserType.SpaceX);
+            var tweet = await _twitter.GetRandomTweetAsync(TwitterUserType.SpaceX);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
