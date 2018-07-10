@@ -13,7 +13,7 @@ using Tweetinvi.Models;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("Twitter")]
+    [Commands("Twitter SpaceX & Elon Musk")]
     public class TwitterCommands
     {
         private TwitterService _twitter;
@@ -27,9 +27,9 @@ namespace InElonWeTrust.Core.Commands
             _twitter.OnNewTweet += Twitter_OnOnNewTweet;
         }
 
-        [Command("addtwitterchannel")]
-        [Aliases("addtc", "atc")]
-        [Description("Get random Elon's tweet.")]
+        [Command("subscribetwitter")]
+        [Aliases("subtwitter", "st")]
+        [Description("Subscribe SpaceX & Elon Musk Twitter profiles (bot will post all new tweets).")]
         public async Task AddTwitterChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -56,9 +56,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
-        [Command("removetwitterchannel")]
-        [Aliases("removetc", "rtc")]
-        [Description("Get random Elon's tweet.")]
+        [Command("unsubscribetwitter")]
+        [Aliases("unsubtwitter", "ust")]
+        [Description("Removes SpaceX & Elon Musk Twitter profiles subscription.")]
         public async Task RemoveTwitterChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -109,7 +109,7 @@ namespace InElonWeTrust.Core.Commands
         [HiddenCommand]
         [Command("reloadcachedtweets")]
         [Aliases("reloadct", "rct")]
-        [Description("Get random SpaceX's tweet.")]
+        [Description("Reload cached tweets in database.")]
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Reload cached tweets starts");

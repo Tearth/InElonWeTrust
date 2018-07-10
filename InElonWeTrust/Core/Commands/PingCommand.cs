@@ -17,3 +17,4 @@ namespace InElonWeTrust.Core.Commands
         }
     }
 }
+
