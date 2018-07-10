@@ -71,9 +71,6 @@ namespace InElonWeTrust.Core.Services.Twitter
             {
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
 
-                databaseContext.CachedTweets.RemoveRange(databaseContext.CachedTweets);
-                databaseContext.SaveChanges();
-
                 foreach (var account in _users)
                 {
                     var firstRequest = true;
