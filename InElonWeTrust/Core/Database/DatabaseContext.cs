@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.Database
         public DbSet<CachedFlickrPhoto> CachedFlickrPhotos { get; set; }
         public DbSet<PaginatedMessage> PaginatedMessages { get; set; }
         public DbSet<SubscribedChannel> SubscribedChannels { get; set; }
-        public DbSet<QuoteModel> Quotes { get; set; }
+        public DbSet<Quote> Quotes { get; set; }
 
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
         {
