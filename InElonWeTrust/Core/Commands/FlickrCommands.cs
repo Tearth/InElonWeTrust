@@ -23,6 +23,8 @@ namespace InElonWeTrust.Core.Commands
         {
             _flickr = new FlickrService();
             _subscriptions = new SubscriptionsService();
+
+            _flickr.OnNewFlickrPhoto += Flickr_OnNewFlickrPhoto;
         }
 
         [Command("addflickrchannel")]
@@ -97,8 +99,18 @@ namespace InElonWeTrust.Core.Commands
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
-            await _flickr.ReloadCachedPhotos();
+            await _flickr.ReloadCachedPhotos(false);
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos finished");
+        }
+
+        private async void Flickr_OnNewFlickrPhoto(object sender, CachedFlickrPhoto e)
+        {
+            var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Flickr);
+            foreach (var channelID in channels)
+            {
+                var channel = await Bot.Client.GetChannelAsync(channelID);
+                await DisplayPhoto(channel, e);
+            }
         }
 
         private async Task DisplayPhoto(DiscordChannel channel, CachedFlickrPhoto photo)

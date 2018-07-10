@@ -19,10 +19,12 @@ namespace InElonWeTrust.Core.Services.Flickr
 {
     public class FlickrService
     {
+        public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
+
         private Timer _imageRangesUpdateTimer;
 
         private const string SpaceXProfileId = "130608600@N05";
-        private const int IntervalMinutes = 30;
+        private const int IntervalMinutes = 1;
 
         public FlickrService()
         {
@@ -40,7 +42,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
         }
 
-        public async Task ReloadCachedPhotos()
+        public async Task ReloadCachedPhotos(bool sendNotifyWhenNewPhoto)
         {
             var httpClient = new HttpClient();
 
@@ -63,11 +65,16 @@ namespace InElonWeTrust.Core.Services.Flickr
 
                             var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
                             databaseContext.CachedFlickrPhotos.Add(cachedPhoto);
+
+                            if (sendNotifyWhenNewPhoto)
+                            {
+                                OnNewFlickrPhoto?.Invoke(this, cachedPhoto);
+                            }
                         }
 
                     }
 
-                    if (currentPage == parsedResponse.Photos.Pages)
+                    if (currentPage >= parsedResponse.Photos.Pages)
                     {
                         break;
                     }
@@ -86,7 +93,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            ReloadCachedPhotos();
+            ReloadCachedPhotos(true);
         }
 
         private async Task<string> GetImageUrl(string photoId)
