@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -86,11 +87,21 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random Elon's tweet.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
-            var tweet = await _flickr.GetRandomPhoto();
-            await DisplayPhoto(ctx.Channel, tweet);
+            var photo = await _flickr.GetRandomPhoto();
+            await DisplayPhoto(ctx.Channel, photo);
         }
 
-        private async Task DisplayPhoto(DiscordChannel channel, FlickrPhoto photo)
+        [Command("reloadcachedflickrphotos")]
+        [Aliases("reloadcfp", "rcfp")]
+        [Description("Get random SpaceX's tweet.")]
+        public async Task ReloadCachedTweets(CommandContext ctx)
+        {
+            await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
+            await _flickr.ReloadCachedPhotos();
+            await ctx.Channel.SendMessageAsync("Reload cached Flickr photos finished");
+        }
+
+        private async Task DisplayPhoto(DiscordChannel channel, CachedFlickrPhoto photo)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -98,7 +109,7 @@ namespace InElonWeTrust.Core.Commands
                 ImageUrl = photo.Source
             };
 
-            embed.AddField($"{photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
+            embed.AddField($"{photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.ID}");
             await channel.SendMessageAsync("", false, embed);
         }
     }

@@ -5,6 +5,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus;
+using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr.PhotoInfo;
 using InElonWeTrust.Core.Settings;
@@ -16,58 +19,74 @@ namespace InElonWeTrust.Core.Services.Flickr
 {
     public class FlickrService
     {
-        private List<FlickrPhoto> _photos;
         private Timer _imageRangesUpdateTimer;
 
         private const string SpaceXProfileId = "130608600@N05";
-        private const int InitialIntervalSeconds = 2;
-        private const int IntervalMinutes = 60 * 12;
+        private const int IntervalMinutes = 30;
 
         public FlickrService()
         {
-            _photos = new List<FlickrPhoto>();
-
-            _imageRangesUpdateTimer = new Timer(InitialIntervalSeconds);
+            _imageRangesUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
 
             _imageRangesUpdateTimer.Start();
         }
 
-        public async Task<FlickrPhoto> GetRandomPhoto()
+        public async Task<CachedFlickrPhoto> GetRandomPhoto()
         {
-            var randomPhoto = _photos.GetRandomItem();
-            randomPhoto.Source = await GetImageUrl(randomPhoto.Id);
-            randomPhoto.UploadDate = await GetImageUploadDate(randomPhoto.Id);
+            using (var databaseContext = new DatabaseContext())
+            {
+                return databaseContext.CachedFlickrPhotos.OrderBy(r => Guid.NewGuid()).First();
+            }
+        }
 
-            return randomPhoto;
+        public async Task ReloadCachedPhotos()
+        {
+            var httpClient = new HttpClient();
+
+            using (var databaseContext = new DatabaseContext())
+            {
+                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Flickr download start", DateTime.Now);
+
+                var currentPage = 1;
+                while (true)
+                {
+                    var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={SettingsLoader.Data.FlickrKey}&user_id={SpaceXProfileId}&per_page=500&page={currentPage}&format=json&nojsoncallback=1");
+                    var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
+
+                    foreach (var photo in parsedResponse.Photos.Photo)
+                    {
+                        if (!databaseContext.CachedFlickrPhotos.Any(p => p.ID == photo.Id))
+                        {
+                            var source = await GetImageUrl(photo.Id);
+                            var date = await GetImageUploadDate(photo.Id);
+
+                            var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
+                            databaseContext.CachedFlickrPhotos.Add(cachedPhoto);
+                        }
+
+                    }
+
+                    if (currentPage == parsedResponse.Photos.Pages)
+                    {
+                        break;
+                    }
+
+                    Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr page ({currentPage}) done", DateTime.Now);
+
+                    currentPage++;
+                }
+
+                databaseContext.SaveChanges();
+
+                var photosCount = databaseContext.CachedFlickrPhotos.Count();
+                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr download finished ({photosCount} photos downloaded)", DateTime.Now);
+            }
         }
 
         private void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            _imageRangesUpdateTimer.Interval = IntervalMinutes * 60 * 1000;
-            UpdateTweetRanges();
-        }
-
-        private async Task UpdateTweetRanges()
-        {
-            var httpClient = new HttpClient();
-            _photos.Clear();
-
-            var currentPage = 1;
-            while (true)
-            {
-                var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={SettingsLoader.Data.FlickrKey}&user_id={SpaceXProfileId}&per_page=500&page={currentPage}&format=json&nojsoncallback=1");
-                var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
-
-                _photos.AddRange(parsedResponse.Photos.Photo);
-
-                if (currentPage == parsedResponse.Photos.Pages)
-                {
-                    break;
-                }
-
-                currentPage++;
-            }
+            ReloadCachedPhotos();
         }
 
         private async Task<string> GetImageUrl(string photoId)
@@ -80,14 +99,14 @@ namespace InElonWeTrust.Core.Services.Flickr
             return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
         }
 
-        private async Task<string> GetImageUploadDate(string photoId)
+        private async Task<DateTime> GetImageUploadDate(string photoId)
         {
             var httpClient = new HttpClient();
 
             var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.photos.getInfo&api_key={SettingsLoader.Data.FlickrKey}&photo_id={photoId}&format=json&nojsoncallback=1");
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoInfoResponse>(response);
 
-            return new DateTime().UnixTimeStampToDateTime(long.Parse(parsedResponse.Photo.DateUploaded)).ToString();
+            return new DateTime().UnixTimeStampToDateTime(long.Parse(parsedResponse.Photo.DateUploaded));
         }
     }
 }
