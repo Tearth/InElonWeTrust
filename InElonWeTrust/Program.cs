@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
 using InElonWeTrust.Core;
 
 namespace InElonWeTrust
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            new Bot().Run().GetAwaiter().GetResult();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
+            await new Bot().Run();
             while (Console.ReadLine() != "quit");
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        {
+            throw new NotImplementedException();
         }
     }
 }
