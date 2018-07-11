@@ -21,6 +21,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private Timer _imageRangesUpdateTimer;
+        private bool _reloadingCache;
 
         private const string SpaceXProfileId = "130608600@N05";
         private const int IntervalMinutes = 1;
@@ -42,6 +43,13 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync(bool sendNotifyWhenNewPhoto)
         {
+            if (_reloadingCache)
+            {
+                return;
+            }
+
+            _reloadingCache = true;
+
             var httpClient = new HttpClient();
 
             using (var databaseContext = new DatabaseContext())
@@ -87,6 +95,8 @@ namespace InElonWeTrust.Core.Services.Flickr
                 var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr download finished ({photosCount} photos downloaded)", DateTime.Now);
             }
+
+            _reloadingCache = false;
         }
 
         private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)

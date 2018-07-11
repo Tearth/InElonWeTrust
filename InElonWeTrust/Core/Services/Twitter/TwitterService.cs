@@ -22,6 +22,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         private Dictionary<TwitterUserType, string> _users;
         private IFilteredStream _stream;
+        private bool _reloadingCache;
 
         public TwitterService()
         {
@@ -64,6 +65,13 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async void ReloadCachedTweetsAsync()
         {
+            if (_reloadingCache)
+            {
+                return;
+            }
+
+            _reloadingCache = true;
+
             using (var databaseContext = new DatabaseContext())
             {
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
@@ -103,6 +111,8 @@ namespace InElonWeTrust.Core.Services.Twitter
                 var tweetsCount = await databaseContext.CachedTweets.CountAsync();
                 Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets downloaded)", DateTime.Now);
             }
+
+            _reloadingCache = false;
         }
 
         private async void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
