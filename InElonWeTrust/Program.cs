@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using InElonWeTrust.Core;
+using InElonWeTrust.Core.Helpers;
+using NLog.Targets;
 
 namespace InElonWeTrust
 {
@@ -9,6 +11,7 @@ namespace InElonWeTrust
         private static async Task Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            Target.Register<DiscordLogTarget>("Discord");
 
             await new Bot().Run();
             while (Console.ReadLine() != "quit");

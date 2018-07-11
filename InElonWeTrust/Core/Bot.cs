@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -11,6 +12,7 @@ using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Description;
 using InElonWeTrust.Core.Settings;
+using NLog;
 
 namespace InElonWeTrust.Core
 {
@@ -18,8 +20,10 @@ namespace InElonWeTrust.Core
     {
         public static DiscordClient Client { get; set; }
 
-        private CommandsNextModule _commands { get; set; }
-        private DescriptionService _description { get; set; }
+        private CommandsNextModule _commands;
+        private DescriptionService _description;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task Run()
         {
@@ -49,8 +53,7 @@ namespace InElonWeTrust.Core
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
-                LogLevel = LogLevel.Debug,
-                UseInternalLogHandler = true
+                UseInternalLogHandler = false
             };
         }
 
@@ -98,25 +101,32 @@ namespace InElonWeTrust.Core
 
         private Task Client_Ready(ReadyEventArgs e)
         {
-            e.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Bot is ready to process events.", DateTime.Now);
+            _logger.Info("Bot is ready to process events.");
             return Task.CompletedTask;
         }
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            e.Client.DebugLogger.LogMessage(LogLevel.Error, Constants.AppName, $"Exception occured: {e.Exception.GetType()}: {e.Exception.Message}", DateTime.Now);
+            _logger.Error(e);
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
+            //e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, Constants.AppName, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+            var errorBuilder = new StringBuilder();
+            errorBuilder.Append($"Guild: {e.Context.Guild.Name}");
+            errorBuilder.Append($", Channel: {e.Context.Channel.Name}");
+            errorBuilder.Append($", User: {e.Context.User.Username}");
+            errorBuilder.Append($", Call: {e.Context.Message.Content}");
+
+            _logger.Error(e.Exception, errorBuilder.ToString());
+
             return Task.CompletedTask;
         }
     }

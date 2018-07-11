@@ -8,6 +8,9 @@ namespace InElonWeTrust.Core.Settings
         public string Token { get; set; }
         public List<string> Prefixes { get; set; }
 
+        [JsonProperty("owner_id")]
+        public ulong OwnerId { get; set; }
+
         [JsonProperty("WaaAi_Token")]
         public string WaaAiToken { get; set; }
 
