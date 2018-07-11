@@ -31,7 +31,9 @@ namespace InElonWeTrust.Core
             Client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
             Client.Ready += Client_Ready;
+            Client.Heartbeated += Client_Heartbeated;
             Client.ClientErrored += Client_ClientError;
+            Client.SocketErrored += Client_SocketErrored;
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
@@ -101,33 +103,53 @@ namespace InElonWeTrust.Core
 
         private Task Client_Ready(ReadyEventArgs e)
         {
-            _logger.Info("Bot is ready to process events.");
+            _logger.Info("In Elon We Trust, In Thrust We Trust.");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_Heartbeated(HeartbeatEventArgs e)
+        {
+            _logger.Info($"Heartbeat - ping: {e.Ping} ms");
             return Task.CompletedTask;
         }
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            _logger.Error(e);
+            _logger.Error(e.Exception, $"Event Name: {e.EventName}");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_SocketErrored(SocketErrorEventArgs e)
+        {
+            _logger.Error(e.Exception);
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
-            //e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
+            _logger.Info(GetCommandInfo(e.Context));
             return Task.CompletedTask;
         }
 
         private Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            var errorBuilder = new StringBuilder();
-            errorBuilder.Append($"Guild: {e.Context.Guild.Name}");
-            errorBuilder.Append($", Channel: {e.Context.Channel.Name}");
-            errorBuilder.Append($", User: {e.Context.User.Username}");
-            errorBuilder.Append($", Call: {e.Context.Message.Content}");
-
-            _logger.Error(e.Exception, errorBuilder.ToString());
+            if (e.Command?.Name != "help")
+            {
+                _logger.Error(e.Exception, GetCommandInfo(e.Context));
+            }
 
             return Task.CompletedTask;
+        }
+
+        private string GetCommandInfo(CommandContext ctx)
+        {
+            var infoBuilder = new StringBuilder();
+            infoBuilder.Append($"Guild: {ctx.Guild.Name}");
+            infoBuilder.Append($", Channel: {ctx.Channel.Name}");
+            infoBuilder.Append($", User: {ctx.User.Username}");
+            infoBuilder.Append($", Call: {ctx.Message.Content}");
+
+            return infoBuilder.ToString();
         }
     }
 }
