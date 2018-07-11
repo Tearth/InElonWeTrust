@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using Tweetinvi;
 using Tweetinvi.Events;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
 using Tweetinvi.Streaming;
+using LogLevel = DSharpPlus.LogLevel;
 
 namespace InElonWeTrust.Core.Services.Twitter
 {
@@ -23,6 +24,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private Dictionary<TwitterUserType, string> _users;
         private IFilteredStream _stream;
         private bool _reloadingCache;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TwitterService()
         {
@@ -74,7 +76,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
             using (var databaseContext = new DatabaseContext())
             {
-                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Twitter download start", DateTime.Now);
+                _logger.Info("Twitter reload cached tweets starts");
 
                 foreach (var account in _users)
                 {
@@ -103,13 +105,13 @@ namespace InElonWeTrust.Core.Services.Twitter
                         firstRequest = false;
                     }
 
-                    Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter user ({account.Value}) done", DateTime.Now);
+                    _logger.Info($"Twitter user ({account.Value}) done");
                 }
 
                 await databaseContext.SaveChangesAsync();
 
                 var tweetsCount = await databaseContext.CachedTweets.CountAsync();
-                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Twitter download finished ({tweetsCount} tweets downloaded)", DateTime.Now);
+                _logger.Info($"Twitter download finished ({tweetsCount} tweets downloaded)");
             }
 
             _reloadingCache = false;

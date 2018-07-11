@@ -112,6 +112,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Reload cached tweets in database.")]
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             await ctx.Channel.SendMessageAsync("Reload cached tweets starts");
             _twitter.ReloadCachedTweetsAsync();
             await ctx.Channel.SendMessageAsync("Reload cached tweets finished");

@@ -29,6 +29,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random Elon quote.")]
         public async Task GetElonQuote(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             var quote = await _quotesService.GetRandomQuoteAsync();
             await DisplayQuote(ctx, quote);
         }
@@ -40,7 +42,7 @@ namespace InElonWeTrust.Core.Commands
                 Color = new DiscordColor(Constants.EmbedColor),
             };
 
-            embed.AddField("°", $"*{quote}*\r\n~Elon Musk");
+            embed.AddField("Elon Musk said:", $"*{quote}*\r\n");
 
             await ctx.RespondAsync("", false, embed);
         }

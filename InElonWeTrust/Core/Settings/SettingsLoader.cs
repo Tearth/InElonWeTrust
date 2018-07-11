@@ -1,11 +1,13 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using NLog;
 
 namespace InElonWeTrust.Core.Settings
 {
     public static class SettingsLoader
     {
         public static SettingsContainer Data { get; private set; }
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private const string ConfigsPatch = "Settings/";
 
         static SettingsLoader()
@@ -15,7 +17,10 @@ namespace InElonWeTrust.Core.Settings
 
         public static void Load()
         {
-            using (var jsonReader = new StreamReader(GetConfigPatch()))
+            var configPatch = GetConfigPatch();
+
+            _logger.Info($"Loading {configPatch}...");
+            using (var jsonReader = new StreamReader(configPatch))
             {
                 var jsonContent = jsonReader.ReadToEnd();
                 Data = JsonConvert.DeserializeObject<SettingsContainer>(jsonContent);

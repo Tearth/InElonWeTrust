@@ -86,6 +86,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Get random photo from SpaceX Flickr profile.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             var photo = await _flickr.GetRandomPhotoAsync();
             await DisplayPhoto(ctx.Channel, photo);
         }
@@ -96,6 +98,8 @@ namespace InElonWeTrust.Core.Commands
         [Description("Reload cached Flickr photos in database.")]
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
+            await ctx.TriggerTypingAsync();
+
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
             await _flickr.ReloadCachedPhotosAsync(false);
             await ctx.Channel.SendMessageAsync("Reload cached Flickr photos finished");

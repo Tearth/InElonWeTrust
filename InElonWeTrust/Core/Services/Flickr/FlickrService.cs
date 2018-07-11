@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
-using DSharpPlus;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
@@ -13,6 +12,8 @@ using InElonWeTrust.Core.Services.Flickr.PhotoSizes;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NLog;
+using LogLevel = DSharpPlus.LogLevel;
 
 namespace InElonWeTrust.Core.Services.Flickr
 {
@@ -22,6 +23,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         private Timer _imageRangesUpdateTimer;
         private bool _reloadingCache;
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
         private const int IntervalMinutes = 1;
@@ -54,7 +56,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
             using (var databaseContext = new DatabaseContext())
             {
-                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, "Flickr download start", DateTime.Now);
+                _logger.Info("Reload Flickr cached photos starts");
 
                 var currentPage = 1;
                 while (true)
@@ -80,12 +82,12 @@ namespace InElonWeTrust.Core.Services.Flickr
 
                     }
 
+                    _logger.Info($"Flickr page ({currentPage}) done");
+
                     if (currentPage >= parsedResponse.Photos.Pages)
                     {
                         break;
                     }
-
-                    Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr page ({currentPage}) done", DateTime.Now);
 
                     currentPage++;
                 }
@@ -93,7 +95,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                 await databaseContext.SaveChangesAsync();
 
                 var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
-                Bot.Client.DebugLogger.LogMessage(LogLevel.Info, Constants.AppName, $"Flickr download finished ({photosCount} photos downloaded)", DateTime.Now);
+                _logger.Info($"Flickr download finished ({photosCount} photos downloaded)");
             }
 
             _reloadingCache = false;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Timers;
 using DSharpPlus.Entities;
+using NLog;
 using Oddity;
 
 namespace InElonWeTrust.Core.Services.Description
@@ -9,6 +10,8 @@ namespace InElonWeTrust.Core.Services.Description
     {
         private Timer _descriptionRefreshTimer;
         private OddityCore _oddity;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int InitialIntervalSeconds = 5;
         private const int IntervalMinutes = 30;
@@ -43,6 +46,7 @@ namespace InElonWeTrust.Core.Services.Description
             }
 
             await Bot.Client.UpdateStatusAsync(new DiscordGame(description));
+            _logger.Info($"Description updated: {description}");
         }
     }
 }
