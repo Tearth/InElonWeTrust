@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
@@ -133,7 +134,7 @@ namespace InElonWeTrust.Core
 
         private Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            if (e.Command?.Name != "help")
+            if (e.Command?.Name != "help" && !(e.Exception is CommandNotFoundException))
             {
                 _logger.Error(e.Exception, GetCommandInfo(e.Context));
             }
