@@ -2,12 +2,15 @@
 using System.Threading.Tasks;
 using InElonWeTrust.Core;
 using InElonWeTrust.Core.Helpers;
+using NLog;
 using NLog.Targets;
 
 namespace InElonWeTrust
 {
     internal class Program
     {
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
+
         private static async Task Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
@@ -19,7 +22,7 @@ namespace InElonWeTrust
 
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
-            throw new NotImplementedException();
+            Logger.Fatal(unhandledExceptionEventArgs.ExceptionObject);
         }
     }
 }

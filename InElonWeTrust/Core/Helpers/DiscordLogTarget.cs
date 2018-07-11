@@ -10,8 +10,11 @@ namespace InElonWeTrust.Core.Helpers
         {
             var logMessage = Layout.Render(logEvent);
 
-            var dm = await Bot.Client.CreateDmAsync(await Bot.Client.GetUserAsync(SettingsLoader.Data.OwnerId));
-            await dm.SendMessageAsync(logMessage);
+            if (Bot.Client != null)
+            {
+                var dm = await Bot.Client.CreateDmAsync(await Bot.Client.GetUserAsync(SettingsLoader.Data.OwnerId));
+                await dm.SendMessageAsync(logMessage);
+            }
         }
     }
 }
