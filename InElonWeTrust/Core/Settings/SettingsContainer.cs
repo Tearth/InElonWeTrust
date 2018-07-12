@@ -11,9 +11,6 @@ namespace InElonWeTrust.Core.Settings
         [JsonProperty("owner_id")]
         public ulong OwnerId { get; set; }
 
-        [JsonProperty("WaaAi_Token")]
-        public string WaaAiToken { get; set; }
-
         [JsonProperty("twitter_consumer_key")]
         public string TwitterConsumerKey { get; set; }
 

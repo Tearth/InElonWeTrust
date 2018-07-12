@@ -4,11 +4,14 @@ using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public class SubscriptionsService
     {
+        private Logger _logger = LogManager.GetCurrentClassLogger();
+
         public async Task<bool> AddSubscriptionAsync(ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
@@ -27,6 +30,8 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 
                 await databaseContext.SubscribedChannels.AddAsync(subscribedChannel);
                 await databaseContext.SaveChangesAsync();
+
+                _logger.Info($"Subscription for {type} added");
             }
 
             return true;
@@ -46,6 +51,8 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 
                 databaseContext.SubscribedChannels.Remove(subscribedChannel);
                 await databaseContext.SaveChangesAsync();
+
+                _logger.Info($"Subscription for {type} removed");
             }
 
             return true;

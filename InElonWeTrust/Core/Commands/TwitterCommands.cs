@@ -136,16 +136,16 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [HiddenCommand]
-        [Command("ReloadCachedTweets")]
+        [Command("ReloadCachedTweetsAsync")]
         [Description("Reload cached tweets in database.")]
-        public async Task ReloadCachedTweets(CommandContext ctx)
+        public async Task ReloadCachedTweetsAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
             {
                 return;
             }
 
-            _twitter.ReloadCachedTweetsAsync();
+            await _twitter.ReloadCachedTweetsAsync();
         }
 
         private async Task DisplayTweet(DiscordChannel channel, CachedTweet tweet)

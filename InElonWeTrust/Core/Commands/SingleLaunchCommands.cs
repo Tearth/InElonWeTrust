@@ -84,7 +84,7 @@ namespace InElonWeTrust.Core.Commands
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
             embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
 
-            var linksData = await GetLinksData(launch);
+            var linksData = GetLinksData(launch);
             if(linksData.Length > 0)
             {
                 embed.AddField(":newspaper: Links:", linksData);
@@ -147,7 +147,7 @@ namespace InElonWeTrust.Core.Commands
             return coresDataBuilder.ToString();
         }
 
-        private async Task<string> GetLinksData(LaunchInfo info)
+        private string GetLinksData(LaunchInfo info)
         {
             var links = new List<string>();
 

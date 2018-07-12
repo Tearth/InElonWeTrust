@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
         }
 
-        public async void ReloadCachedTweetsAsync()
+        public async Task ReloadCachedTweetsAsync()
         {
             if (_reloadingCache)
             {

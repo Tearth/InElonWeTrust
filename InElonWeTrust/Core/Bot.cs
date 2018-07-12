@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -144,13 +145,13 @@ namespace InElonWeTrust.Core
 
         private string GetCommandInfo(CommandContext ctx)
         {
-            var infoBuilder = new StringBuilder();
-            infoBuilder.Append($"Guild: {ctx.Guild.Name}");
-            infoBuilder.Append($", Channel: {ctx.Channel.Name}");
-            infoBuilder.Append($", User: {ctx.User.Username}");
-            infoBuilder.Append($", Call: {ctx.Message.Content}");
+            var infoList = new List<string>();
+            infoList.Add($"Guild: {ctx.Guild.Name}");
+            infoList.Add($", Channel: {ctx.Channel.Name}");
+            infoList.Add($", User: {ctx.User.Username}");
+            infoList.Add($", Call: {ctx.Message.Content}");
 
-            return infoBuilder.ToString();
+            return string.Join(", ", infoList);
         }
     }
 }

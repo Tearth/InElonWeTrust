@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using NLog;
 
 namespace InElonWeTrust.Core.Services.Pagination
 {
     public class PaginationService
     {
+        private Logger _logger = LogManager.GetCurrentClassLogger();
+
         private const string FirstEmojiName = ":track_previous:";
         private const string LeftEmojiName = ":arrow_left:";
         private const string RightEmojiName = ":arrow_right:";
@@ -36,6 +39,8 @@ namespace InElonWeTrust.Core.Services.Pagination
             await message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, LeftEmojiName));
             await message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, RightEmojiName));
             await message.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, LastEmojiName));
+
+            _logger.Info($"New pagination for {contentType} added");
         }
 
         public bool IsPaginationSet(DiscordMessage message)
