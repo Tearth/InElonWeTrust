@@ -3,6 +3,7 @@
     public enum SubscriptionType
     {
         Twitter,
-        Flickr
+        Flickr,
+        NextLaunch
     }
 }
