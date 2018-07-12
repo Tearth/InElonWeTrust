@@ -15,7 +15,7 @@ using Oddity.API.Models.Launch.Rocket.SecondStage;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("Launches")]
+    [Commands(":rocket:", "Launches", "Information about all SpaceX launches")]
     public class SingleLaunchCommands
     {
         private OddityCore _oddity;

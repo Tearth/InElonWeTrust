@@ -11,7 +11,7 @@ using InElonWeTrust.Core.Settings;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("SpaceX Flickr")]
+    [Commands(":frame_photo:", "Flickr", "Commands related with [SpaceX Flickr Profile](https://www.flickr.com/photos/spacex/)")]
     public class FlickrCommands
     {
         private FlickrService _flickr;

@@ -8,6 +8,7 @@ using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Settings;
 
 namespace InElonWeTrust.Core.Helpers
 {
@@ -17,13 +18,13 @@ namespace InElonWeTrust.Core.Helpers
         private string _commandDescription;
         private List<string> _aliases;
         private List<string> _parameters;
-        private Dictionary<string, List<string>> _subCommands;
+        private Dictionary<CommandsAttribute, List<string>> _subCommands;
 
         public CustomHelpFormatter()
         {
             _aliases = new List<string>();
             _parameters = new List<string>();
-            _subCommands = new Dictionary<string, List<string>>();
+            _subCommands = new Dictionary<CommandsAttribute, List<string>>();
         }
 
         public IHelpFormatter WithCommandName(string name)
@@ -88,15 +89,15 @@ namespace InElonWeTrust.Core.Helpers
 
                         if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
                         {
-                            if (!_subCommands.ContainsKey(groupAttribute.Group))
+                            if (!_subCommands.ContainsKey(groupAttribute))
                             {
-                                _subCommands.Add(groupAttribute.Group, new List<string>());
+                                _subCommands.Add(groupAttribute, new List<string>());
                             }
 
-                            _subCommands[groupAttribute.Group].Add($"`{commandAttribute.Name}`");
+                            _subCommands[groupAttribute].Add($"`{commandAttribute.Name}`");
                         }
 
-                        _subCommands[groupAttribute.Group] = _subCommands[groupAttribute.Group].OrderBy(p => p).ToList();
+                        _subCommands[groupAttribute] = _subCommands[groupAttribute].OrderBy(p => p).ToList();
                     }
                 }
             }
@@ -122,14 +123,26 @@ namespace InElonWeTrust.Core.Helpers
 
         private CommandHelpMessage BuildGeneralHelp(DiscordEmbedBuilder embed)
         {
-            embed.AddField("In Elon We Trust, In Thrust We Trust", "Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help <command_name>` to get more detailed information about the specified command.");
+            var helpBuilder = new StringBuilder();
+            helpBuilder.Append("Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help <command_name>` to get " +
+                               "more detailed information about the specified command. The bot is insensitive to the case " +
+                               "and spaces between the prefix and the command.\r\n\r\n");
+            helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)** server \r\n");
+            helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!");
 
-            var orderedSubCommands = _subCommands.OrderBy(p => p.Key).ToList();
+            embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
+            helpBuilder.Clear();
+
+            var orderedSubCommands = _subCommands.OrderBy(p => p.Key.Group).ToList();
             foreach (var group in orderedSubCommands)
             {
-                embed.AddField(group.Key, string.Join(", ", group.Value));
+                helpBuilder.Append($"\r\n\r\n");
+                helpBuilder.Append($"{group.Key.Icon} **{group.Key.Group}** *({group.Key.Description}):*\r\n");
+                helpBuilder.Append($"{string.Join(", ", group.Value)}");
             }
 
+            embed.AddField("------------------------------", helpBuilder.ToString());
+            embed.AddField("------------------------------", "*Happy launches!*");
             return new CommandHelpMessage(string.Empty, embed);
         }
 

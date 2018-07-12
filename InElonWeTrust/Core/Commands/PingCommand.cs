@@ -5,7 +5,7 @@ using InElonWeTrust.Core.Attributes;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("Misc")]
+    [Commands(":question:", "Misc", "Other strange commands")]
     public class PingCommand
     {
         [Command("Ping")]

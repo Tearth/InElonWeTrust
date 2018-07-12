@@ -14,7 +14,7 @@ using InElonWeTrust.Core.Services.Quotes;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands("Misc")]
+    [Commands(":question:", "Misc", "Other strange commands")]
     public class QuotesCommands
     {
         private QuotesService _quotesService;
