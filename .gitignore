@@ -332,3 +332,5 @@ ASALocalRun/
 # Custom
 InElonWeTrust/Settings
 /InElonWeTrust/Database.sqlite
+/cloc.exe
+/cloc.bat
