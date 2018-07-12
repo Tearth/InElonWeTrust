@@ -62,5 +62,14 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                     .ToList();
             }
         }
+
+        public async Task<bool> IsChannelSubscribed(ulong channelId, SubscriptionType type)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var fixedChannelId = channelId.ToString();
+                return await databaseContext.SubscribedChannels.AnyAsync(p => p.ChannelId == fixedChannelId);
+            }
+        }
     }
 }

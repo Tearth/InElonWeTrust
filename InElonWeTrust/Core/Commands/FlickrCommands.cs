@@ -81,6 +81,34 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
+        [Command("IsFlickrSubscribed")]
+        [Aliases("FlickrSubscribed", "ifs")]
+        [Description("Get random photo from SpaceX Flickr profile.")]
+        public async Task IsFlickrChannelSubscribed(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var embed = new DiscordEmbedBuilder
+            {
+                ThumbnailUrl = Constants.ThumbnailImage
+            };
+
+            if (await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr))
+            {
+                embed.Color = new DiscordColor(Constants.EmbedColor);
+                embed.AddField(":rocket: Flickr subscription status!",
+                    "Channel is subscribed.");
+            }
+            else
+            {
+                embed.Color = new DiscordColor(Constants.EmbedErrorColor);
+                embed.AddField(":octagonal_sign: Flickr subscription status!",
+                    "Channel is not subscribed.");
+            }
+
+            await ctx.RespondAsync("", false, embed);
+        }
+
         [Command("randomflickrphoto")]
         [Aliases("randomfp", "rfp")]
         [Description("Get random photo from SpaceX Flickr profile.")]

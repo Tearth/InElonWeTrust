@@ -84,6 +84,34 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
+        [Command("IsTwitterSubscribed")]
+        [Aliases("TwitterSubscribed", "its")]
+        [Description("Get random photo from SpaceX Flickr profile.")]
+        public async Task IsTwitterChannelSubscribed(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var embed = new DiscordEmbedBuilder
+            {
+                ThumbnailUrl = Constants.ThumbnailImage
+            };
+
+            if (await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter))
+            {
+                embed.Color = new DiscordColor(Constants.EmbedColor);
+                embed.AddField(":rocket: Twitter subscription status!",
+                    "Channel is subscribed.");
+            }
+            else
+            {
+                embed.Color = new DiscordColor(Constants.EmbedErrorColor);
+                embed.AddField(":octagonal_sign: Twitter subscription status!",
+                    "Channel is not subscribed.");
+            }
+
+            await ctx.RespondAsync("", false, embed);
+        }
+
         [Command("randomelontweet")]
         [Aliases("randomet", "ret")]
         [Description("Get random Elon's tweet.")]
