@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
-        private const int IntervalMinutes = 1;
+        private const int IntervalMinutes = 15;
 
         public FlickrService()
         {
