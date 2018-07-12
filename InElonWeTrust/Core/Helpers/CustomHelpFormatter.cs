@@ -125,8 +125,8 @@ namespace InElonWeTrust.Core.Helpers
         {
             var helpBuilder = new StringBuilder();
             helpBuilder.Append("Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help <command_name>` to get " +
-                               "more detailed information about the specified command. The bot is insensitive to the case " +
-                               "and spaces between the prefix and the command.\r\n\r\n");
+                               "more detailed information about the specified command. The bot is case-insensitive and have " +
+                               "no troubles with spaces between the prefix and the command.\r\n\r\n");
             helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)** server \r\n");
             helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!");
 
