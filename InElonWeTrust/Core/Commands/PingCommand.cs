@@ -8,7 +8,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands("Misc")]
     public class PingCommand
     {
-        [Command("ping")]
+        [Command("Ping")]
         [Description("Ping command")]
         public async Task Ping(CommandContext ctx)
         {

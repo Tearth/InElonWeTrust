@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,6 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
-using InElonWeTrust.Core.Services.LinkShortener;
 using Oddity;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
@@ -19,16 +19,14 @@ namespace InElonWeTrust.Core.Commands
     public class SingleLaunchCommands
     {
         private OddityCore _oddity;
-        private LinkShortenerService _linkShortenerService;
 
         public SingleLaunchCommands()
         {
             _oddity = new OddityCore();
-            _linkShortenerService = new LinkShortenerService();
         }
 
-        [Command("nextlaunch")]
-        [Aliases("next", "nl")]
+        [Command("NextLaunch")]
+        [Aliases("Next", "nl")]
         [Description("Get information about the next launch.")]
         public async Task NextLaunch(CommandContext ctx)
         {
@@ -38,8 +36,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchInfo(ctx, launchData);
         }
 
-        [Command("latestlaunch")]
-        [Aliases("latest", "ll")]
+        [Command("LatestLaunch")]
+        [Aliases("Latest", "ll")]
         [Description("Get information about the latest launch.")]
         public async Task LatestLaunch(CommandContext ctx)
         {
@@ -49,8 +47,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchInfo(ctx, launchData);
         }
 
-        [Command("randomlaunch")]
-        [Aliases("random", "rl")]
+        [Command("RandomLaunch")]
+        [Aliases("Random", "rl")]
         [Description("Get information about random launch.")]
         public async Task RandomLaunch(CommandContext ctx)
         {
@@ -60,10 +58,10 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
         }
 
-        [Command("getlaunch")]
-        [Aliases("getl", "gl")]
-        [Description("Get information about launch with the specified flight number (which can be obtained by `e!alllaunches command`).")]
-        public async Task GetLaunch(CommandContext ctx, int id)
+        [Command("GetLaunch")]
+        [Aliases("Launch", "gl")]
+        [Description("Get information about launch with the specified flight number (which can be obtained by `e!AllLaunches command`).")]
+        public async Task GetLaunch(CommandContext ctx, [Description("Launch number (type `e!AllLaunches to catch them all)")] int id)
         {
             await ctx.TriggerTypingAsync();
 
@@ -80,7 +78,7 @@ namespace InElonWeTrust.Core.Commands
             };
 
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details ?? "*No description at this moment :(*");
-            embed.AddField(":clock4: Launch date:", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F"), true);
+            embed.AddField(":clock4: Launch date (UTC):", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
             embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
@@ -151,29 +149,29 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task<string> GetLinksData(LaunchInfo info)
         {
-            var linksDataBuilder = new StringBuilder();
+            var links = new List<string>();
 
             if (info.Links.RedditLaunch != null)
             {
-                linksDataBuilder.Append($"Reddit: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.RedditLaunch)}\r\n");
+                links.Add($"[Reddit]({info.Links.RedditLaunch})");
             }
 
             if (info.Links.Presskit != null)
             {
-                linksDataBuilder.Append($"Presskit: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.Presskit)}\r\n");
+                links.Add($"[Presskit]({info.Links.Presskit})");
             }
 
             if (info.Telemetry.FlightClub != null)
             {
-                linksDataBuilder.Append($"Telemetry: {await _linkShortenerService.GetShortcutLinkAsync(info.Telemetry.FlightClub)}\r\n");
+                links.Add($"[Telemetry]({info.Telemetry.FlightClub})");
             }
 
             if (info.Links.VideoLink != null)
             {
-                linksDataBuilder.Append($"YouTube: {await _linkShortenerService.GetShortcutLinkAsync(info.Links.VideoLink)}\r\n");
+                links.Add($"[YouTube stream]({info.Links.VideoLink})");
             }
 
-            return linksDataBuilder.ToString();
+            return string.Join(", ", links);
         }
 
         private string GetReusedPartsData(ReuseInfo reused)

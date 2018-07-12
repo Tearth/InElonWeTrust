@@ -7,6 +7,7 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
+using InElonWeTrust.Core.Settings;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -24,9 +25,9 @@ namespace InElonWeTrust.Core.Commands
             _flickr.OnNewFlickrPhoto += Flickr_OnNewFlickrPhoto;
         }
 
-        [Command("subscribeflickr")]
-        [Aliases("subflickr", "sf")]
-        [Description("Subscribe SpaceX Flickr profile (bot will post all new photos).")]
+        [Command("SubscribeFlickr")]
+        [Aliases("SubFlickr", "sf")]
+        [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX).")]
         public async Task AddFlickrChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -53,9 +54,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
-        [Command("unsubscribeflickr")]
-        [Aliases("unsubflickr", "usf")]
-        [Description("Removes SpaceX Flickr subscription.")]
+        [Command("UnsubscribeFlickr")]
+        [Aliases("UnsubFlickr", "usf")]
+        [Description("Removes Flickr subscription.")]
         public async Task RemoveFlickrChannel(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -83,7 +84,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("IsFlickrSubscribed")]
         [Aliases("FlickrSubscribed", "ifs")]
-        [Description("Get random photo from SpaceX Flickr profile.")]
+        [Description("Checks if the channel is on the Flickr subscription list.")]
         public async Task IsFlickrChannelSubscribed(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -109,8 +110,8 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
-        [Command("randomflickrphoto")]
-        [Aliases("randomfp", "rfp")]
+        [Command("RandomFlickrPhoto")]
+        [Aliases("FlickrPhoto", "rfp")]
         [Description("Get random photo from SpaceX Flickr profile.")]
         public async Task RandomElonTweet(CommandContext ctx)
         {
@@ -121,16 +122,16 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [HiddenCommand]
-        [Command("reloadcachedflickrphotos")]
-        [Aliases("reloadcfp", "rcfp")]
+        [Command("ReloadCachedFlickrPhotos")]
         [Description("Reload cached Flickr photos in database.")]
         public async Task ReloadCachedTweets(CommandContext ctx)
         {
-            await ctx.TriggerTypingAsync();
+            if (ctx.User.Id != SettingsLoader.Data.OwnerId)
+            {
+                return;
+            }
 
-            await ctx.Channel.SendMessageAsync("Reload cached Flickr photos starts");
             await _flickr.ReloadCachedPhotosAsync(false);
-            await ctx.Channel.SendMessageAsync("Reload cached Flickr photos finished");
         }
 
         private async void Flickr_OnNewFlickrPhoto(object sender, CachedFlickrPhoto e)

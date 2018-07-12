@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
@@ -53,8 +54,8 @@ namespace InElonWeTrust.Core.Commands
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
         }
 
-        [Command("upcominglaunches")]
-        [Aliases("upcoming", "ul")]
+        [Command("UpcomingLaunches")]
+        [Aliases("Upcoming", "ul")]
         [Description("Get information about upcoming launches.")]
         public async Task UpcomingLaunches(CommandContext ctx)
         {
@@ -62,8 +63,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.UpcomingLaunches);
         }
 
-        [Command("pastlaunches")]
-        [Aliases("past", "pl")]
+        [Command("PastLaunches")]
+        [Aliases("Past", "pl")]
         [Description("Get information about past launches.")]
         public async Task PastLaunches(CommandContext ctx)
         {
@@ -71,8 +72,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.PastLaunches);
         }
 
-        [Command("alllaunches")]
-        [Aliases("all", "al")]
+        [Command("AllLaunches")]
+        [Aliases("All", "al")]
         [Description("Get information about all launches.")]
         public async Task AllLaunches(CommandContext ctx)
         {
@@ -80,8 +81,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.AllLaunches);
         }
 
-        [Command("failedstarts")]
-        [Aliases("faileds", "fs")]
+        [Command("FailedStarts")]
+        [Aliases("fs")]
         [Description("Get information about all failed launches.")]
         public async Task FailedStarts(CommandContext ctx)
         {
@@ -89,8 +90,8 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.FailedStarts);
         }
 
-        [Command("failedlandings")]
-        [Aliases("failedl", "fl")]
+        [Command("FailedLandings")]
+        [Aliases("fl")]
         [Description("Get information about all failed launches.")]
         public async Task FailedLandings(CommandContext ctx)
         {
@@ -98,10 +99,10 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, PaginationContentType.FailedLandings);
         }
 
-        [Command("launcheswithorbit")]
-        [Aliases("orbit", "o")]
+        [Command("LaunchesWithOrbit")]
+        [Aliases("Orbit", "o")]
         [Description("Get information about all launches with the specified orbit.")]
-        public async Task LaunchesWithOrbit(CommandContext ctx, string orbitType)
+        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: ESL1, GTO, HCO, HEO, ISS, LEO, PO, SSO")] string orbitType)
         {
             await ctx.TriggerTypingAsync();
             await DisplayLaunches(ctx, PaginationContentType.LaunchesWithOrbit, orbitType);
@@ -112,6 +113,15 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await GetLaunches(contentType, parameter);
+            if (launchData == null)
+            {
+                var embed = new DiscordEmbedBuilder {Color = new DiscordColor(Constants.EmbedErrorColor)};
+                embed.AddField("Error", $"Invalid parameter, type `e!help {ctx.Command.Name}` to get more information.");
+
+                await ctx.RespondAsync("", false, embed);
+                return;
+            }
+
             var launchesList = GetLaunchesTable(launchData, contentType, 1);
 
             var message = await ctx.RespondAsync(launchesList);
@@ -145,9 +155,12 @@ namespace InElonWeTrust.Core.Commands
                     break;
 
                 case PaginationContentType.LaunchesWithOrbit:
-                    var orbitType = (OrbitType)Enum.Parse(typeof(OrbitType), parameter, true);
+                    if (!Enum.TryParse(typeof(OrbitType), parameter, true, out var orbitType))
+                    {
+                        return null;
+                    }
 
-                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithOrbit(orbitType).ExecuteAsync();
+                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithOrbit((OrbitType)orbitType).ExecuteAsync();
                     break;
             }
 
