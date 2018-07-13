@@ -147,9 +147,9 @@ namespace InElonWeTrust.Core
         {
             var infoList = new List<string>();
             infoList.Add($"Guild: {ctx.Guild.Name}");
-            infoList.Add($", Channel: {ctx.Channel.Name}");
-            infoList.Add($", User: {ctx.User.Username}");
-            infoList.Add($", Call: {ctx.Message.Content}");
+            infoList.Add($"Channel: {ctx.Channel.Name}");
+            infoList.Add($"User: {ctx.User.Username}");
+            infoList.Add($"Call: {ctx.Message.Content}");
 
             return string.Join(", ", infoList);
         }
