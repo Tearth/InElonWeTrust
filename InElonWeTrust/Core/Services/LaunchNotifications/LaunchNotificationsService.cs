@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using NLog;
 using Oddity;
@@ -32,6 +33,18 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         }
 
         private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            try
+            {
+                await UpdateNotifications();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Unable to update notifications");
+            }
+        }
+
+        private async Task UpdateNotifications()
         {
             if (_nextLaunchState == null)
             {

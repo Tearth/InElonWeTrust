@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus.Entities;
 using NLog;
@@ -29,6 +30,18 @@ namespace InElonWeTrust.Core.Services.Description
         }
 
         private async void DescriptionRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                await UpdateDescription();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Unable to update description");
+            }
+        }
+
+        private async Task UpdateDescription()
         {
             _descriptionRefreshTimer.Interval = IntervalMinutes * 1000 * 60;
 

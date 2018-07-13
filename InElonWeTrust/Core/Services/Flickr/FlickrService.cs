@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
-        private const int IntervalMinutes = 15;
+        private const int IntervalMinutes = 30;
 
         public FlickrService()
         {
@@ -103,7 +103,14 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            await ReloadCachedPhotosAsync(true);
+            try
+            {
+                await ReloadCachedPhotosAsync(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Failed to reload cached photos");
+            }
         }
 
         private async Task<string> GetImageUrlAsync(string photoId)
