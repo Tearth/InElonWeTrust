@@ -75,7 +75,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             using (var databaseContext = new DatabaseContext())
             {
                 var fixedChannelId = channelId.ToString();
-                return await databaseContext.SubscribedChannels.AnyAsync(p => p.ChannelId == fixedChannelId);
+                return await databaseContext.SubscribedChannels.AnyAsync(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type);
             }
         }
     }
