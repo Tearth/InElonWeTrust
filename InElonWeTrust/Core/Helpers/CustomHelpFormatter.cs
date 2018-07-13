@@ -114,8 +114,7 @@ namespace InElonWeTrust.Core.Helpers
         {
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = Constants.ThumbnailImage
+                Color = new DiscordColor(Constants.EmbedColor)
             };
 
             return _commandName == null ? BuildGeneralHelp(embed) : BuildCommandHelp(embed);
