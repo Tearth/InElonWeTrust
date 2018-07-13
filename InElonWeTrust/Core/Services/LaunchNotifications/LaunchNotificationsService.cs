@@ -40,7 +40,6 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             else
             {
                 var newLaunchState = await _oddity.Launches.GetNext().ExecuteAsync();
-                newLaunchState.LaunchDateUtc = new DateTime(2018, 7, 13, 21, 52, 10).ToUniversalTime();
 
                 if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value)
                 {
