@@ -117,6 +117,12 @@ namespace InElonWeTrust.Core.Commands
                 payloadsDataBuilder.Append("\r\n");
             }
 
+            if (string.IsNullOrWhiteSpace(payloadsDataBuilder.ToString()))
+            {
+                payloadsDataBuilder.Clear();
+                payloadsDataBuilder.Append("unknown");
+            }
+
             return payloadsDataBuilder.ToString();
         }
 
@@ -142,6 +148,12 @@ namespace InElonWeTrust.Core.Commands
                 }
 
                 coresDataBuilder.Append("\r\n");
+            }
+
+            if (string.IsNullOrWhiteSpace(coresDataBuilder.ToString()))
+            {
+                coresDataBuilder.Clear();
+                coresDataBuilder.Append("unknown");
             }
 
             return coresDataBuilder.ToString();
