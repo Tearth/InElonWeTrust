@@ -5,6 +5,7 @@ using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
+using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
@@ -13,10 +14,12 @@ namespace InElonWeTrust.Core.Commands
     public class LaunchNotificationsCommands
     {
         private SubscriptionsService _subscriptions;
+        private LaunchNotificationsService _launchNotifications;
 
         public LaunchNotificationsCommands()
         {
             _subscriptions = new SubscriptionsService();
+            _launchNotifications = new LaunchNotificationsService();
         }
 
         [Command("SubscribeLaunchNotifications")]
