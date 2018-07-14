@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.Services.Description
             }
             else
             {
-                var hoursToLaunch = Math.Ceiling((nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow).TotalHours);
+                var hoursToLaunch = Math.Max(0, Math.Ceiling((nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow).TotalHours));
                 description = string.Format(DescriptionPatternExtended, hoursToLaunch);
             }
 
