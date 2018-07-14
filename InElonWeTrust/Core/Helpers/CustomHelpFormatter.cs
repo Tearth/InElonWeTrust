@@ -96,7 +96,10 @@ namespace InElonWeTrust.Core.Helpers
 
                             _subCommands[groupAttribute].Add($"`{commandAttribute.Name}`");
                         }
+                    }
 
+                    if (_subCommands.ContainsKey(groupAttribute))
+                    {
                         _subCommands[groupAttribute] = _subCommands[groupAttribute].OrderBy(p => p).ToList();
                     }
                 }
