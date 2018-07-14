@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -44,7 +45,7 @@ namespace InElonWeTrust.Core.Commands
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                Title = topic.Title,
+                Title = HttpUtility.HtmlDecode(topic.Title),
                 Url = "https://www.reddit.com" + topic.Permalink,
                 ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
             };
