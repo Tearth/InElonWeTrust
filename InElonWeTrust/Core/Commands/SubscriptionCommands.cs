@@ -56,6 +56,18 @@ namespace InElonWeTrust.Core.Commands
                 SubscriptionType.NextLaunch);
         }
 
+        [Command("ToggleRedditNotifications")]
+        [Aliases("SubRedditNotifications", "srn")]
+        [Description("Subscribe Reddit notifications (when next Reddit is incoming).")]
+        public async Task ToggleRedditNotifications(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ToggleNotifications(ctx, "Reddit notifications has been subscribed! Now bot will post all newest information " +
+                                           "about upcoming Reddit.",
+                "Reddit notifications subscription has been removed.",
+                SubscriptionType.Reddit);
+        }
+
         [Command("NotificationsStatus")]
         [Aliases("SubscriptionsStatus", "SubStatus", "ns")]
         [Description("Get information about subscriptions related with this channel.")]
@@ -72,6 +84,7 @@ namespace InElonWeTrust.Core.Commands
             contentBuilder.Append($"Twitter: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
             contentBuilder.Append($"Flickr: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
             contentBuilder.Append($"Launches: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}");
+            contentBuilder.Append($"Reddit: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
 
             embed.AddField("Notifications status", contentBuilder.ToString());
             await ctx.RespondAsync("", false, embed);

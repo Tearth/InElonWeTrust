@@ -4,6 +4,7 @@
     {
         Twitter,
         Flickr,
-        NextLaunch
+        NextLaunch,
+        Reddit
     }
 }

@@ -7,6 +7,7 @@ namespace InElonWeTrust.Core.Database
     {
         public DbSet<CachedTweet> CachedTweets { get; set; }
         public DbSet<CachedFlickrPhoto> CachedFlickrPhotos { get; set; }
+        public DbSet<CachedRedditTopic> CachedRedditTopics { get; set; }
         public DbSet<PaginatedMessage> PaginatedMessages { get; set; }
         public DbSet<SubscribedChannel> SubscribedChannels { get; set; }
         public DbSet<Quote> Quotes { get; set; }
