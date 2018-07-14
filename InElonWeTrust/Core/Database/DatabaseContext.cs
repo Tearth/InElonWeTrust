@@ -5,7 +5,6 @@ namespace InElonWeTrust.Core.Database
 {
     public class DatabaseContext : DbContext
     {
-        public DbSet<CachedLink> CachedLinks { get; set; }
         public DbSet<CachedTweet> CachedTweets { get; set; }
         public DbSet<CachedFlickrPhoto> CachedFlickrPhotos { get; set; }
         public DbSet<PaginatedMessage> PaginatedMessages { get; set; }
