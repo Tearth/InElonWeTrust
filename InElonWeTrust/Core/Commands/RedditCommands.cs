@@ -15,7 +15,7 @@ using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":registered:", "Reddit", "Reddit stuff")]
+    [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
     public class RedditCommands
     {
         private RedditService _reddit;

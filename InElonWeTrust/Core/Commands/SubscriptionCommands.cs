@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":newspaper2:", "Subscriptions", "(admins only)")]
+    [Commands(":newspaper2:", "Notifications", "subscribe to get all newest content")]
     public class SubscriptionCommands
     {
         private SubscriptionsService _subscriptions;
@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleTwitter")]
-        [Aliases("SubscribeTwitter", "SubTwitter", "tt")]
+        [Aliases("TogTwitter", "SubscribeTwitter", "SubTwitter", "tt")]
         [Description("Subscribe SpaceX & Elon Musk Twitter profiles (bot will post all new tweets).")]
         public async Task ToggleTwitterNotifications(CommandContext ctx)
         {
@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleFlickr")]
-        [Aliases("SubscripbeFlickr", "SubFlickr", "tf")]
+        [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
         [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX).")]
         public async Task ToggleFlickrNotifications(CommandContext ctx)
         {
@@ -44,8 +44,8 @@ namespace InElonWeTrust.Core.Commands
                 SubscriptionType.Flickr);
         }
 
-        [Command("ToggleLaunchNotifications")]
-        [Aliases("SubLaunchNotifications", "SubNotifications", "sln")]
+        [Command("ToggleLaunches")]
+        [Aliases("TogLaunches", "SubscribeLaunches", "SubLaunches", "tl")]
         [Description("Subscribe launch notifications (when next launch is incoming).")]
         public async Task ToggleLaunchNotifications(CommandContext ctx)
         {
@@ -56,8 +56,8 @@ namespace InElonWeTrust.Core.Commands
                 SubscriptionType.NextLaunch);
         }
 
-        [Command("ToggleRedditNotifications")]
-        [Aliases("SubRedditNotifications", "srn")]
+        [Command("ToggleReddit")]
+        [Aliases("SubscribeReddit", "SubReddit", "tr")]
         [Description("Subscribe Reddit notifications (when next Reddit is incoming).")]
         public async Task ToggleRedditNotifications(CommandContext ctx)
         {
@@ -77,14 +77,15 @@ namespace InElonWeTrust.Core.Commands
 
             var embed = new DiscordEmbedBuilder
             {
+                Color = new DiscordColor(Constants.EmbedColor),
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"Twitter: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
-            contentBuilder.Append($"Flickr: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
-            contentBuilder.Append($"Launches: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}");
-            contentBuilder.Append($"Reddit: {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
+            contentBuilder.Append($"**Twitter:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
+            contentBuilder.Append($"**Flickr:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
+            contentBuilder.Append($"**Launches:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}\r\n");
+            contentBuilder.Append($"**Reddit:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
 
             embed.AddField("Notifications status", contentBuilder.ToString());
             await ctx.RespondAsync("", false, embed);

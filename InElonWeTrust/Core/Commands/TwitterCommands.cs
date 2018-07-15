@@ -14,7 +14,7 @@ using Tweetinvi.Models;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":newspaper2:", "Twitter", "[SpaceX](https://twitter.com/SpaceX) & [Elon Musk](https://twitter.com/elonmusk)")]
+    [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
     public class TwitterCommands
     {
         private TwitterService _twitter;
