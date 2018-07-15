@@ -6,9 +6,9 @@ using NLog;
 
 namespace InElonWeTrust.Core.Services.Cache
 {
-    public class CacheService<T, D>
+    public class CacheService<T>
     {
-        private Dictionary<T, CacheItem<D>> _items;
+        private Dictionary<T, CacheItem> _items;
         private Timer _cacheStatsTimer;
         private int _cacheItemsAdded;
         private int _cacheItemsHitted;
@@ -21,19 +21,19 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public CacheService()
         {
-            _items = new Dictionary<T, CacheItem<D>>();
+            _items = new Dictionary<T, CacheItem>();
 
             _cacheStatsTimer = new Timer(IntervalMinutes * 60 * 1000);
             _cacheStatsTimer.Elapsed += CacheStatsTimerOnElapsed;
             _cacheStatsTimer.Start();
         }
 
-        public async Task<D> GetAndUpdateAsync(T type, Func<Task<D>> dataProviderDelegate)
+        public async Task<D> GetAndUpdateAsync<D>(T type, Func<Task<D>> dataProviderDelegate)
         {
             if (!_items.ContainsKey(type))
             {
                 var data = await dataProviderDelegate();
-                _items.Add(type, new CacheItem<D>(data));
+                _items.Add(type, new CacheItem(data));
 
                 _cacheItemsAdded++;
                 return data;
@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.Services.Cache
                 _cacheItemsHitted++;
             }
 
-            return cachedItem.Data;
+            return (D)cachedItem.Data;
         }
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)

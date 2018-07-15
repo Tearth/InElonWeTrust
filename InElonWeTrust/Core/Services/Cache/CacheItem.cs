@@ -2,18 +2,18 @@
 
 namespace InElonWeTrust.Core.Services.Cache
 {
-    public class CacheItem<D>
+    public class CacheItem
     {
         public DateTime UpdateTime { get; private set; }
-        public D Data { get; private set; }
+        public object Data { get; private set; }
 
-        public CacheItem(D data)
+        public CacheItem(object data)
         {
             UpdateTime = DateTime.Now;
             Data = data;
         }
 
-        public void Update(D data)
+        public void Update(object data)
         {
             Data = data;
             UpdateTime = DateTime.Now;

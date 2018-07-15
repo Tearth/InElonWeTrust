@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
         private PaginationService _pagination;
-        private CacheService<PaginationContentType, List<LaunchInfo>> _cacheService;
+        private CacheService<PaginationContentType> _cacheService;
 
         private const int _missionNumberLength = 4;
         private const int _missionNameLength = 23;
@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Commands
         {
             _oddity = new OddityCore();
             _pagination = new PaginationService();
-            _cacheService = new CacheService<PaginationContentType, List<LaunchInfo>>();
+            _cacheService = new CacheService<PaginationContentType>();
 
             _listHeader = new Dictionary<PaginationContentType, string>
             {
