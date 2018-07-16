@@ -17,7 +17,7 @@ namespace InElonWeTrust.Core.Services.Pagination
         private const string LeftEmojiName = ":arrow_left:";
         private const string RightEmojiName = ":arrow_right:";
         private const string LastEmojiName = ":track_next:";
-        private const int ItemsPerPage = 15;
+        public const int ItemsPerPage = 15;
 
         public async Task InitPagination(DiscordMessage message, PaginationContentType contentType, string parameter)
         {

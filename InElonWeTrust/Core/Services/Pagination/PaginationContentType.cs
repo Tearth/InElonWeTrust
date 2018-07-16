@@ -7,6 +7,8 @@
         UpcomingLaunches,
         FailedStarts,
         FailedLandings,
-        LaunchesWithOrbit
+        LaunchesWithOrbit,
+        CompanyInfoOverview,
+        CompanyInfoHistory
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -8,8 +9,10 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
+using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -17,10 +20,21 @@ namespace InElonWeTrust.Core.Commands
     public class CompanyInfoCommand
     {
         private OddityCore _oddity;
+        private PaginationService _pagination;
+        private CacheService<PaginationContentType> _cacheService;
+
+        private const int _idLength = 4;
+        private const int _dateLength = 23;
+        private const int _titleLength = 45;
+        private int _totalLength => _idLength + _dateLength + _titleLength;
 
         public CompanyInfoCommand()
         {
             _oddity = new OddityCore();
+            _pagination = new PaginationService();
+            _cacheService = new CacheService<PaginationContentType>();
+
+            Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
         }
 
         [Command("CompanyInfo")]
@@ -53,6 +67,81 @@ namespace InElonWeTrust.Core.Commands
                 $"(https://www.google.com/maps/place/Rocket+Rd,+Hawthorne,+CA+90250,+Stany+Zjednoczone/@33.9213093,-118.3301254,17z/data=!3m1!4b1!4m5!3m4!1s0x80c2b5ded9a490b5:0x3095ae5795c500b3!8m2!3d33.9213093!4d-118.3279367)");
 
             await ctx.RespondAsync("", false, embed);
+        }
+
+        [Command("CompanyHistory")]
+        [Aliases("History", "ch")]
+        [Description("Get information about SpaceX.")]
+        public async Task CompanyHistory(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var companyInfo = await _oddity.Company.GetHistory().ExecuteAsync();
+            var launchesList = GetHistoryTable(companyInfo, 1);
+
+            var message = await ctx.RespondAsync(launchesList);
+            await _pagination.InitPagination(message, PaginationContentType.CompanyInfoHistory, "");
+        }
+
+        private string GetHistoryTable(List<HistoryEvent> history, int currentPage)
+        {
+            var historyBuilder = new StringBuilder();
+            historyBuilder.Append("```");
+
+            historyBuilder.Append("No. ".PadRight(_idLength));
+            historyBuilder.Append("Date".PadRight(_dateLength));
+            historyBuilder.Append("Title".PadRight(_titleLength));
+            historyBuilder.Append("\r\n");
+            historyBuilder.Append(new string('-', _totalLength));
+            historyBuilder.Append("\r\n");
+
+            var itemsToDisplay = _pagination.GetItemsToDisplay(history, currentPage);
+            itemsToDisplay = itemsToDisplay.OrderBy(p => p.EventDate.Value).ToList();
+
+            var i = (currentPage - 1) * PaginationService.ItemsPerPage + 1;
+
+            foreach (var historyEvent in itemsToDisplay)
+            {
+                historyBuilder.Append($"{i}.".PadRight(_idLength));
+                historyBuilder.Append(historyEvent.EventDate.Value.ToString("G").PadRight(_dateLength));
+                historyBuilder.Append(historyEvent.Title.PadRight(_titleLength));
+                historyBuilder.Append("\r\n");
+
+                i++;
+            }
+
+            historyBuilder.Append("\r\n");
+            historyBuilder.Append("Type e!getevent <number> to get more information.");
+
+            var maxPagesCount = _pagination.GetPagesCount(history.Count);
+            var paginationFooter = _pagination.GetPaginationFooter(currentPage, maxPagesCount);
+
+            historyBuilder.Append("\r\n");
+            historyBuilder.Append(paginationFooter);
+            historyBuilder.Append("```");
+            return historyBuilder.ToString();
+        }
+
+        private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
+        {
+            if (!e.User.IsBot && _pagination.IsPaginationSet(e.Message))
+            {
+                var paginationData = _pagination.GetPaginationDataForMessage(e.Message);
+
+                if (paginationData.ContentType == PaginationContentType.CompanyInfoHistory)
+                {
+                    var items = await _cacheService.GetAndUpdateAsync(PaginationContentType.CompanyInfoHistory, async () => await _oddity.Company.GetHistory().ExecuteAsync());
+
+                    if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
+                    {
+                        var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                        var history = GetHistoryTable(items, updatedPaginationData.CurrentPage);
+                        await e.Message.ModifyAsync(history);
+                    }
+
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                }
+            }
         }
     }
 }
