@@ -14,15 +14,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
     public class FlickrCommands
     {
-        private FlickrService _flickr;
-        private SubscriptionsService _subscriptions;
+        private FlickrService _flickrService;
+        private SubscriptionsService _subscriptionsService;
 
-        public FlickrCommands()
+        public FlickrCommands(FlickrService flickrService, SubscriptionsService subscriptionsService)
         {
-            _flickr = new FlickrService();
-            _subscriptions = new SubscriptionsService();
+            _flickrService = flickrService;
+            _subscriptionsService = subscriptionsService;
 
-            _flickr.OnNewFlickrPhoto += Flickr_OnNewFlickrPhoto;
+            _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhoto;
         }
 
         [Command("RandomFlickrPhoto")]
@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var photo = await _flickr.GetRandomPhotoAsync();
+            var photo = await _flickrService.GetRandomPhotoAsync();
             await DisplayPhoto(ctx.Channel, photo);
         }
 
@@ -46,12 +46,12 @@ namespace InElonWeTrust.Core.Commands
                 return;
             }
 
-            await _flickr.ReloadCachedPhotosAsync(false);
+            await _flickrService.ReloadCachedPhotosAsync(false);
         }
 
-        private async void Flickr_OnNewFlickrPhoto(object sender, CachedFlickrPhoto e)
+        private async void FlickrServiceOnNewFlickrServicePhoto(object sender, CachedFlickrPhoto e)
         {
-            var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Flickr);
+            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
             foreach (var channelId in channels)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);

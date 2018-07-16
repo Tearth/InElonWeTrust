@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Commands
     public class CompanyInfoCommand
     {
         private OddityCore _oddity;
-        private PaginationService _pagination;
+        private PaginationService _paginationService;
         private CacheService<PaginationContentType> _cacheService;
 
         private const int _idLength = 4;
@@ -28,11 +28,11 @@ namespace InElonWeTrust.Core.Commands
         private const int _titleLength = 45;
         private int _totalLength => _idLength + _dateLength + _titleLength;
 
-        public CompanyInfoCommand()
+        public CompanyInfoCommand(OddityCore oddity, PaginationService paginationService, CacheService<PaginationContentType> cacheService)
         {
-            _oddity = new OddityCore();
-            _pagination = new PaginationService();
-            _cacheService = new CacheService<PaginationContentType>();
+            _oddity = oddity;
+            _paginationService = paginationService;
+            _cacheService = cacheService;
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
         }
@@ -80,7 +80,7 @@ namespace InElonWeTrust.Core.Commands
             var launchesList = GetHistoryTable(companyInfo, 1);
 
             var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, PaginationContentType.CompanyInfoHistory, "");
+            await _paginationService.InitPagination(message, PaginationContentType.CompanyInfoHistory, "");
         }
         
         [Command("GetEvent")]
@@ -130,7 +130,7 @@ namespace InElonWeTrust.Core.Commands
             historyBuilder.Append(new string('-', _totalLength));
             historyBuilder.Append("\r\n");
 
-            var itemsToDisplay = _pagination.GetItemsToDisplay(history, currentPage);
+            var itemsToDisplay = _paginationService.GetItemsToDisplay(history, currentPage);
             itemsToDisplay = itemsToDisplay.OrderBy(p => p.EventDate.Value).ToList();
 
             var i = (currentPage - 1) * PaginationService.ItemsPerPage + 1;
@@ -148,8 +148,8 @@ namespace InElonWeTrust.Core.Commands
             historyBuilder.Append("\r\n");
             historyBuilder.Append("Type e!getevent <number> to get more information.");
 
-            var maxPagesCount = _pagination.GetPagesCount(history.Count);
-            var paginationFooter = _pagination.GetPaginationFooter(currentPage, maxPagesCount);
+            var maxPagesCount = _paginationService.GetPagesCount(history.Count);
+            var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
 
             historyBuilder.Append("\r\n");
             historyBuilder.Append(paginationFooter);
@@ -181,17 +181,17 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && _pagination.IsPaginationSet(e.Message))
+            if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
             {
-                var paginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
 
                 if (paginationData.ContentType == PaginationContentType.CompanyInfoHistory)
                 {
                     var items = await _cacheService.GetAndUpdateAsync(PaginationContentType.CompanyInfoHistory, async () => await _oddity.Company.GetHistory().ExecuteAsync());
 
-                    if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
+                    if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
-                        var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                        var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
                         var history = GetHistoryTable(items, updatedPaginationData.CurrentPage);
                         await e.Message.ModifyAsync(history);
                     }

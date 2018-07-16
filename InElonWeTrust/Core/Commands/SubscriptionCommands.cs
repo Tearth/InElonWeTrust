@@ -12,11 +12,11 @@ namespace InElonWeTrust.Core.Commands
     [Commands(":newspaper2:", "Notifications", "subscribe to get all newest content")]
     public class SubscriptionCommands
     {
-        private SubscriptionsService _subscriptions;
+        private SubscriptionsService _subscriptionsService;
 
-        public SubscriptionCommands()
+        public SubscriptionCommands(SubscriptionsService subscriptionsService)
         {
-            _subscriptions = new SubscriptionsService();
+            _subscriptionsService = subscriptionsService;
         }
 
         [Command("ToggleTwitter")]
@@ -82,10 +82,10 @@ namespace InElonWeTrust.Core.Commands
             };
 
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"**Twitter:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
-            contentBuilder.Append($"**Flickr:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
-            contentBuilder.Append($"**Launches:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}\r\n");
-            contentBuilder.Append($"**Reddit:** {await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
+            contentBuilder.Append($"**Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
+            contentBuilder.Append($"**Flickr:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
+            contentBuilder.Append($"**Launches:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}\r\n");
+            contentBuilder.Append($"**Reddit:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
 
             embed.AddField("Notifications status", contentBuilder.ToString());
             await ctx.RespondAsync("", false, embed);
@@ -98,16 +98,16 @@ namespace InElonWeTrust.Core.Commands
                 ThumbnailUrl = Constants.ThumbnailImage
             };
 
-            if (await _subscriptions.IsChannelSubscribed(ctx.Channel.Id, type))
+            if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))
             {
-                await _subscriptions.RemoveSubscriptionAsync(ctx.Channel.Id, type);
+                await _subscriptionsService.RemoveSubscriptionAsync(ctx.Channel.Id, type);
 
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!", messageOnRemove);
             }
             else
             {
-                await _subscriptions.AddSubscriptionAsync(ctx.Channel.Id, type);
+                await _subscriptionsService.AddSubscriptionAsync(ctx.Channel.Id, type);
 
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!", messageOnAdd);

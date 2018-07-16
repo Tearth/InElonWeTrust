@@ -17,15 +17,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
     public class TwitterCommands
     {
-        private TwitterService _twitter;
-        private SubscriptionsService _subscriptions;
+        private TwitterService _twitterService;
+        private SubscriptionsService _subscriptionsService;
 
-        public TwitterCommands()
+        public TwitterCommands(TwitterService twitterService, SubscriptionsService subscriptionsService)
         {
-            _twitter = new TwitterService();
-            _subscriptions = new SubscriptionsService();
+            _twitterService = twitterService;
+            _subscriptionsService = subscriptionsService;
 
-            _twitter.OnNewTweet += Twitter_OnOnNewTweet;
+            _twitterService.OnNewTweet += Twitter_OnNewTweet;
         }
 
         [Command("RandomElonTweet")]
@@ -35,7 +35,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = await _twitter.GetRandomTweetAsync(TwitterUserType.ElonMusk);
+            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.ElonMusk);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
@@ -46,7 +46,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = await _twitter.GetRandomTweetAsync(TwitterUserType.SpaceX);
+            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceX);
             await DisplayTweet(ctx.Channel, tweet);
         }
 
@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Commands
                 return;
             }
 
-            await _twitter.ReloadCachedTweetsAsync();
+            await _twitterService.ReloadCachedTweetsAsync();
         }
 
         private async Task DisplayTweet(DiscordChannel channel, CachedTweet tweet)
@@ -82,9 +82,9 @@ namespace InElonWeTrust.Core.Commands
             await channel.SendMessageAsync("", false, embed);
         }
 
-        private async void Twitter_OnOnNewTweet(object sender, ITweet tweet)
+        private async void Twitter_OnNewTweet(object sender, ITweet tweet)
         {
-            var channels = _subscriptions.GetSubscribedChannels(SubscriptionType.Twitter);
+            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Twitter);
             foreach (var channelId in channels)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);

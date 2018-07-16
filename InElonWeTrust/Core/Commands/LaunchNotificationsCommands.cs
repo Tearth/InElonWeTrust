@@ -16,18 +16,18 @@ namespace InElonWeTrust.Core.Commands
     [Commands(":warning:", "Launch notifications", "Commands to manage notifications when launch is incoming")]
     public class LaunchNotificationsCommands
     {
-        private SubscriptionsService _subscriptions;
-        private LaunchNotificationsService _launchNotifications;
+        private SubscriptionsService _subscriptionsService;
+        private LaunchNotificationsService _launchNotificationsService;
 
-        public LaunchNotificationsCommands()
+        public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService)
         {
-            _subscriptions = new SubscriptionsService();
-            _launchNotifications = new LaunchNotificationsService();
+            _subscriptionsService = subscriptionsService;
+            _launchNotificationsService = launchNotificationsService;
 
-            _launchNotifications.OnLaunchNoification += LaunchNotificationsOnOnLaunchNoification;
+            _launchNotificationsService.OnLaunchNoification += LaunchNotificationsOnLaunchNoification;
         }
 
-        private async void LaunchNotificationsOnOnLaunchNoification(object sender, LaunchNotification launchNotification)
+        private async void LaunchNotificationsOnLaunchNoification(object sender, LaunchNotification launchNotification)
         {
             var oldLaunchState = launchNotification.OldLaunchState;
             var launch = launchNotification.NewLaunchState;
@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            var channelIds = _subscriptions.GetSubscribedChannels(SubscriptionType.NextLaunch);
+            var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
             foreach (var channelId in channelIds)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);

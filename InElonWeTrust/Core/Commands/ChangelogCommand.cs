@@ -16,9 +16,9 @@ namespace InElonWeTrust.Core.Commands
     {
         private ChangelogService _changelogService;
 
-        public ChangelogCommand()
+        public ChangelogCommand(ChangelogService changelogService)
         {
-            _changelogService = new ChangelogService();
+            _changelogService = changelogService;
         }
 
         [Command("Changelog")]

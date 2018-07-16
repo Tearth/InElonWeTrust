@@ -20,9 +20,9 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
 
-        public SingleLaunchCommands()
+        public SingleLaunchCommands(OddityCore oddity)
         {
-            _oddity = new OddityCore();
+            _oddity = oddity;
         }
 
         [Command("NextLaunch")]

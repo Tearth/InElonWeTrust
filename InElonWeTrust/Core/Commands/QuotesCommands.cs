@@ -19,9 +19,9 @@ namespace InElonWeTrust.Core.Commands
     {
         private QuotesService _quotesService;
 
-        public QuotesCommands()
+        public QuotesCommands(QuotesService quotesService)
         {
-            _quotesService = new QuotesService();
+            _quotesService = quotesService;
         }
 
         [Command("RandomElonQuote")]

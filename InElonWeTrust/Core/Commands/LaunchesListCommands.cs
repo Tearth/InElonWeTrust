@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Commands
     public class LaunchesListCommands
     {
         private OddityCore _oddity;
-        private PaginationService _pagination;
+        private PaginationService _paginationService;
         private CacheService<PaginationContentType> _cacheService;
 
         private const int _missionNumberLength = 4;
@@ -35,11 +35,11 @@ namespace InElonWeTrust.Core.Commands
 
         private Dictionary<PaginationContentType, string> _listHeader;
 
-        public LaunchesListCommands()
+        public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService<PaginationContentType> cacheService)
         {
-            _oddity = new OddityCore();
-            _pagination = new PaginationService();
-            _cacheService = new CacheService<PaginationContentType>();
+            _oddity = oddity;
+            _paginationService = paginationService;
+            _cacheService = cacheService;
 
             _listHeader = new Dictionary<PaginationContentType, string>
             {
@@ -125,7 +125,7 @@ namespace InElonWeTrust.Core.Commands
             var launchesList = GetLaunchesTable(launchData, contentType, 1);
 
             var message = await ctx.RespondAsync(launchesList);
-            await _pagination.InitPagination(message, contentType, parameter);
+            await _paginationService.InitPagination(message, contentType, parameter);
         }
 
         private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType, string parameter = null)
@@ -189,7 +189,7 @@ namespace InElonWeTrust.Core.Commands
             launchesListBuilder.Append(new string('-', _totalLength));
             launchesListBuilder.Append("\r\n");
 
-            var itemsToDisplay = _pagination.GetItemsToDisplay(launches, currentPage);
+            var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);
             foreach (var launch in itemsToDisplay)
             {
                 launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(_missionNumberLength));
@@ -202,8 +202,8 @@ namespace InElonWeTrust.Core.Commands
                 launchesListBuilder.Append("\r\n");
             }
 
-            var maxPagesCount = _pagination.GetPagesCount(launches.Count);
-            var paginationFooter = _pagination.GetPaginationFooter(currentPage, maxPagesCount);
+            var maxPagesCount = _paginationService.GetPagesCount(launches.Count);
+            var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
 
             launchesListBuilder.Append("\r\n");
             launchesListBuilder.Append("Type e!getlaunch <number> to get more information.");
@@ -217,16 +217,16 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task Client_MessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && _pagination.IsPaginationSet(e.Message))
+            if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
             {
-                var paginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
                 var items = await GetLaunches(paginationData.ContentType);
 
                 if (items != null)
                 {
-                    if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
+                    if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
-                        var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                        var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
                         var launchesList = GetLaunchesTable(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
                         await e.Message.ModifyAsync(launchesList);
                     }

@@ -18,15 +18,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
     public class RedditCommands
     {
-        private RedditService _reddit;
-        private SubscriptionsService _subscriptions;
+        private RedditService _redditService;
+        private SubscriptionsService _subscriptionsService;
 
-        public RedditCommands()
+        public RedditCommands(RedditService redditService, SubscriptionsService subscriptionsService)
         {
-            _reddit = new RedditService();
-            _reddit.OnNewHotTopic += Reddit_OnNewHotTopic;
+            _redditService = redditService;
+            _subscriptionsService = subscriptionsService;
 
-            _subscriptions = new SubscriptionsService();
+            _redditService.OnNewHotTopic += Reddit_OnNewHotTopic;
         }
 
         [Command("RandomRedditTopic")]
@@ -36,7 +36,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var topic = await _reddit.GetRandomTopic();
+            var topic = await _redditService.GetRandomTopic();
             await DisplayTopic(ctx.Channel, topic);
         }
 
@@ -61,7 +61,7 @@ namespace InElonWeTrust.Core.Commands
 
         private async void Reddit_OnNewHotTopic(object sender, RedditChildData e)
         {
-            var channelIds = _subscriptions.GetSubscribedChannels(SubscriptionType.Reddit);
+            var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
             foreach (var channelId in channelIds)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);

@@ -12,9 +12,21 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Cache;
+using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Description;
+using InElonWeTrust.Core.Services.Flickr;
+using InElonWeTrust.Core.Services.LaunchNotifications;
+using InElonWeTrust.Core.Services.Pagination;
+using InElonWeTrust.Core.Services.Quotes;
+using InElonWeTrust.Core.Services.Reddit;
+using InElonWeTrust.Core.Services.Subscriptions;
+using InElonWeTrust.Core.Services.Twitter;
+using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using Oddity;
 
 namespace InElonWeTrust.Core
 {
@@ -24,11 +36,16 @@ namespace InElonWeTrust.Core
 
         private CommandsNextModule _commands;
         private DescriptionService _description;
+        private OddityCore _oddity;
+        private CacheService<PaginationContentType> _cacheService;
 
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task Run()
         {
+            _oddity = new OddityCore();
+            _cacheService = new CacheService<PaginationContentType>();
+
             Client = new DiscordClient(GetClientConfiguration());
             Client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
@@ -63,13 +80,31 @@ namespace InElonWeTrust.Core
 
         private CommandsNextConfiguration GetCommandsConfiguration()
         {
-            return  new CommandsNextConfiguration
+            return new CommandsNextConfiguration
             {
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 CaseSensitive = false,
-                CustomPrefixPredicate = CustomPrefixPredicate
+                CustomPrefixPredicate = CustomPrefixPredicate,
+                Dependencies = BuildDependencies()
             };
+        }
+
+        private DependencyCollection BuildDependencies()
+        {
+            return new DependencyCollectionBuilder()
+                .AddInstance(_oddity)
+                .AddInstance(_cacheService)
+                .Add<ChangelogService>()
+                .Add<FlickrService>()
+                .Add<LaunchNotificationsService>()
+                .Add<PaginationService>()
+                .Add<QuotesService>()
+                .Add<RedditService>()
+                .Add<SubscriptionsService>()
+                .Add<TwitterService>()
+                .Add<UserLaunchSubscriptionsService>()
+                .Build();
         }
 
         private Task<int> CustomPrefixPredicate(DiscordMessage msg)
