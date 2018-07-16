@@ -10,6 +10,7 @@ namespace InElonWeTrust.Core.Database
         public DbSet<CachedRedditTopic> CachedRedditTopics { get; set; }
         public DbSet<PaginatedMessage> PaginatedMessages { get; set; }
         public DbSet<SubscribedChannel> SubscribedChannels { get; set; }
+        public DbSet<UserLaunchSubscription> UserLaunchSubscriptions { get; set; }
         public DbSet<Quote> Quotes { get; set; }
 
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
