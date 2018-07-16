@@ -164,7 +164,12 @@ namespace InElonWeTrust.Core.Commands
                     break;
             }
 
-            return await _cacheService.GetAndUpdateAsync(contentType, dataProviderDelegate);
+            if (dataProviderDelegate != null)
+            {
+                return await _cacheService.GetAndUpdateAsync(contentType, dataProviderDelegate);
+            }
+
+            return null;
         }
 
         private string GetLaunchesTable(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)
@@ -201,6 +206,8 @@ namespace InElonWeTrust.Core.Commands
             var paginationFooter = _pagination.GetPaginationFooter(currentPage, maxPagesCount);
 
             launchesListBuilder.Append("\r\n");
+            launchesListBuilder.Append("Type e!getlaunch <number> to get more information.");
+            launchesListBuilder.Append("\r\n");
             launchesListBuilder.Append(paginationFooter);
             launchesListBuilder.Append("\r\n");
             launchesListBuilder.Append("```");
@@ -215,14 +222,17 @@ namespace InElonWeTrust.Core.Commands
                 var paginationData = _pagination.GetPaginationDataForMessage(e.Message);
                 var items = await GetLaunches(paginationData.ContentType);
 
-                if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
+                if (items != null)
                 {
-                    var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
-                    var launchesList = GetLaunchesTable(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
-                    await e.Message.ModifyAsync(launchesList);
-                }
+                    if (_pagination.DoAction(e.Message, e.Emoji, items.Count))
+                    {
+                        var updatedPaginationData = _pagination.GetPaginationDataForMessage(e.Message);
+                        var launchesList = GetLaunchesTable(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
+                        await e.Message.ModifyAsync(launchesList);
+                    }
 
-                await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                }
             }
         }
     }
