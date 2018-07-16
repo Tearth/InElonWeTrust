@@ -82,6 +82,41 @@ namespace InElonWeTrust.Core.Commands
             var message = await ctx.RespondAsync(launchesList);
             await _pagination.InitPagination(message, PaginationContentType.CompanyInfoHistory, "");
         }
+        
+        [Command("GetEvent")]
+        [Aliases("Event", "e")]
+        [Description("Get information about event with specified id (e!CompanyHistory).")]
+        public async Task GetEvent(CommandContext ctx, int id)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var history = (await _oddity.Company.GetHistory().ExecuteAsync()).OrderBy(p => p.EventDate.Value).ToList(); ;
+            if (id > history.Count)
+            {
+                var errorEmbedBuilder = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor(Constants.EmbedErrorColor)
+                };
+
+                errorEmbedBuilder.AddField("Error", "History event with specified id does not exists");
+
+                await ctx.RespondAsync("", false, errorEmbedBuilder);
+                return;
+            }
+
+            var eventEmbedBuilder = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
+
+            var historyEvent = history[id - 1];
+
+            eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1021));
+            eventEmbedBuilder.AddField("Date", historyEvent.EventDate.Value.ToString("F"), true);
+            eventEmbedBuilder.AddField("Links", GetLinksData(historyEvent), true);
+
+            await ctx.RespondAsync("", false, eventEmbedBuilder);
+        }
 
         private string GetHistoryTable(List<HistoryEvent> history, int currentPage)
         {
@@ -122,6 +157,28 @@ namespace InElonWeTrust.Core.Commands
             return historyBuilder.ToString();
         }
 
+        private string GetLinksData(HistoryEvent historyEvent)
+        {
+            var links = new List<string>();
+
+            if (historyEvent.Links.Wikipedia != null)
+            {
+                links.Add($"[Wikipedia]({historyEvent.Links.Wikipedia})");
+            }
+
+            if (historyEvent.Links.Reddit != null)
+            {
+                links.Add($"[Reddit]({historyEvent.Links.Reddit})");
+            }
+
+            if (historyEvent.Links.Article != null)
+            {
+                links.Add($"[Article]({historyEvent.Links.Article})");
+            }
+
+            return string.Join(", ", links);
+        }
+
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
             if (!e.User.IsBot && _pagination.IsPaginationSet(e.Message))
@@ -145,3 +202,4 @@ namespace InElonWeTrust.Core.Commands
         }
     }
 }
+
