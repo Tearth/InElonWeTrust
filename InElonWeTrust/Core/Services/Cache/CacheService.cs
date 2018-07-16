@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
+using InElonWeTrust.Core.Services.Pagination;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Cache
 {
-    public class CacheService<T>
+    public class CacheService
     {
-        private Dictionary<T, CacheItem> _items;
+        private Dictionary<CacheContentType, CacheItem> _items;
         private Timer _cacheStatsTimer;
         private int _cacheItemsAdded;
         private int _cacheItemsHitted;
@@ -21,14 +22,14 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public CacheService()
         {
-            _items = new Dictionary<T, CacheItem>();
+            _items = new Dictionary<CacheContentType, CacheItem>();
 
             _cacheStatsTimer = new Timer(IntervalMinutes * 60 * 1000);
             _cacheStatsTimer.Elapsed += CacheStatsTimerOnElapsed;
             _cacheStatsTimer.Start();
         }
 
-        public async Task<D> GetAndUpdateAsync<D>(T type, Func<Task<D>> dataProviderDelegate)
+        public async Task<D> GetAndUpdateAsync<D>(CacheContentType type, Func<Task<D>> dataProviderDelegate)
         {
             if (!_items.ContainsKey(type))
             {
@@ -57,7 +58,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            _logger.Info($"Cache stats for {typeof(T).Name}: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHitted} hitted");
+            _logger.Info($"Cache stats: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHitted} hitted");
         }
     }
 }

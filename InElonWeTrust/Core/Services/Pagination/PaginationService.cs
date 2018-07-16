@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.Services.Pagination
         private const string LastEmojiName = ":track_next:";
         public const int ItemsPerPage = 15;
 
-        public async Task InitPagination(DiscordMessage message, PaginationContentType contentType, string parameter)
+        public async Task InitPagination(DiscordMessage message, CacheContentType contentType, string parameter)
         {
             using (var databaseContext = new DatabaseContext())
             {

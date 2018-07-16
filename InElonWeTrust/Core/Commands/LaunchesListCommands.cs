@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
         private PaginationService _paginationService;
-        private CacheService<PaginationContentType> _cacheService;
+        private CacheService _cacheService;
 
         private const int _missionNumberLength = 4;
         private const int _missionNameLength = 23;
@@ -33,22 +33,22 @@ namespace InElonWeTrust.Core.Commands
 
         private int _totalLength => _missionNumberLength + _missionNameLength + _launchDateLength + _siteNameLength + _landingLength;
 
-        private Dictionary<PaginationContentType, string> _listHeader;
+        private Dictionary<CacheContentType, string> _listHeader;
 
-        public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService<PaginationContentType> cacheService)
+        public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService)
         {
             _oddity = oddity;
             _paginationService = paginationService;
             _cacheService = cacheService;
 
-            _listHeader = new Dictionary<PaginationContentType, string>
+            _listHeader = new Dictionary<CacheContentType, string>
             {
-                {PaginationContentType.UpcomingLaunches, "List of all upcoming launches:"},
-                {PaginationContentType.PastLaunches, "List of all past launches:"},
-                {PaginationContentType.AllLaunches, "List of all launches:"},
-                {PaginationContentType.FailedStarts, "List of all failed starts:"},
-                {PaginationContentType.FailedLandings, "List of all failed landings:"},
-                {PaginationContentType.LaunchesWithOrbit, "List of launches with the specified orbit:"}
+                {CacheContentType.UpcomingLaunches, "List of all upcoming launches:"},
+                {CacheContentType.PastLaunches, "List of all past launches:"},
+                {CacheContentType.AllLaunches, "List of all launches:"},
+                {CacheContentType.FailedStarts, "List of all failed starts:"},
+                {CacheContentType.FailedLandings, "List of all failed landings:"},
+                {CacheContentType.LaunchesWithOrbit, "List of launches with the specified orbit:"}
             };
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task UpcomingLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.UpcomingLaunches);
+            await DisplayLaunches(ctx, CacheContentType.UpcomingLaunches);
         }
 
         [Command("PastLaunches")]
@@ -69,7 +69,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task PastLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.PastLaunches);
+            await DisplayLaunches(ctx, CacheContentType.PastLaunches);
         }
 
         [Command("AllLaunches")]
@@ -78,7 +78,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task AllLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.AllLaunches);
+            await DisplayLaunches(ctx, CacheContentType.AllLaunches);
         }
 
         [Command("FailedStarts")]
@@ -87,7 +87,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task FailedStarts(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.FailedStarts);
+            await DisplayLaunches(ctx, CacheContentType.FailedStarts);
         }
 
         [Command("FailedLandings")]
@@ -96,7 +96,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task FailedLandings(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.FailedLandings);
+            await DisplayLaunches(ctx, CacheContentType.FailedLandings);
         }
 
         [Command("LaunchesWithOrbit")]
@@ -105,10 +105,10 @@ namespace InElonWeTrust.Core.Commands
         public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: ESL1, GTO, HCO, HEO, ISS, LEO, PO, SSO")] string orbitType)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, PaginationContentType.LaunchesWithOrbit, orbitType);
+            await DisplayLaunches(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
         }
 
-        private async Task DisplayLaunches(CommandContext ctx, PaginationContentType contentType, string parameter = null)
+        private async Task DisplayLaunches(CommandContext ctx, CacheContentType contentType, string parameter = null)
         {
             await ctx.TriggerTypingAsync();
 
@@ -128,33 +128,33 @@ namespace InElonWeTrust.Core.Commands
             await _paginationService.InitPagination(message, contentType, parameter);
         }
 
-        private async Task<List<LaunchInfo>> GetLaunches(PaginationContentType contentType, string parameter = null)
+        private async Task<List<LaunchInfo>> GetLaunches(CacheContentType contentType, string parameter = null)
         {
             Func<Task<List<LaunchInfo>>> dataProviderDelegate = null;
 
             switch (contentType)
             {
-                case PaginationContentType.UpcomingLaunches:
+                case CacheContentType.UpcomingLaunches:
                     dataProviderDelegate = async () => await _oddity.Launches.GetUpcoming().ExecuteAsync();
                     break;
 
-                case PaginationContentType.PastLaunches:
+                case CacheContentType.PastLaunches:
                     dataProviderDelegate = async () => await _oddity.Launches.GetPast().ExecuteAsync();
                     break;
 
-                case PaginationContentType.AllLaunches:
+                case CacheContentType.AllLaunches:
                     dataProviderDelegate = async () => await _oddity.Launches.GetAll().ExecuteAsync();
                     break;
 
-                case PaginationContentType.FailedStarts:
+                case CacheContentType.FailedStarts:
                     dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync();
                     break;
 
-                case PaginationContentType.FailedLandings:
+                case CacheContentType.FailedLandings:
                     dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
                     break;
 
-                case PaginationContentType.LaunchesWithOrbit:
+                case CacheContentType.LaunchesWithOrbit:
                     if (!Enum.TryParse(typeof(OrbitType), parameter, true, out var orbitType))
                     {
                         return null;
@@ -172,7 +172,7 @@ namespace InElonWeTrust.Core.Commands
             return null;
         }
 
-        private string GetLaunchesTable(List<LaunchInfo> launches, PaginationContentType contentType, int currentPage)
+        private string GetLaunchesTable(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
         {
             var launchesListBuilder = new StringBuilder();
             launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");

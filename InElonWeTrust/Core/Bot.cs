@@ -37,14 +37,14 @@ namespace InElonWeTrust.Core
         private CommandsNextModule _commands;
         private DescriptionService _description;
         private OddityCore _oddity;
-        private CacheService<PaginationContentType> _cacheService;
+        private CacheService _cacheService;
 
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task Run()
         {
             _oddity = new OddityCore();
-            _cacheService = new CacheService<PaginationContentType>();
+            _cacheService = new CacheService();
 
             Client = new DiscordClient(GetClientConfiguration());
             Client.SetWebSocketClient<WebSocket4NetCoreClient>();

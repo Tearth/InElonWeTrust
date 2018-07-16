@@ -1,6 +1,6 @@
 ﻿namespace InElonWeTrust.Core.Services.Pagination
 {
-    public enum PaginationContentType
+    public enum CacheContentType
     {
         AllLaunches,
         PastLaunches,

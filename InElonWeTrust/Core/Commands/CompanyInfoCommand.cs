@@ -21,14 +21,14 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
         private PaginationService _paginationService;
-        private CacheService<PaginationContentType> _cacheService;
+        private CacheService _cacheService;
 
         private const int _idLength = 4;
         private const int _dateLength = 23;
         private const int _titleLength = 45;
         private int _totalLength => _idLength + _dateLength + _titleLength;
 
-        public CompanyInfoCommand(OddityCore oddity, PaginationService paginationService, CacheService<PaginationContentType> cacheService)
+        public CompanyInfoCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService)
         {
             _oddity = oddity;
             _paginationService = paginationService;
@@ -80,7 +80,7 @@ namespace InElonWeTrust.Core.Commands
             var launchesList = GetHistoryTable(companyInfo, 1);
 
             var message = await ctx.RespondAsync(launchesList);
-            await _paginationService.InitPagination(message, PaginationContentType.CompanyInfoHistory, "");
+            await _paginationService.InitPagination(message, CacheContentType.CompanyInfoHistory, "");
         }
         
         [Command("GetEvent")]
@@ -185,9 +185,9 @@ namespace InElonWeTrust.Core.Commands
             {
                 var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
 
-                if (paginationData.ContentType == PaginationContentType.CompanyInfoHistory)
+                if (paginationData.ContentType == CacheContentType.CompanyInfoHistory)
                 {
-                    var items = await _cacheService.GetAndUpdateAsync(PaginationContentType.CompanyInfoHistory, async () => await _oddity.Company.GetHistory().ExecuteAsync());
+                    var items = await _cacheService.GetAndUpdateAsync(CacheContentType.CompanyInfoHistory, async () => await _oddity.Company.GetHistory().ExecuteAsync());
 
                     if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
