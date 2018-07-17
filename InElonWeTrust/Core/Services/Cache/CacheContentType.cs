@@ -2,6 +2,8 @@
 {
     public enum CacheContentType
     {
+        NextLaunch,
+        LatestLaunch,
         AllLaunches,
         PastLaunches,
         UpcomingLaunches,

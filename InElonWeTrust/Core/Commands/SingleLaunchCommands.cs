@@ -7,7 +7,11 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.Cache;
+using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
@@ -19,10 +23,15 @@ namespace InElonWeTrust.Core.Commands
     public class SingleLaunchCommands
     {
         private OddityCore _oddity;
+        private CacheService _cacheService;
 
-        public SingleLaunchCommands(OddityCore oddity)
+        public SingleLaunchCommands(OddityCore oddity, CacheService cacheService)
         {
             _oddity = oddity;
+            _cacheService = cacheService;
+
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.Launches.GetLatest().ExecuteAsync());
         }
 
         [Command("NextLaunch")]
@@ -32,8 +41,15 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _oddity.Launches.GetNext().ExecuteAsync();
-            await DisplayLaunchInfo(ctx, launchData);
+            var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var sentMessage = await DisplayLaunchInfo(ctx, launchData);
+
+            await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
+            using (var databaseContext = new DatabaseContext())
+            {
+                databaseContext.MessagesToSubscribe.Add(new MessageToSubscribe(sentMessage.Id.ToString()));
+                databaseContext.SaveChanges();
+            }
         }
 
         [Command("LatestLaunch")]
@@ -43,7 +59,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _oddity.Launches.GetLatest().ExecuteAsync();
+            var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
             await DisplayLaunchInfo(ctx, launchData);
         }
 
@@ -69,7 +85,7 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchInfo(ctx, launchData.First());
         }
 
-        private async Task DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
+        private async Task<DiscordMessage> DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -90,11 +106,12 @@ namespace InElonWeTrust.Core.Commands
                 embed.AddField(":newspaper: Links:", linksData);
             }
 
-            await ctx.RespondAsync(launch.Links.VideoLink, false, embed);
-            if(launch.Links.VideoLink != null)
+            var sentMessage = await ctx.RespondAsync(launch.Links.VideoLink, false, embed);
+            return sentMessage;
+            /*if(launch.Links.VideoLink != null)
             {
                 await ctx.RespondAsync("**YouTube stream:** " + launch.Links.VideoLink);
-            }
+            }*/
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)
