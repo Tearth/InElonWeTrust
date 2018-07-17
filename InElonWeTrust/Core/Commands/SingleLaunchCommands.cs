@@ -45,7 +45,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
-            var embed = await _launchInfoEmbedGenerator.Build(launchData);
+            var embed = await _launchInfoEmbedGenerator.Build(launchData, true);
 
             var sentMessage = await ctx.RespondAsync("", false, embed);
 
@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
-            var embed = await _launchInfoEmbedGenerator.Build(launchData);
+            var embed = await _launchInfoEmbedGenerator.Build(launchData, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -77,7 +77,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
-            var embed = await _launchInfoEmbedGenerator.Build(launchData.First());
+            var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            var embed = await _launchInfoEmbedGenerator.Build(launchData.First());
+            var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
             await ctx.RespondAsync("", false, embed);
         }
     }

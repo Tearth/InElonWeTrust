@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchInfoEmbedGenerator
     {
-        public async Task<DiscordEmbed> Build(LaunchInfo launch)
+        public async Task<DiscordEmbed> Build(LaunchInfo launch, bool informAboutSubscription)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -33,6 +33,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
             if (linksData.Length > 0)
             {
                 embed.AddField(":newspaper: Links:", linksData);
+            }
+
+            if (informAboutSubscription)
+            {
+                embed.AddField("-----------------------------------",
+                               "*Click below reaction to subscribe this flight and be notified on DM 10 minutes before the launch.*");
             }
 
             return embed;
