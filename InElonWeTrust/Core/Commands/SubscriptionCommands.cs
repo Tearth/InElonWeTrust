@@ -77,8 +77,7 @@ namespace InElonWeTrust.Core.Commands
 
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = Constants.ThumbnailImage
+                Color = new DiscordColor(Constants.EmbedColor)
             };
 
             var contentBuilder = new StringBuilder();
@@ -95,7 +94,7 @@ namespace InElonWeTrust.Core.Commands
         {
             var embed = new DiscordEmbedBuilder
             {
-                ThumbnailUrl = Constants.ThumbnailImage
+                Color = new DiscordColor(Constants.EmbedColor)
             };
 
             if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))

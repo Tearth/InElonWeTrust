@@ -29,8 +29,7 @@ namespace InElonWeTrust.Core.Commands
 
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = Constants.ThumbnailImage
+                Color = new DiscordColor(Constants.EmbedColor)
             };
 
             var changelog = await _changelogService.GetChangelog();
