@@ -9,6 +9,7 @@ using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Settings;
+using Microsoft.Extensions.Primitives;
 
 namespace InElonWeTrust.Core.Helpers
 {
@@ -129,8 +130,9 @@ namespace InElonWeTrust.Core.Helpers
             helpBuilder.Append("Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help <command_name>` to get " +
                                "more detailed information about the specified command. The bot is case-insensitive and have " +
                                "no troubles with spaces between the prefix and the command.\r\n\r\n");
-            helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)** server \r\n");
-            helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!");
+            helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)**!\r\n");
+            helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!\r\n");
+            helpBuilder.Append(":love_letter: **[Invite me!](https://discordapp.com/api/oauth2/authorize?client_id=462742130016780337&permissions=26688&scope=bot) to your server!**");
 
             embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
             helpBuilder.Clear();
