@@ -104,8 +104,8 @@ namespace InElonWeTrust.Core
                 .Add<RedditService>()
                 .Add<SubscriptionsService>()
                 .Add<TwitterService>()
-                .Add<UserLaunchSubscriptionsService>()
                 .Add<LaunchInfoEmbedGenerator>()
+                .Add<UserLaunchSubscriptionsService>()
                 .Build();
         }
 
