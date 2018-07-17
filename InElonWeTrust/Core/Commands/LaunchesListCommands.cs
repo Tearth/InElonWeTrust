@@ -52,6 +52,13 @@ namespace InElonWeTrust.Core.Commands
             };
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
+
+            _cacheService.RegisterDataProvider(CacheContentType.UpcomingLaunches, async p => await _oddity.Launches.GetUpcoming().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.PastLaunches, async p => await _oddity.Launches.GetPast().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.FailedStarts, async p => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.FailedLandings, async p => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProvider(p));
         }
 
         [Command("UpcomingLaunches")]
@@ -130,46 +137,7 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task<List<LaunchInfo>> GetLaunches(CacheContentType contentType, string parameter = null)
         {
-            Func<Task<List<LaunchInfo>>> dataProviderDelegate = null;
-
-            switch (contentType)
-            {
-                case CacheContentType.UpcomingLaunches:
-                    dataProviderDelegate = async () => await _oddity.Launches.GetUpcoming().ExecuteAsync();
-                    break;
-
-                case CacheContentType.PastLaunches:
-                    dataProviderDelegate = async () => await _oddity.Launches.GetPast().ExecuteAsync();
-                    break;
-
-                case CacheContentType.AllLaunches:
-                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().ExecuteAsync();
-                    break;
-
-                case CacheContentType.FailedStarts:
-                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync();
-                    break;
-
-                case CacheContentType.FailedLandings:
-                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync();
-                    break;
-
-                case CacheContentType.LaunchesWithOrbit:
-                    if (!Enum.TryParse(typeof(OrbitType), parameter, true, out var orbitType))
-                    {
-                        return null;
-                    }
-
-                    dataProviderDelegate = async () => await _oddity.Launches.GetAll().WithOrbit((OrbitType)orbitType).ExecuteAsync();
-                    break;
-            }
-
-            if (dataProviderDelegate != null)
-            {
-                return await _cacheService.GetAndUpdateAsync(contentType, dataProviderDelegate);
-            }
-
-            return null;
+            return await _cacheService.Get<List<LaunchInfo>>(contentType, parameter);
         }
 
         private string GetLaunchesTable(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
@@ -215,12 +183,22 @@ namespace InElonWeTrust.Core.Commands
             return launchesListBuilder.ToString();
         }
 
+        private async Task<object> GetLaunchesWithOrbitDataProvider(string parameter)
+        {
+            if (Enum.TryParse(typeof(OrbitType), parameter, true, out var output))
+            {
+                return await _oddity.Launches.GetAll().WithOrbit((OrbitType)output).ExecuteAsync();
+            }
+
+            return null;
+        }
+
         private async Task Client_MessageReactionAdded(MessageReactionAddEventArgs e)
         {
             if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
             {
                 var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                var items = await GetLaunches(paginationData.ContentType);
+                var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
 
                 if (items != null)
                 {

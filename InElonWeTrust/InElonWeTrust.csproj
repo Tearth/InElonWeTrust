@@ -29,6 +29,9 @@
     <Reference Include="Oddity">
       <HintPath>..\..\Oddity\Oddity\bin\Release\netstandard1.1\Oddity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Windows.Forms.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

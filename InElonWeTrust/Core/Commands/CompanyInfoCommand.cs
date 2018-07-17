@@ -35,6 +35,8 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
+
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfoHistory, async (p) => await _oddity.Company.GetHistory().ExecuteAsync());
         }
 
         [Command("CompanyInfo")]
@@ -187,7 +189,7 @@ namespace InElonWeTrust.Core.Commands
 
                 if (paginationData.ContentType == CacheContentType.CompanyInfoHistory)
                 {
-                    var items = await _cacheService.GetAndUpdateAsync(CacheContentType.CompanyInfoHistory, async () => await _oddity.Company.GetHistory().ExecuteAsync());
+                    var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyInfoHistory);
 
                     if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
