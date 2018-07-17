@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
@@ -24,11 +25,13 @@ namespace InElonWeTrust.Core.Commands
     {
         private OddityCore _oddity;
         private CacheService _cacheService;
+        private LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
 
-        public SingleLaunchCommands(OddityCore oddity, CacheService cacheService)
+        public SingleLaunchCommands(OddityCore oddity, CacheService cacheService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
         {
             _oddity = oddity;
             _cacheService = cacheService;
+            _launchInfoEmbedGenerator = launchInfoEmbedGenerator;
 
             _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.Launches.GetLatest().ExecuteAsync());
@@ -42,7 +45,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
-            var sentMessage = await DisplayLaunchInfo(ctx, launchData);
+            var embed = await _launchInfoEmbedGenerator.Build(launchData);
+
+            var sentMessage = await ctx.RespondAsync("", false, embed);
 
             await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
             using (var databaseContext = new DatabaseContext())
@@ -60,7 +65,8 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
-            await DisplayLaunchInfo(ctx, launchData);
+            var embed = await _launchInfoEmbedGenerator.Build(launchData);
+            await ctx.RespondAsync("", false, embed);
         }
 
         [Command("RandomLaunch")]
@@ -71,7 +77,8 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
-            await DisplayLaunchInfo(ctx, launchData.GetRandomItem());
+            var embed = await _launchInfoEmbedGenerator.Build(launchData.First());
+            await ctx.RespondAsync("", false, embed);
         }
 
         [Command("GetLaunch")]
@@ -82,157 +89,8 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            await DisplayLaunchInfo(ctx, launchData.First());
-        }
-
-        private async Task<DiscordMessage> DisplayLaunchInfo(CommandContext ctx, LaunchInfo launch)
-        {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
-            };
-
-            embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details ?? "*No description at this moment :(*");
-            embed.AddField(":clock4: Launch date (UTC):", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
-            embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
-            embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
-            embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
-            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
-
-            var linksData = GetLinksData(launch);
-            if(linksData.Length > 0)
-            {
-                embed.AddField(":newspaper: Links:", linksData);
-            }
-
-            var sentMessage = await ctx.RespondAsync(launch.Links.VideoLink, false, embed);
-            return sentMessage;
-            /*if(launch.Links.VideoLink != null)
-            {
-                await ctx.RespondAsync("**YouTube stream:** " + launch.Links.VideoLink);
-            }*/
-        }
-
-        private string GetPayloadsData(List<PayloadInfo> payloads)
-        {
-            var payloadsDataBuilder = new StringBuilder();
-            foreach (var payload in payloads)
-            {
-                payloadsDataBuilder.Append(payload.PayloadId);
-
-                if (payload.PayloadMassKilograms != null)
-                {
-                    payloadsDataBuilder.Append($" ({payload.PayloadMassKilograms} kg)");
-                }
-
-                if (payload.Orbit != null)
-                {
-                    payloadsDataBuilder.Append($" to {payload.Orbit}");
-                }
-
-                payloadsDataBuilder.Append("\r\n");
-            }
-
-            if (string.IsNullOrWhiteSpace(payloadsDataBuilder.ToString()))
-            {
-                payloadsDataBuilder.Clear();
-                payloadsDataBuilder.Append("unknown");
-            }
-
-            return payloadsDataBuilder.ToString();
-        }
-
-        private string GetCoresData(List<CoreInfo> cores)
-        {
-            var coresDataBuilder = new StringBuilder();
-            foreach (var core in cores)
-            {
-                coresDataBuilder.Append($"{core.CoreSerial}");
-                if (core.Block != null)
-                {
-                    coresDataBuilder.Append($" (block {core.Block})");
-                }
-
-                if (core.LandingType != null && core.LandingType != LandingType.Ocean)
-                {
-                    coresDataBuilder.Append($", landing on {core.LandingVehicle}");
-                }
-
-                if (core.LandSuccess != null)
-                {
-                    coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
-                }
-
-                coresDataBuilder.Append("\r\n");
-            }
-
-            if (string.IsNullOrWhiteSpace(coresDataBuilder.ToString()))
-            {
-                coresDataBuilder.Clear();
-                coresDataBuilder.Append("unknown");
-            }
-
-            return coresDataBuilder.ToString();
-        }
-
-        private string GetLinksData(LaunchInfo info)
-        {
-            var links = new List<string>();
-
-            if (info.Links.RedditLaunch != null)
-            {
-                links.Add($"[Reddit]({info.Links.RedditLaunch})");
-            }
-
-            if (info.Links.Presskit != null)
-            {
-                links.Add($"[Presskit]({info.Links.Presskit})");
-            }
-
-            if (info.Telemetry.FlightClub != null)
-            {
-                links.Add($"[Telemetry]({info.Telemetry.FlightClub})");
-            }
-
-            if (info.Links.VideoLink != null)
-            {
-                links.Add($"[YouTube stream]({info.Links.VideoLink})");
-            }
-
-            return string.Join(", ", links);
-        }
-
-        private string GetReusedPartsData(ReuseInfo reused)
-        {
-            var reusedPartsList = new List<string>();
-
-            if (reused.Core.HasValue && reused.Core.Value)
-            {
-                reusedPartsList.Add("Core");
-            }
-
-            if (reused.Capsule.HasValue && reused.Capsule.Value)
-            {
-                reusedPartsList.Add("Capsule");
-            }
-
-            if (reused.Fairings.HasValue && reused.Fairings.Value)
-            {
-                reusedPartsList.Add("Fairings");
-            }
-
-            if (reused.FirstSideCore.HasValue && reused.FirstSideCore.Value)
-            {
-                reusedPartsList.Add("First side core");
-            }
-
-            if (reused.SecondSideCore.HasValue && reused.SecondSideCore.Value)
-            {
-                reusedPartsList.Add("Second side core");
-            }
-
-            return reusedPartsList.Count > 0 ? string.Join(", ", reusedPartsList) : "none";
+            var embed = await _launchInfoEmbedGenerator.Build(launchData.First());
+            await ctx.RespondAsync("", false, embed);
         }
     }
 }

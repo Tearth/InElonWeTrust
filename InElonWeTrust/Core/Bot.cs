@@ -11,6 +11,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
@@ -104,6 +105,7 @@ namespace InElonWeTrust.Core
                 .Add<SubscriptionsService>()
                 .Add<TwitterService>()
                 .Add<UserLaunchSubscriptionsService>()
+                .Add<LaunchInfoEmbedGenerator>()
                 .Build();
         }
 
