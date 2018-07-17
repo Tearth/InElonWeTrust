@@ -3,7 +3,7 @@
     public class UserLaunchSubscription
     {
         public int Id { get; set; }
-        public int LaunchId { get; set; }
+        public uint LaunchId { get; set; }
         public string UserId { get; set; }
 
         public UserLaunchSubscription()
@@ -11,7 +11,7 @@
 
         }
 
-        public UserLaunchSubscription(int launchId, string userId)
+        public UserLaunchSubscription(uint launchId, string userId)
         {
             LaunchId = launchId;
             UserId = userId;
