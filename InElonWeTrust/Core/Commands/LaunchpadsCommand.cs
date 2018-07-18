@@ -17,12 +17,12 @@ using Oddity.API.Models.Launchpad;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(":question:", "Misc", "Other strange commands")]
-    public class LaunchpadCommands
+    public class LaunchpadsCommand
     {
         private OddityCore _oddity;
         private CacheService _cacheService;
 
-        public LaunchpadCommands(OddityCore oddity, CacheService cacheService)
+        public LaunchpadsCommand(OddityCore oddity, CacheService cacheService)
         {
             _oddity = oddity;
             _cacheService = cacheService;
