@@ -89,6 +89,17 @@ namespace InElonWeTrust.Core.Commands
                 tableBuilder.Append($"TWR: {(int)rocket.Engines.ThrustToWeight.Value}\r\n");
             }
 
+            var lastPayload = rocket.PayloadWeights.Last();
+            foreach (var payload in rocket.PayloadWeights)
+            {
+                tableBuilder.Append($"{(int)(payload.Kilograms / 1000)}t to {payload.Type}");
+
+                if (payload != lastPayload)
+                {
+                    tableBuilder.Append(", ");
+                }
+            }
+
             tableBuilder.Append("```\r\n");
 
             return tableBuilder.ToString();
