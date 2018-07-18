@@ -43,7 +43,10 @@ namespace InElonWeTrust.Core.Commands
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            foreach (var launchpad in launchpads.OrderBy(p => p.FullName))
+            var sortedLaunchpads = launchpads.OrderBy(p => p.FullName);
+            var lastLaunchpad = sortedLaunchpads.Last();
+
+            foreach (var launchpad in sortedLaunchpads)
             {
                 var responseBuilder = new StringBuilder();
                 var latitude = launchpad.Location.Latitude.Value.ToString(CultureInfo.InvariantCulture);
@@ -51,6 +54,12 @@ namespace InElonWeTrust.Core.Commands
 
                 responseBuilder.Append($"**[GOOGLE MAPS](https://maps.google.com/maps?q={latitude}+{longitude}&t=k)**. ");
                 responseBuilder.Append(launchpad.Details);
+                responseBuilder.Append("\r\n");
+
+                if (launchpad != lastLaunchpad)
+                {
+                    responseBuilder.Append('\u200b');
+                }
 
                 var title = ":stadium: " + launchpad.FullName;
                 switch (launchpad.Status)
