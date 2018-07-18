@@ -36,7 +36,6 @@ namespace InElonWeTrust.Core
         public static DiscordClient Client { get; set; }
 
         private CommandsNextModule _commands;
-        private DescriptionService _description;
         private OddityCore _oddity;
         private CacheService _cacheService;
 
@@ -63,8 +62,6 @@ namespace InElonWeTrust.Core
             RegisterCommands();
 
             await Client.ConnectAsync();
-
-            _description = new DescriptionService();
         }
 
         private DiscordConfiguration GetClientConfiguration()
@@ -96,6 +93,7 @@ namespace InElonWeTrust.Core
             return new DependencyCollectionBuilder()
                 .AddInstance(_oddity)
                 .AddInstance(_cacheService)
+                .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<FlickrService>()
                 .Add<LaunchNotificationsService>()
