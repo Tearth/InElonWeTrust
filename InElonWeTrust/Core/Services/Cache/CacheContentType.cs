@@ -11,6 +11,7 @@
         FailedLandings,
         LaunchesWithOrbit,
         CompanyInfoOverview,
-        CompanyInfoHistory
+        CompanyInfoHistory,
+        Launchpads
     }
 }
