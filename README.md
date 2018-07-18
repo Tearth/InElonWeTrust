@@ -1,6 +1,6 @@
+<h1 align="center">In Elon We Trust, In Thrust We Trust</h1>
 <p align="center">
-<h1>In Elon We Trust, In Thrust We Trust</h1>
-<img src="https://i.imgur.com/cYPoKXr.jpg" alt="SpaceXLogo" />
+<img src="https://i.imgur.com/cYPoKXr.jpg" alt="SpaceXLogo">
 </p>
 
 Discord bot providing a lot of funny (or not) commands related with SpaceX and Elon Musk. Written at the beginning only to collect information about the upcoming start, it developed into a full-fledged bot providing a lot of information about SpaceX and Elon Musk. 
