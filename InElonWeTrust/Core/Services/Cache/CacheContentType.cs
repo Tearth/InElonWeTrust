@@ -12,6 +12,7 @@
         LaunchesWithOrbit,
         CompanyInfoOverview,
         CompanyInfoHistory,
-        Launchpads
+        Launchpads,
+        Rockets
     }
 }
