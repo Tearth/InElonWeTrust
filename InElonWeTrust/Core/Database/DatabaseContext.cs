@@ -13,6 +13,7 @@ namespace InElonWeTrust.Core.Database
         public DbSet<MessageToSubscribe> MessagesToSubscribe { get; set; }
         public DbSet<UserLaunchSubscription> UserLaunchSubscriptions { get; set; }
         public DbSet<Quote> Quotes { get; set; }
+        public DbSet<VideoLink> VideoLinks { get; set; }
 
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
         {
