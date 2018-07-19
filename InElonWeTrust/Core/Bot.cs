@@ -188,6 +188,12 @@ namespace InElonWeTrust.Core
                     break;
                 }
 
+                case ArgumentException _:
+                {
+                    errorEmbedBuilder.AddField(":octagonal_sign: Error", $"Invalid parameter, type `e!help {e.Command.Name}` to get more info.");
+                    break;
+                }
+
                 default:
                 {
                     errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been reported about it accident.");
@@ -213,3 +219,4 @@ namespace InElonWeTrust.Core
         }
     }
 }
+
