@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -77,7 +78,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
-            var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
+            var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
+
+            var embed = await _launchInfoEmbedGenerator.Build(randomLaunch, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -89,8 +92,21 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
-            await ctx.RespondAsync("", false, embed);
+            if (!launchData.Any())
+            {
+                var errorEmbedBuilder = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor(Constants.EmbedErrorColor)
+                };
+
+                errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist");
+                await ctx.RespondAsync("", false, errorEmbedBuilder);
+            }
+            else
+            {
+                var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
+                await ctx.RespondAsync("", false, embed);
+            }
         }
     }
 }
