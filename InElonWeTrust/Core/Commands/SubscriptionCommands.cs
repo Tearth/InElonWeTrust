@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -22,6 +23,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("ToggleTwitter")]
         [Aliases("TogTwitter", "SubscribeTwitter", "SubTwitter", "tt")]
         [Description("Subscribe SpaceX & Elon Musk Twitter profiles (bot will post all new tweets).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleTwitterNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -35,6 +37,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("ToggleFlickr")]
         [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
         [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleFlickrNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -47,6 +50,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("ToggleLaunches")]
         [Aliases("TogLaunches", "SubscribeLaunches", "SubLaunches", "tl")]
         [Description("Subscribe launch notifications (when next launch is incoming).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleLaunchNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -59,6 +63,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("ToggleReddit")]
         [Aliases("SubscribeReddit", "SubReddit", "tr")]
         [Description("Subscribe Reddit notifications (when next Reddit is incoming).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleRedditNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
