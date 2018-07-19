@@ -92,15 +92,15 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var history = (await _oddity.Company.GetHistory().ExecuteAsync()).OrderBy(p => p.EventDate.Value).ToList(); ;
-            if (id > history.Count)
+            var history = (await _oddity.Company.GetHistory().ExecuteAsync()).OrderBy(p => p.EventDate.Value).ToList();
+            if (id <= 0 || id > history.Count)
             {
                 var errorEmbedBuilder = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(Constants.EmbedErrorColor)
                 };
 
-                errorEmbedBuilder.AddField("Error", "History event with specified id does not exists");
+                errorEmbedBuilder.AddField("Error", "History event with the specified id doesn't exists, type `e!CompanyHistory` to list them.");
 
                 await ctx.RespondAsync("", false, errorEmbedBuilder);
                 return;
