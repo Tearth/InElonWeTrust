@@ -175,10 +175,28 @@ namespace InElonWeTrust.Core
 
         private Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            if (e.Command?.Name != "help" && !(e.Exception is CommandNotFoundException))
+            var errorEmbedBuilder = new DiscordEmbedBuilder
             {
-                _logger.Error(e.Exception, GetCommandInfo(e.Context));
+                Color = new DiscordColor(Constants.EmbedErrorColor)
+            };
+
+            switch (e.Exception)
+            {
+                case CommandNotFoundException _:
+                {
+                    errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
+                    break;
+                }
+
+                default:
+                {
+                    errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been reported about it accident.");
+                    break;
+                }
             }
+
+            _logger.Error(e.Exception, GetCommandInfo(e.Context));
+            e.Context.RespondAsync("", false, errorEmbedBuilder);
 
             return Task.CompletedTask;
         }
