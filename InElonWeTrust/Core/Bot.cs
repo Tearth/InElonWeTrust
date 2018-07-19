@@ -16,6 +16,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Description;
+using InElonWeTrust.Core.Services.Diagnostic;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Pagination;
@@ -38,6 +39,7 @@ namespace InElonWeTrust.Core
         private CommandsNextModule _commands;
         private OddityCore _oddity;
         private CacheService _cacheService;
+        private DiagnosticService _diagnosticService;
 
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -45,6 +47,7 @@ namespace InElonWeTrust.Core
         {
             _oddity = new OddityCore();
             _cacheService = new CacheService();
+            _diagnosticService = new DiagnosticService();
 
             Client = new DiscordClient(GetClientConfiguration());
             Client.SetWebSocketClient<WebSocket4NetCoreClient>();
@@ -165,6 +168,8 @@ namespace InElonWeTrust.Core
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
             _logger.Info(GetCommandInfo(e.Context));
+            _diagnosticService.AddExecutedCommand(e.Command, e.Context.Guild);
+
             return Task.CompletedTask;
         }
 
