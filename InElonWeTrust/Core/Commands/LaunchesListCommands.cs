@@ -198,7 +198,17 @@ namespace InElonWeTrust.Core.Commands
             if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
             {
                 var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
+                List<LaunchInfo> items = null;
+
+                // TODO: temp workaround, change to something more professional
+                try
+                {
+                    items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
+                }
+                catch
+                {
+                    return;
+                }
 
                 if (items != null)
                 {
