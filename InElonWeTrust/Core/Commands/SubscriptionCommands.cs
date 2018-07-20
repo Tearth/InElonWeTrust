@@ -85,6 +85,42 @@ namespace InElonWeTrust.Core.Commands
                 SubscriptionType.Reddit);
         }
 
+        [Command("EnableAllNotifications")]
+        [Aliases("SubscribeAll", "SubAll", "ean")]
+        [Description("Subscribe all notifications.")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task EnableAllNotifications(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await _subscriptionsService.AddAllSubscriptionsAsync(ctx.Channel.Id);
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
+
+            embed.AddField(":rocket: Success!", "All notifications has been subscribed.");
+            await ctx.RespondAsync("", false, embed);
+        }
+
+        [Command("DisableAllNotifications")]
+        [Aliases("UnsubscribeAll", "UnsubAll", "dan")]
+        [Description("Unsubscribe all notifications.")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task DisableAllNotifications(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await _subscriptionsService.RemoveAllSubscriptionsAsync(ctx.Channel.Id);
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
+
+            embed.AddField(":rocket: Success!", "All subscriptions has been removed.");
+            await ctx.RespondAsync("", false, embed);
+        }
+
         [Command("NotificationsStatus")]
         [Aliases("SubscriptionsStatus", "SubStatus", "ns")]
         [Description("Get information about subscriptions related with this channel.")]

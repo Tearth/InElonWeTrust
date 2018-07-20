@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
@@ -56,6 +57,22 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             }
 
             return true;
+        }
+
+        public async Task AddAllSubscriptionsAsync(ulong channelId)
+        {
+            foreach (var subscriptionType in (SubscriptionType[])Enum.GetValues(typeof(SubscriptionType)))
+            {
+                await AddSubscriptionAsync(channelId, subscriptionType);
+            }
+        }
+
+        public async Task RemoveAllSubscriptionsAsync(ulong channelId)
+        {
+            foreach (var subscriptionType in (SubscriptionType[])Enum.GetValues(typeof(SubscriptionType)))
+            {
+                await RemoveSubscriptionAsync(channelId, subscriptionType);
+            }
         }
 
         public List<ulong> GetSubscribedChannels(SubscriptionType type)
