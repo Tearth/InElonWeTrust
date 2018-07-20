@@ -24,6 +24,7 @@ using InElonWeTrust.Core.Services.Quotes;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
+using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,6 +99,7 @@ namespace InElonWeTrust.Core
                 .AddInstance(_cacheService)
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
+                .Add<UsefulLinksService>()
                 .Add<FlickrService>()
                 .Add<LaunchNotificationsService>()
                 .Add<PaginationService>()

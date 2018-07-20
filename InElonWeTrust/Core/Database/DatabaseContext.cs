@@ -16,6 +16,7 @@ namespace InElonWeTrust.Core.Database
         public DbSet<VideoLink> VideoLinks { get; set; }
         public DbSet<CommandStats> CommandsStats { get; set; }
         public DbSet<GuildStats> GuildsStats { get; set; }
+        public DbSet<UsefulLink> UsefulLinks { get; set; }
 
         public DatabaseContext() : base(GetOptions("Data Source=Database.sqlite"))
         {
