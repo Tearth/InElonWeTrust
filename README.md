@@ -53,6 +53,7 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!CompanyInfo  | get information about company info | None |
 | e!GetEvent <EventNumber>  | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
 | e!Launchpads  | get list of all launchpads used by SpaceX | None |
+| e!Links  | get list useful links related with SpaceX | None |
 | e!Ping  | pong | None |
 | e!RandomElonQuote  | get random Elon Musk's quote | None |
 | e!RandomVideo  | get random video related with SpaceX | None |
@@ -62,10 +63,13 @@ There is a few methods to call bot command (space between prefix and command is 
 ### Notifications
 | Command | Description | Required permissions |
 |---|---|---|
+| e!EnableAllNotifications  | enable all notifications at the specified channel | Manage Messages |
+| e!DisableAllNotifications  | disable all notifications at the specified channel | Manage Messages |
 | e!NotificationsStatus  | get information about subscriptions at the current channel | None |
 | e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the specified channel) | Manage Messages |
 | e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the specified channel) | Manage Messages |
-| e!ToggleTwitter  | toggle Elon Musk&SpaceX Twitter subscription (when enabled, all newest tweets from Elon Musk and SpaceX profiles will be posted at the specified channel) | Manage Messages |
+| e!ToggleElonTwitter  | toggle Elon Musk Twitter subscription (when enabled, all newest tweets from Elon Musk profile will be posted at the specified channel) | Manage Messages |
+| e!ToggleSpaceXTwitter  | toggle SpaceX Twitter subscription (when enabled, all newest tweets from SpaceX profile will be posted at the specified channel) | Manage Messages |
 
 # Examples
 *will be posted in a few days*
