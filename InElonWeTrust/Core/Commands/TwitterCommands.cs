@@ -84,7 +84,17 @@ namespace InElonWeTrust.Core.Commands
 
         private async void Twitter_OnNewTweet(object sender, ITweet tweet)
         {
-            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Twitter);
+            SubscriptionType subscriptionType = SubscriptionType.ElonTwitter;
+            switch (tweet.CreatedBy.ScreenName)
+            {
+                case "elonmusk": subscriptionType = SubscriptionType.ElonTwitter;
+                    break;
+
+                case "SpaceX": subscriptionType = SubscriptionType.SpaceXTwitter;
+                    break;
+            }
+
+            var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
             foreach (var channelId in channels)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);

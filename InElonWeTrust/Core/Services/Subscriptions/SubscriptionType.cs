@@ -2,7 +2,8 @@
 {
     public enum SubscriptionType
     {
-        Twitter,
+        ElonTwitter,
+        SpaceXTwitter,
         Flickr,
         NextLaunch,
         Reddit

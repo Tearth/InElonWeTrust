@@ -20,18 +20,30 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
         }
 
-        [Command("ToggleTwitter")]
-        [Aliases("TogTwitter", "SubscribeTwitter", "SubTwitter", "tt")]
-        [Description("Subscribe SpaceX & Elon Musk Twitter profiles (bot will post all new tweets).")]
+        [Command("ToggleElonTwitter")]
+        [Aliases("TogElonTwitter", "SubscribeElonTwitter", "SubElonTwitter", "tet")]
+        [Description("Subscribe Elon Musk Twitter profile (bot will post all new tweets).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleTwitterNotifications(CommandContext ctx)
+        public async Task ToggleElonTwitterNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await ToggleNotifications(ctx, "Twitter has been subscribed! Now bot will post all newest tweets from " +
-                                           "[SpaceX](https://twitter.com/SpaceX)and [Elon Musk](https://twitter.com/elonmusk)" +
-                                           "profiles.",
+                                           "[Elon Musk](https://twitter.com/elonmusk) profile.",
                                            "Twitter subscription has been removed.",
-                                           SubscriptionType.Twitter);
+                                           SubscriptionType.ElonTwitter);
+        }
+
+        [Command("ToggleSpaceXTwitter")]
+        [Aliases("TogSpaceXTwitter", "SubscribeSpaceXTwitter", "SubSpaceXTwitter", "tst")]
+        [Description("Subscribe SpaceX Twitter profile (bot will post all new tweets).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task ToggleSpaceXTwitterNotifications(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ToggleNotifications(ctx, "Twitter has been subscribed! Now bot will post all newest tweets from " +
+                                           "[SpaceX](https://twitter.com/SpaceX) profile.",
+                "Twitter subscription has been removed.",
+                SubscriptionType.SpaceXTwitter);
         }
 
         [Command("ToggleFlickr")]
@@ -86,7 +98,8 @@ namespace InElonWeTrust.Core.Commands
             };
 
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"**Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Twitter)}\r\n");
+            contentBuilder.Append($"**Elon Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.ElonTwitter)}\r\n");
+            contentBuilder.Append($"**SpaceX Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.SpaceXTwitter)}\r\n");
             contentBuilder.Append($"**Flickr:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
             contentBuilder.Append($"**Launches:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}\r\n");
             contentBuilder.Append($"**Reddit:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
