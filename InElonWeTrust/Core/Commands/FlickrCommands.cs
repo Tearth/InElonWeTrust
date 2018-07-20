@@ -37,9 +37,9 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [HiddenCommand]
-        [Command("ReloadCachedFlickrPhotos")]
+        [Command("ReloadFlickrCache")]
         [Description("Reload cached Flickr photos in database.")]
-        public async Task ReloadCachedTweets(CommandContext ctx)
+        public async Task ReloadFlickrCache(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
             {
