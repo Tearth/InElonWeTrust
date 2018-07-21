@@ -25,7 +25,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         public LaunchNotificationsService()
         {
             _oddity = new OddityCore();
-            _notificationTimes = new List<int> { 2, 10, 60, 60 * 24, 60 * 24 * 7 };
+            _notificationTimes = new List<int> { 2, 10, 60, 60 * 12, 60 * 24, 60 * 24 * 7 };
 
             _notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
