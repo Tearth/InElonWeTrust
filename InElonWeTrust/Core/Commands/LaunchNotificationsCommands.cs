@@ -6,6 +6,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.LaunchNotifications;
@@ -66,13 +68,34 @@ namespace InElonWeTrust.Core.Commands
                     embed.AddField(":warning: Scrub!", descriptionBuilder.ToString());
                     break;
                 }
+
+                case LaunchNotificationType.NewTarget:
+                {
+                    var descriptionBuilder = new StringBuilder();
+                    descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
+                    descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** at {launchNotification.NewLaunchState.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC. ");
+
+                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
+
+                    embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());
+                    break;
+                }
             }
+
+            embed.AddField("\u200b", "*Click below reaction to subscribe this flight and be notified on DM 10 minutes before the launch.*");
 
             var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
             foreach (var channelId in channelIds)
             {
                 var channel = await Bot.Client.GetChannelAsync(channelId);
-                await channel.SendMessageAsync("", false, embed);
+                var sentMessage = await channel.SendMessageAsync("", false, embed);
+
+                await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
+                using (var databaseContext = new DatabaseContext())
+                {
+                    databaseContext.MessagesToSubscribe.Add(new MessageToSubscribe(sentMessage.Id.ToString()));
+                    databaseContext.SaveChanges();
+                }
 
                 if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launch.Links.VideoLink != null)
                 {

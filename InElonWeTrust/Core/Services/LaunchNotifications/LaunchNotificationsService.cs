@@ -73,6 +73,11 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                         }
                     }
                 }
+                else
+                {
+                    OnLaunchNoification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
+                    _logger.Info($"New target notification sent to {OnLaunchNoification.GetInvocationList().Length} channels");
+                }
 
                 _nextLaunchState = newLaunchState;
             }
