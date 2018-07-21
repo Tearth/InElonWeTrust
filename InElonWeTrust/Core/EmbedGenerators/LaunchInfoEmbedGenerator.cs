@@ -109,9 +109,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var links = new List<string>();
 
-            if (info.Links.RedditLaunch != null)
+            if (info.Links.VideoLink != null)
             {
-                links.Add($"[Reddit]({info.Links.RedditLaunch})");
+                links.Add($"__**[YT stream]({info.Links.VideoLink})**__");
             }
 
             if (info.Links.Presskit != null)
@@ -124,9 +124,19 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 links.Add($"[Telemetry]({info.Telemetry.FlightClub})");
             }
 
-            if (info.Links.VideoLink != null)
+            if (info.Links.RedditCampaign != null)
             {
-                links.Add($"[YouTube stream]({info.Links.VideoLink})");
+                links.Add($"[Campaign]({info.Links.RedditCampaign})");
+            }
+
+            if (info.Links.RedditLaunch != null)
+            {
+                links.Add($"[Launch]({info.Links.RedditLaunch})");
+            }
+
+            if (info.Links.RedditMedia != null)
+            {
+                links.Add($"[Media]({info.Links.RedditMedia})");
             }
 
             return string.Join(", ", links);
