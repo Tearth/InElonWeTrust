@@ -67,7 +67,7 @@ namespace InElonWeTrust.Core.Commands
                 ImageUrl = photo.Source
             };
 
-            embed.AddField($"{photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
+            embed.AddField($"Flickr: {photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
             await channel.SendMessageAsync("", false, embed);
         }
     }

@@ -73,11 +73,11 @@ namespace InElonWeTrust.Core.Commands
             };
 
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"Twitter: {HttpUtility.HtmlDecode(tweet.FullText)}");
+            contentBuilder.Append(HttpUtility.HtmlDecode(tweet.FullText));
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
-            embed.AddField($"{tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime()} UTC", contentBuilder.ToString());
+            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime()} UTC", contentBuilder.ToString());
 
             await channel.SendMessageAsync("", false, embed);
         }
