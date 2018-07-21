@@ -34,18 +34,13 @@ namespace InElonWeTrust.Core.Services.Twitter
                 {TwitterUserType.SpaceX, "SpaceX"}
             };
 
-            Task.Run(() =>
-            {
-                Task.Delay(5000);
+            var consumerKey = SettingsLoader.Data.TwitterConsumerKey;
+            var consumerSecret = SettingsLoader.Data.TwitterConsumerSecret;
+            var accessToken = SettingsLoader.Data.TwitterAccessToken;
+            var accessTokenSecret = SettingsLoader.Data.TwitterAccessTokenSecret;
 
-                var consumerKey = SettingsLoader.Data.TwitterConsumerKey;
-                var consumerSecret = SettingsLoader.Data.TwitterConsumerSecret;
-                var accessToken = SettingsLoader.Data.TwitterAccessToken;
-                var accessTokenSecret = SettingsLoader.Data.TwitterAccessTokenSecret;
-
-                Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-                InitStream();
-            });
+            Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+            InitStream();
         }
 
         private void InitStream()

@@ -44,7 +44,7 @@ namespace InElonWeTrust.Core.Commands
             {
                 case LaunchNotificationType.Reminder:
                 {
-                    var timeLeftDescription = timeLeft > 60 ? Math.Ceiling(timeLeft / 60) + "hours" : Math.Ceiling(timeLeft) + " minutes";
+                    var timeLeftDescription = timeLeft > 60 ? Math.Ceiling(timeLeft / 60) + " hours" : Math.Ceiling(timeLeft) + " minutes";
 
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");

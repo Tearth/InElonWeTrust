@@ -45,16 +45,16 @@ namespace InElonWeTrust.Core.Commands
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                Title = HttpUtility.HtmlDecode(topic.Title),
+                Title = $"Reddit: {HttpUtility.HtmlDecode(topic.Title)}",
                 Url = "https://www.reddit.com" + topic.Permalink,
                 ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
             };
 
             var contentBuilder = new StringBuilder();
             contentBuilder.Append($"{topic.Author} | {topic.Upvotes} upvotes\r\n");
-            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToString("F", CultureInfo.InvariantCulture));
+            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToUniversalTime().ToString("F", CultureInfo.InvariantCulture) + " UTC");
 
-            embed.AddField("-------------------", contentBuilder.ToString());
+            embed.AddField("\u200b", contentBuilder.ToString());
 
             await channel.SendMessageAsync("", false, embed);
         }
