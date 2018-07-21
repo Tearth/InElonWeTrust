@@ -120,7 +120,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                         }
 
                         await userDm.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
-                                                      "subscription is one-time and you have to do it again you want to receive similar notification " +
+                                                      "subscription is one-time and you have to do it again if you want to receive similar notification " +
                                                       "about next launch in the future.*");
                     }
                 }
