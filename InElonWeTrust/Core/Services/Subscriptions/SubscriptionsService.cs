@@ -13,7 +13,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<bool> AddSubscriptionAsync(ulong channelId, SubscriptionType type)
+        public async Task<bool> AddSubscriptionAsync(ulong guildId, ulong channelId, SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -25,6 +25,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 
                 var subscribedChannel = new SubscribedChannel
                 {
+                    GuildId = guildId.ToString(),
                     ChannelId = channelId.ToString(),
                     SubscriptionType = type
                 };
@@ -59,11 +60,11 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             return true;
         }
 
-        public async Task AddAllSubscriptionsAsync(ulong channelId)
+        public async Task AddAllSubscriptionsAsync(ulong guildId, ulong channelId)
         {
             foreach (var subscriptionType in (SubscriptionType[])Enum.GetValues(typeof(SubscriptionType)))
             {
-                await AddSubscriptionAsync(channelId, subscriptionType);
+                await AddSubscriptionAsync(guildId, channelId, subscriptionType);
             }
         }
 

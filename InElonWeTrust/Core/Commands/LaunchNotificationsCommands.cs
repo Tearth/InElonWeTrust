@@ -95,7 +95,9 @@ namespace InElonWeTrust.Core.Commands
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
                     using (var databaseContext = new DatabaseContext())
                     {
-                        databaseContext.MessagesToSubscribe.Add(new MessageToSubscribe(sentMessage.Id.ToString()));
+                        var messageToSubscribe = new MessageToSubscribe(channel.GuildId.ToString(), sentMessage.Id.ToString());
+
+                        databaseContext.MessagesToSubscribe.Add(messageToSubscribe);
                         databaseContext.SaveChanges();
                     }
 

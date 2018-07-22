@@ -26,6 +26,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             {
                 var paginatedMessage = new PaginatedMessage
                 {
+                    GuildId = message.Channel.GuildId.ToString(),
                     MessageId = message.Id.ToString(),
                     ContentType = contentType,
                     Parameter = parameter,

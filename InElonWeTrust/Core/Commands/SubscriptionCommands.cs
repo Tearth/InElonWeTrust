@@ -93,7 +93,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task EnableAllNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await _subscriptionsService.AddAllSubscriptionsAsync(ctx.Channel.Id);
+            await _subscriptionsService.AddAllSubscriptionsAsync(ctx.Guild.Id, ctx.Channel.Id);
 
             var embed = new DiscordEmbedBuilder
             {
@@ -161,7 +161,7 @@ namespace InElonWeTrust.Core.Commands
             }
             else
             {
-                await _subscriptionsService.AddSubscriptionAsync(ctx.Channel.Id, type);
+                await _subscriptionsService.AddSubscriptionAsync(ctx.Guild.Id, ctx.Channel.Id, type);
 
                 embed.Color = new DiscordColor(Constants.EmbedColor);
                 embed.AddField(":rocket: Success!", messageOnAdd);
