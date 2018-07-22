@@ -117,7 +117,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             var discordUser = await Bot.Client.GetUserAsync(ulong.Parse(user.UserId));
                             var userDm = await Bot.Client.CreateDmAsync(discordUser);
 
-                            await userDm.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, await _launchInfoEmbedGenerator.Build(nextLaunch, false));
+                            await userDm.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, _launchInfoEmbedGenerator.Build(nextLaunch, false));
 
                             if (nextLaunch.Links.VideoLink != null)
                             {

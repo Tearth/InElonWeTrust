@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
-            var embed = await _launchInfoEmbedGenerator.Build(launchData, true);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, true);
 
             var sentMessage = await ctx.RespondAsync("", false, embed);
 
@@ -67,7 +67,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
-            var embed = await _launchInfoEmbedGenerator.Build(launchData, false);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -81,7 +81,7 @@ namespace InElonWeTrust.Core.Commands
             var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
 
-            var embed = await _launchInfoEmbedGenerator.Build(randomLaunch, false);
+            var embed = _launchInfoEmbedGenerator.Build(randomLaunch, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -105,7 +105,7 @@ namespace InElonWeTrust.Core.Commands
             }
             else
             {
-                var embed = await _launchInfoEmbedGenerator.Build(launchData.First(), false);
+                var embed = _launchInfoEmbedGenerator.Build(launchData.First(), false);
                 await ctx.RespondAsync("", false, embed);
             }
         }

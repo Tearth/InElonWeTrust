@@ -37,7 +37,7 @@ namespace InElonWeTrust.Core.Commands
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfoHistory, async (p) => await _oddity.Company.GetHistory().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfoHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
         }
 
         [Command("CompanyInfo")]
@@ -67,7 +67,7 @@ namespace InElonWeTrust.Core.Commands
 
             embed.AddField("Headquarters",
                 $"[{companyInfo.Headquarters.City}, {companyInfo.Headquarters.State}, {companyInfo.Headquarters.Address}]" +
-                $"(https://www.google.com/maps/place/Rocket+Rd,+Hawthorne,+CA+90250,+Stany+Zjednoczone/@33.9213093,-118.3301254,17z/data=!3m1!4b1!4m5!3m4!1s0x80c2b5ded9a490b5:0x3095ae5795c500b3!8m2!3d33.9213093!4d-118.3279367)");
+                 "(https://www.google.com/maps/place/Rocket+Rd,+Hawthorne,+CA+90250,+Stany+Zjednoczone/@33.9213093,-118.3301254,17z/data=!3m1!4b1!4m5!3m4!1s0x80c2b5ded9a490b5:0x3095ae5795c500b3!8m2!3d33.9213093!4d-118.3279367)");
 
             await ctx.RespondAsync("", false, embed);
         }
@@ -85,7 +85,7 @@ namespace InElonWeTrust.Core.Commands
             var message = await ctx.RespondAsync(launchesList);
             await _paginationService.InitPagination(message, CacheContentType.CompanyInfoHistory, "");
         }
-        
+
         [Command("GetEvent")]
         [Aliases("Event", "e")]
         [Description("Get information about event with specified id (e!CompanyHistory).")]

@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchInfoEmbedGenerator
     {
-        public async Task<DiscordEmbed> Build(LaunchInfo launch, bool informAboutSubscription)
+        public DiscordEmbed Build(LaunchInfo launch, bool informAboutSubscription)
         {
             var embed = new DiscordEmbedBuilder
             {

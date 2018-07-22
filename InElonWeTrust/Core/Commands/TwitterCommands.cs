@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
 
         private async void Twitter_OnNewTweet(object sender, ITweet tweet)
         {
-            SubscriptionType subscriptionType = SubscriptionType.ElonTwitter;
+            var subscriptionType = SubscriptionType.ElonTwitter;
             switch (tweet.CreatedBy.ScreenName)
             {
                 case "elonmusk": subscriptionType = SubscriptionType.ElonTwitter;

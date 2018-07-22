@@ -1,5 +1,4 @@
 ﻿using System;
-using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.Commands.Definitions;
 
 namespace InElonWeTrust.Core.Attributes

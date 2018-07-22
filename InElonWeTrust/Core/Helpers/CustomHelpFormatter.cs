@@ -142,7 +142,7 @@ namespace InElonWeTrust.Core.Helpers
             {
                 var groupDescription = GetGroupDescription(group.Key);
 
-                helpBuilder.Append($"\r\n\r\n");
+                helpBuilder.Append( "\r\n\r\n");
                 helpBuilder.Append($"{groupDescription.Icon} **{groupDescription.Group}** *({groupDescription.Description}):*\r\n");
                 helpBuilder.Append($"{string.Join(", ", group.Value)}");
             }
@@ -156,8 +156,15 @@ namespace InElonWeTrust.Core.Helpers
         {
             embed.AddField(_commandName, _commandDescription);
 
-            if (_aliases.Count > 0) embed.AddField("Aliases", string.Join(", ", _aliases));
-            if (_parameters.Count > 0) embed.AddField("Parameters", string.Join("\r\n", _parameters));
+            if (_aliases.Count > 0)
+            {
+                embed.AddField("Aliases", string.Join(", ", _aliases));
+            }
+
+            if (_parameters.Count > 0)
+            {
+                embed.AddField("Parameters", string.Join("\r\n", _parameters));
+            }
 
             return new CommandHelpMessage(string.Empty, embed);
         }

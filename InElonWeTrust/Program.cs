@@ -17,6 +17,9 @@ namespace InElonWeTrust
             Target.Register<DiscordLogTarget>("Discord");
 
             await new Bot().Run();
+
+            // ReSharper disable once EnforceWhileStatementBraces
+            // ReSharper disable once EmptyEmbeddedStatement
             while (Console.ReadLine() != "quit");
         }
 
