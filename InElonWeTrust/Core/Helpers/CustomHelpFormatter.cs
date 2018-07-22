@@ -123,7 +123,7 @@ namespace InElonWeTrust.Core.Helpers
 
             return _commandName == null ? BuildGeneralHelp(embed) : BuildCommandHelp(embed);
         }
-
+        
         private CommandHelpMessage BuildGeneralHelp(DiscordEmbedBuilder embed)
         {
             var helpBuilder = new StringBuilder();
@@ -131,7 +131,8 @@ namespace InElonWeTrust.Core.Helpers
                                "more detailed information about the specified command. The bot is case-insensitive and have " +
                                "no troubles with spaces between the prefix and the command.\r\n\r\n");
             helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)**!\r\n");
-            helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!\r\n");
+            helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - yes, we love open source!\r\n\u200b\r\n");
+            helpBuilder.Append(":computer: **[Profile on bots.discord.pw](https://bots.discord.pw/bots/462742130016780337)**\r\n");
             helpBuilder.Append(":love_letter: **[Invite me!](https://discordapp.com/api/oauth2/authorize?client_id=462742130016780337&permissions=26688&scope=bot) to your server!**");
 
             embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
@@ -145,8 +146,8 @@ namespace InElonWeTrust.Core.Helpers
                 helpBuilder.Append($"{string.Join(", ", group.Value)}");
             }
 
-            embed.AddField("------------------------------", helpBuilder.ToString());
-            embed.AddField("------------------------------", "*Happy launches!*");
+            embed.AddField("\u200b", helpBuilder.ToString());
+            embed.AddField("\u200b", "*Happy landings!*");
             return new CommandHelpMessage(string.Empty, embed);
         }
 
