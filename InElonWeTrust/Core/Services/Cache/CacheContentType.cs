@@ -10,9 +10,10 @@
         FailedStarts,
         FailedLandings,
         LaunchesWithOrbit,
-        CompanyInfoOverview,
-        CompanyInfoHistory,
+        CompanyInfo,
+        CompanyHistory,
         Launchpads,
-        Rockets
+        Rockets,
+        Changelog
     }
 }

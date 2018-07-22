@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -7,6 +8,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
+using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -22,6 +24,8 @@ namespace InElonWeTrust.Core.Commands
             _oddity = oddity;
             _cacheService = cacheService;
             _companyHistoryEventEmbedGenerator = companyHistoryEventEmbedGenerator;
+
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
         }
 
         [Command("GetEvent")]
@@ -31,15 +35,17 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var history = (await _oddity.Company.GetHistory().ExecuteAsync()).OrderBy(p => p.EventDate.Value).ToList();
-            if (id <= 0 || id > history.Count)
+            var history = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
+            var sortedHistory = history.OrderBy(p => p.EventDate.Value).ToList();
+
+            if (id <= 0 || id > sortedHistory.Count)
             {
                 var errorEmbed = _companyHistoryEventEmbedGenerator.BuildError();
                 await ctx.RespondAsync("", false, errorEmbed);
             }
             else
             {
-                var embed = _companyHistoryEventEmbedGenerator.Build(history[id - 1]);
+                var embed = _companyHistoryEventEmbedGenerator.Build(sortedHistory[id - 1]);
                 await ctx.RespondAsync("", false, embed);
             }
         }

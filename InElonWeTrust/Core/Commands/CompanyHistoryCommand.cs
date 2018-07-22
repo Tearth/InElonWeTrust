@@ -35,9 +35,9 @@ namespace InElonWeTrust.Core.Commands
 
             _allowedPaginationTypes = new List<CacheContentType>
             {
-                CacheContentType.CompanyInfoHistory
+                CacheContentType.CompanyHistory
             };
-            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfoHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
         }
@@ -49,11 +49,11 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var companyHistory = await _oddity.Company.GetHistory().ExecuteAsync();
+            var companyHistory = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
             var tableWithPagination = BuildTableWithPagination(companyHistory, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
-            await _paginationService.InitPagination(message, CacheContentType.CompanyInfoHistory, "");
+            await _paginationService.InitPagination(message, CacheContentType.CompanyHistory, "");
         }
 
         private string BuildTableWithPagination(List<HistoryEvent> history, int currentPage)
@@ -77,7 +77,7 @@ namespace InElonWeTrust.Core.Commands
             var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
-                var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyInfoHistory);
+                var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
 
                 if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                 {

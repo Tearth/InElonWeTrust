@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
@@ -9,12 +10,12 @@ namespace InElonWeTrust.Core.Services.Cache
 {
     public class CacheService
     {
-        private readonly Dictionary<CacheContentType, Func<string, Task<object>>> _dataProviders;
-        private readonly Dictionary<Tuple<CacheContentType, string>, CacheItem> _items;
+        private readonly ConcurrentDictionary<CacheContentType, Func<string, Task<object>>> _dataProviders;
+        private readonly ConcurrentDictionary<Tuple<CacheContentType, string>, CacheItem> _items;
 
         private readonly Timer _cacheStatsTimer;
         private int _cacheItemsAdded;
-        private int _cacheItemsHitted;
+        private int _cacheItemsHit;
         private int _cacheItemsUpdated;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -24,8 +25,8 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public CacheService()
         {
-            _dataProviders = new Dictionary<CacheContentType, Func<string, Task<object>>>();
-            _items = new Dictionary<Tuple<CacheContentType, string>, CacheItem>();
+            _dataProviders = new ConcurrentDictionary<CacheContentType, Func<string, Task<object>>>();
+            _items = new ConcurrentDictionary<Tuple<CacheContentType, string>, CacheItem>();
 
             _cacheStatsTimer = new Timer(IntervalMinutes * 60 * 1000);
             _cacheStatsTimer.Elapsed += CacheStatsTimerOnElapsed;
@@ -34,10 +35,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public void RegisterDataProvider(CacheContentType type, Func<string, Task<object>> dataProviderDelegate)
         {
-            if (!_dataProviders.TryAdd(type, dataProviderDelegate))
-            {
-                throw new DuplicatedDataProviderException($"{type} is already registered in cache.");
-            }
+            _dataProviders.TryAdd(type, dataProviderDelegate);
         }
 
         public async Task<D> Get<D>(CacheContentType type, string parameter = null)
@@ -51,7 +49,7 @@ namespace InElonWeTrust.Core.Services.Cache
             {
                 var data = await dataProvider(parameter);
 
-                _items.Add(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
+                _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
                 _cacheItemsAdded++;
 
                 return (D)data;
@@ -67,7 +65,7 @@ namespace InElonWeTrust.Core.Services.Cache
             }
             else
             {
-                _cacheItemsHitted++;
+                _cacheItemsHit++;
             }
 
             return (D)cachedItem.Data;
@@ -75,7 +73,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            _logger.Info($"Cache stats: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHitted} hitted");
+            _logger.Info($"Cache stats: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHit} hitted");
         }
     }
 }

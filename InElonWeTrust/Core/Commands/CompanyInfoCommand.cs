@@ -26,6 +26,8 @@ namespace InElonWeTrust.Core.Commands
             _oddity = oddity;
             _cacheService = cacheService;
             _companyInfoEmbedGenerator = companyInfoEmbedGenerator;
+
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfo, async p => await _oddity.Company.GetInfo().ExecuteAsync());
         }
 
         [Command("CompanyInfo")]
@@ -35,7 +37,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var companyInfo = await _oddity.Company.GetInfo().ExecuteAsync();
+            var companyInfo = await _cacheService.Get<CompanyInfo>(CacheContentType.CompanyInfo);
             var embed = _companyInfoEmbedGenerator.Build(companyInfo);
 
             await ctx.RespondAsync("", false, embed);
