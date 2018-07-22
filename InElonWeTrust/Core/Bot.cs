@@ -26,6 +26,7 @@ using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
+using InElonWeTrust.Core.TableGenerators;
 using NLog;
 using Oddity;
 
@@ -97,6 +98,9 @@ namespace InElonWeTrust.Core
                 .AddInstance(_cacheService)
                 .Add<LaunchInfoEmbedGenerator>()
                 .Add<ChangelogEmbedGenerator>()
+                .Add<CompanyInfoEmbedGenerator>()
+                .Add<CompanyHistoryTableGenerator>()
+                .Add<CompanyHistoryEventEmbedGenerator>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()
