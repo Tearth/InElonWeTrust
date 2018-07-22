@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -8,6 +9,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Settings;
+using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -16,6 +18,8 @@ namespace InElonWeTrust.Core.Commands
     {
         private FlickrService _flickrService;
         private SubscriptionsService _subscriptionsService;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public FlickrCommands(FlickrService flickrService, SubscriptionsService subscriptionsService)
         {
@@ -54,8 +58,15 @@ namespace InElonWeTrust.Core.Commands
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
             foreach (var channelId in channels)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelId);
-                await DisplayPhoto(channel, e);
+                try
+                {
+                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    await DisplayPhoto(channel, e);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Can't send flickr photo to the channel with id {channelId}");
+                }
             }
         }
 

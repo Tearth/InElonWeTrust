@@ -8,6 +8,7 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
+using NLog;
 using Oddity;
 using Oddity.API.Models.Launch;
 
@@ -18,6 +19,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         private CacheService _cacheService;
         private LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
         private Timer _notificationsUpdateTimer;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private bool _notified;
 
@@ -109,19 +112,26 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                     var usersToNotify = databaseContext.UserLaunchSubscriptions.Where(p => p.LaunchId == nextLaunch.FlightNumber).ToList();
                     foreach (var user in usersToNotify)
                     {
-                        var discordUser = await Bot.Client.GetUserAsync(ulong.Parse(user.UserId));
-                        var userDm = await Bot.Client.CreateDmAsync(discordUser);
-
-                        await userDm.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, await _launchInfoEmbedGenerator.Build(nextLaunch, false));
-
-                        if (nextLaunch.Links.VideoLink != null)
+                        try
                         {
-                            await userDm.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
-                        }
+                            var discordUser = await Bot.Client.GetUserAsync(ulong.Parse(user.UserId));
+                            var userDm = await Bot.Client.CreateDmAsync(discordUser);
 
-                        await userDm.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
-                                                      "subscription is one-time and you have to do it again if you want to receive similar notification " +
-                                                      "about next launch in the future.*");
+                            await userDm.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, await _launchInfoEmbedGenerator.Build(nextLaunch, false));
+
+                            if (nextLaunch.Links.VideoLink != null)
+                            {
+                                await userDm.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
+                            }
+
+                            await userDm.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
+                                                          "subscription is one-time and you have to do it again if you want to receive similar notification " +
+                                                          "about next launch in the future.*");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error(ex, $"Can't send launch notification to the uesr with id {user.UserId}");
+                        }
                     }
                 }
 

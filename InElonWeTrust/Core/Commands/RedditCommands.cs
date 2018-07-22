@@ -12,6 +12,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
+using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -20,6 +21,8 @@ namespace InElonWeTrust.Core.Commands
     {
         private RedditService _redditService;
         private SubscriptionsService _subscriptionsService;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RedditCommands(RedditService redditService, SubscriptionsService subscriptionsService)
         {
@@ -64,8 +67,15 @@ namespace InElonWeTrust.Core.Commands
             var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
             foreach (var channelId in channelIds)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelId);
-                await DisplayTopic(channel, e);
+                try
+                {
+                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    await DisplayTopic(channel, e);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Can't send hot reddit topic to the channel with id {channelId}");
+                }
             }
         }
     }

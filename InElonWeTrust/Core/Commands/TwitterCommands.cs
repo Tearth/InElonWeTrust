@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using DSharpPlus.CommandsNext;
@@ -10,6 +11,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Settings;
+using NLog;
 using Tweetinvi.Models;
 
 namespace InElonWeTrust.Core.Commands
@@ -19,6 +21,8 @@ namespace InElonWeTrust.Core.Commands
     {
         private TwitterService _twitterService;
         private SubscriptionsService _subscriptionsService;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TwitterCommands(TwitterService twitterService, SubscriptionsService subscriptionsService)
         {
@@ -97,8 +101,15 @@ namespace InElonWeTrust.Core.Commands
             var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
             foreach (var channelId in channels)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelId);
-                await DisplayTweet(channel, new CachedTweet(tweet));
+                try
+                {
+                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    await DisplayTweet(channel, new CachedTweet(tweet));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Can't send tweet to the channel with id {channelId}");
+                }
             }
         }
     }

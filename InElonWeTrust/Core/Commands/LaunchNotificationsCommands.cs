@@ -12,6 +12,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Subscriptions;
+using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -20,6 +21,8 @@ namespace InElonWeTrust.Core.Commands
     {
         private SubscriptionsService _subscriptionsService;
         private LaunchNotificationsService _launchNotificationsService;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService)
         {
@@ -87,19 +90,26 @@ namespace InElonWeTrust.Core.Commands
             var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
             foreach (var channelId in channelIds)
             {
-                var channel = await Bot.Client.GetChannelAsync(channelId);
-                var sentMessage = await channel.SendMessageAsync("", false, embed);
-
-                await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
-                using (var databaseContext = new DatabaseContext())
+                try
                 {
-                    databaseContext.MessagesToSubscribe.Add(new MessageToSubscribe(sentMessage.Id.ToString()));
-                    databaseContext.SaveChanges();
+                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    var sentMessage = await channel.SendMessageAsync("", false, embed);
+
+                    await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
+                    using (var databaseContext = new DatabaseContext())
+                    {
+                        databaseContext.MessagesToSubscribe.Add(new MessageToSubscribe(sentMessage.Id.ToString()));
+                        databaseContext.SaveChanges();
+                    }
+
+                    if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launch.Links.VideoLink != null)
+                    {
+                        await channel.SendMessageAsync($"**YouTube stream:** {launch.Links.VideoLink}");
+                    }
                 }
-
-                if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launch.Links.VideoLink != null)
+                catch (Exception ex)
                 {
-                    await channel.SendMessageAsync($"**YouTube stream:** {launch.Links.VideoLink}");
+                    _logger.Error(ex, $"Can't send launch notification to the channel with id {channelId}");
                 }
             }
         }
