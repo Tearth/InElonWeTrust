@@ -5,9 +5,11 @@ using System.Web;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
@@ -22,13 +24,15 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly TwitterService _twitterService;
         private readonly SubscriptionsService _subscriptionsService;
+        private readonly TwitterEmbedGenerator _twitterEmbedGenerator;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public TwitterCommands(TwitterService twitterService, SubscriptionsService subscriptionsService)
+        public TwitterCommands(TwitterService twitterService, SubscriptionsService subscriptionsService, TwitterEmbedGenerator twitterEmbedGenerator)
         {
             _twitterService = twitterService;
             _subscriptionsService = subscriptionsService;
+            _twitterEmbedGenerator = twitterEmbedGenerator;
 
             _twitterService.OnNewTweet += Twitter_OnNewTweet;
         }
@@ -41,7 +45,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.ElonMusk);
-            await DisplayTweet(ctx.Channel, tweet);
+            var embed = _twitterEmbedGenerator.Build(tweet);
+
+            await ctx.RespondAsync(embed: embed);
         }
 
         [Command("RandomSpaceXTweet")]
@@ -52,7 +58,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceX);
-            await DisplayTweet(ctx.Channel, tweet);
+            var embed = _twitterEmbedGenerator.Build(tweet);
+
+            await ctx.RespondAsync(embed: embed);
         }
 
         [HiddenCommand]
@@ -68,48 +76,41 @@ namespace InElonWeTrust.Core.Commands
             await _twitterService.ReloadCachedTweetsAsync();
         }
 
-        private async Task DisplayTweet(DiscordChannel channel, CachedTweet tweet)
-        {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = tweet.AvatarUrl,
-                ImageUrl = tweet.ImageUrl
-            };
-
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append(HttpUtility.HtmlDecode(tweet.FullText));
-            contentBuilder.Append("\r\n\r\n");
-            contentBuilder.Append(tweet.Url);
-
-            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime()} UTC", contentBuilder.ToString());
-
-            await channel.SendMessageAsync("", false, embed);
-        }
-
         private async void Twitter_OnNewTweet(object sender, ITweet tweet)
         {
-            var subscriptionType = SubscriptionType.ElonTwitter;
-            switch (tweet.CreatedBy.ScreenName)
-            {
-                case "elonmusk": subscriptionType = SubscriptionType.ElonTwitter;
-                    break;
-
-                case "SpaceX": subscriptionType = SubscriptionType.SpaceXTwitter;
-                    break;
-            }
-
+            var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedBy.ScreenName);
             var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
-            foreach (var channelId in channels)
+
+            foreach (var channelData in channels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(channelId);
-                    await DisplayTweet(channel, new CachedTweet(tweet));
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                    var embed = _twitterEmbedGenerator.Build(new CachedTweet(tweet));
+
+                    await channel.SendMessageAsync(embed: embed);
+                }
+                catch (UnauthorizedException ex)
+                {
+                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.ChannelId));
+                    var guildOwner = guild.Owner;
+
+                    _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+
+                    var ownerDm = await guildOwner.CreateDmChannelAsync();
+                    var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
+
+                    await ownerDm.SendMessageAsync(embed: errorEmbed);
+                }
+                catch (NotFoundException ex)
+                {
+                    _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send tweet to the channel with id {channelId}");
+                    _logger.Error(ex, $"Can't send tweet on the channel with id {channelData.ChannelId}");
                 }
             }
         }

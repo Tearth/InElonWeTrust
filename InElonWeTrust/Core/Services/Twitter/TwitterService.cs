@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -20,6 +21,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         public event EventHandler<ITweet> OnNewTweet;
 
         private readonly Dictionary<TwitterUserType, string> _users;
+        private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
         private IFilteredStream _stream;
         private object _reloadingCacheLock;
 
@@ -31,6 +33,12 @@ namespace InElonWeTrust.Core.Services.Twitter
             {
                 {TwitterUserType.ElonMusk, "elonmusk"},
                 {TwitterUserType.SpaceX, "SpaceX"}
+            };
+
+            _userSubscriptionMap = new Dictionary<TwitterUserType, SubscriptionType>
+            {
+                {TwitterUserType.ElonMusk, SubscriptionType.ElonTwitter},
+                {TwitterUserType.SpaceX, SubscriptionType.SpaceXTwitter}
             };
 
             _reloadingCacheLock = new object();
@@ -55,6 +63,12 @@ namespace InElonWeTrust.Core.Services.Twitter
 
             _stream.MatchingTweetReceived += Stream_MatchingTweetReceived;
             _stream.StartStreamMatchingAllConditionsAsync();
+        }
+
+        public SubscriptionType GetSubscriptionTypeByUserName(string username)
+        {
+            var userType = _users.First(p => p.Value == username).Key;
+            return _userSubscriptionMap[userType];
         }
 
         public async Task<CachedTweet> GetRandomTweetAsync(TwitterUserType userType)

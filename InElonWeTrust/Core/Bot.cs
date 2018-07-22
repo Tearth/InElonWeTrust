@@ -103,6 +103,7 @@ namespace InElonWeTrust.Core
                 .Add<CompanyHistoryEventEmbedGenerator>()
                 .Add<FlickrEmbedGenerator>()
                 .Add<RedditEmbedGenerator>()
+                .Add<TwitterEmbedGenerator>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()
