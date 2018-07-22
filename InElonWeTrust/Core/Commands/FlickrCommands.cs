@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -19,13 +21,15 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly FlickrService _flickrService;
         private readonly SubscriptionsService _subscriptionsService;
+        private readonly FlickrEmbedGenerator _flickrEmbedGenerator;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public FlickrCommands(FlickrService flickrService, SubscriptionsService subscriptionsService)
+        public FlickrCommands(FlickrService flickrService, SubscriptionsService subscriptionsService, FlickrEmbedGenerator flickrEmbedGenerator)
         {
             _flickrService = flickrService;
             _subscriptionsService = subscriptionsService;
+            _flickrEmbedGenerator = flickrEmbedGenerator;
 
             _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhoto;
         }
@@ -33,12 +37,14 @@ namespace InElonWeTrust.Core.Commands
         [Command("RandomFlickrPhoto")]
         [Aliases("FlickrPhoto", "rfp")]
         [Description("Get random photo from SpaceX Flickr profile.")]
-        public async Task RandomElonTweet(CommandContext ctx)
+        public async Task RandomFlickrPhoto(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
             var photo = await _flickrService.GetRandomPhotoAsync();
-            await DisplayPhoto(ctx.Channel, photo);
+            var embed = _flickrEmbedGenerator.Build(photo);
+
+            await ctx.RespondAsync("", false, embed);
         }
 
         [HiddenCommand]
@@ -62,25 +68,23 @@ namespace InElonWeTrust.Core.Commands
                 try
                 {
                     var channel = await Bot.Client.GetChannelAsync(channelId);
-                    await DisplayPhoto(channel, e);
+                    var embed = _flickrEmbedGenerator.Build(e);
+
+                    await channel.SendMessageAsync("", false, embed);
+                }
+                catch (UnauthorizedException ex)
+                {
+
+                }
+                catch (NotFoundException ex)
+                {
+
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex, $"Can't send flickr photo to the channel with id {channelId}");
                 }
             }
-        }
-
-        private async Task DisplayPhoto(DiscordChannel channel, CachedFlickrPhoto photo)
-        {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ImageUrl = photo.Source
-            };
-
-            embed.AddField($"Flickr: {photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
-            await channel.SendMessageAsync("", false, embed);
         }
     }
 }
