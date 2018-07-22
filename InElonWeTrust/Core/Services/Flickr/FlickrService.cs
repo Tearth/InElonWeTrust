@@ -21,7 +21,8 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private readonly Timer _imageRangesUpdateTimer;
-        private bool _reloadingCache;
+        private object _reloadingCacheLock;
+
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
@@ -29,9 +30,11 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public FlickrService()
         {
-            _imageRangesUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _imageRangesUpdateTimer = new Timer(2000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
             _imageRangesUpdateTimer.Start();
+
+            _reloadingCacheLock = new object();
         }
 
         public async Task<CachedFlickrPhoto> GetRandomPhotoAsync()
@@ -44,60 +47,62 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync(bool sendNotifyWhenNewPhoto)
         {
-            if (_reloadingCache)
+            if (!System.Threading.Monitor.TryEnter(_reloadingCacheLock))
             {
                 return;
             }
 
-            _reloadingCache = true;
-
-            var httpClient = new HttpClient();
-
-            using (var databaseContext = new DatabaseContext())
+            try
             {
-                _logger.Info("Reload Flickr cached photos starts");
-
-                var currentPage = 1;
-                while (true)
+                using (var databaseContext = new DatabaseContext())
+                using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={SettingsLoader.Data.FlickrKey}&user_id={SpaceXProfileId}&per_page=500&page={currentPage}&format=json&nojsoncallback=1");
-                    var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
+                    _logger.Info("Reload Flickr cached photos starts");
 
-                    foreach (var photo in parsedResponse.Photos.Photo)
+                    var currentPage = 1;
+                    while (true)
                     {
-                        if (!await databaseContext.CachedFlickrPhotos.AnyAsync(p => p.Id == photo.Id))
+                        var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={SettingsLoader.Data.FlickrKey}&user_id={SpaceXProfileId}&per_page=500&page={currentPage}&format=json&nojsoncallback=1");
+                        var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
+
+                        foreach (var photo in parsedResponse.Photos.Photo)
                         {
-                            var source = await GetImageUrlAsync(photo.Id);
-                            var date = await GetImageUploadDateAsync(photo.Id);
-
-                            var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
-                            await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
-
-                            if (sendNotifyWhenNewPhoto)
+                            if (!await databaseContext.CachedFlickrPhotos.AnyAsync(p => p.Id == photo.Id))
                             {
-                                OnNewFlickrPhoto?.Invoke(this, cachedPhoto);
+                                var source = await GetImageUrlAsync(photo.Id);
+                                var date = await GetImageUploadDateAsync(photo.Id);
+
+                                var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
+                                await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
+
+                                if (sendNotifyWhenNewPhoto)
+                                {
+                                    OnNewFlickrPhoto?.Invoke(this, cachedPhoto);
+                                }
                             }
+
                         }
 
+                        _logger.Info($"Flickr page ({currentPage}) done");
+
+                        if (currentPage >= parsedResponse.Photos.Pages)
+                        {
+                            break;
+                        }
+
+                        currentPage++;
                     }
 
-                    _logger.Info($"Flickr page ({currentPage}) done");
+                    await databaseContext.SaveChangesAsync();
 
-                    if (currentPage >= parsedResponse.Photos.Pages)
-                    {
-                        break;
-                    }
-
-                    currentPage++;
+                    var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
+                    _logger.Info($"Flickr download finished ({photosCount} photos downloaded)");
                 }
-
-                await databaseContext.SaveChangesAsync();
-
-                var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
-                _logger.Info($"Flickr download finished ({photosCount} photos downloaded)");
             }
-
-            _reloadingCache = false;
+            finally
+            {
+                System.Threading.Monitor.Exit(_reloadingCacheLock);
+            }
         }
 
         private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)

@@ -21,7 +21,8 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         private readonly Dictionary<TwitterUserType, string> _users;
         private IFilteredStream _stream;
-        private bool _reloadingCache;
+        private object _reloadingCacheLock;
+
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TwitterService()
@@ -31,6 +32,8 @@ namespace InElonWeTrust.Core.Services.Twitter
                 {TwitterUserType.ElonMusk, "elonmusk"},
                 {TwitterUserType.SpaceX, "SpaceX"}
             };
+
+            _reloadingCacheLock = new object();
 
             var consumerKey = SettingsLoader.Data.TwitterConsumerKey;
             var consumerSecret = SettingsLoader.Data.TwitterConsumerSecret;
@@ -65,54 +68,57 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async Task ReloadCachedTweetsAsync()
         {
-            if (_reloadingCache)
+            if (!System.Threading.Monitor.TryEnter(_reloadingCacheLock))
             {
                 return;
             }
 
-            _reloadingCache = true;
-
-            using (var databaseContext = new DatabaseContext())
+            try
             {
-                _logger.Info("Twitter reload cached tweets starts");
-
-                foreach (var account in _users)
+                using (var databaseContext = new DatabaseContext())
                 {
-                    var firstRequest = true;
-                    var minTweetId = long.MaxValue;
+                    _logger.Info("Twitter reload cached tweets starts");
 
-                    while (true)
+                    foreach (var account in _users)
                     {
-                        var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
-                        {
-                            MaxId = firstRequest ? -1 : minTweetId - 1,
-                            MaximumNumberOfTweetsToRetrieve = 200
-                        });
+                        var firstRequest = true;
+                        var minTweetId = long.MaxValue;
 
-                        if (!messages.Any())
+                        while (true)
                         {
-                            break;
+                            var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
+                            {
+                                MaxId = firstRequest ? -1 : minTweetId - 1,
+                                MaximumNumberOfTweetsToRetrieve = 200
+                            });
+
+                            if (!messages.Any())
+                            {
+                                break;
+                            }
+
+                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)))
+                            {
+                                await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
+                            }
+
+                            minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
+                            firstRequest = false;
                         }
 
-                        foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)))
-                        {
-                            await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
-                        }
-
-                        minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
-                        firstRequest = false;
+                        _logger.Info($"Twitter user ({account.Value}) done");
                     }
 
-                    _logger.Info($"Twitter user ({account.Value}) done");
+                    await databaseContext.SaveChangesAsync();
+
+                    var tweetsCount = await databaseContext.CachedTweets.CountAsync();
+                    _logger.Info($"Twitter download finished ({tweetsCount} tweets downloaded)");
                 }
-
-                await databaseContext.SaveChangesAsync();
-
-                var tweetsCount = await databaseContext.CachedTweets.CountAsync();
-                _logger.Info($"Twitter download finished ({tweetsCount} tweets downloaded)");
             }
-
-            _reloadingCache = false;
+            finally
+            {
+                System.Threading.Monitor.Exit(_reloadingCacheLock);
+            }
         }
 
         private async void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
