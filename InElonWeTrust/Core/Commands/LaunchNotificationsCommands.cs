@@ -2,10 +2,12 @@
 using System.Globalization;
 using System.Text;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -18,78 +20,31 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly SubscriptionsService _subscriptionsService;
         private readonly LaunchNotificationsService _launchNotificationsService;
+        private readonly LaunchNotificationEmbedBuilder _launchNotificationEmbedBuilder;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService)
+        public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService, LaunchNotificationEmbedBuilder launchNotificationEmbedBuilder)
         {
             _subscriptionsService = subscriptionsService;
             _launchNotificationsService = launchNotificationsService;
+            _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
             _launchNotificationsService.OnLaunchNoification += LaunchNotificationsOnLaunchNoification;
         }
 
         private async void LaunchNotificationsOnLaunchNoification(object sender, LaunchNotification launchNotification)
         {
-            var oldLaunchState = launchNotification.OldLaunchState;
-            var launch = launchNotification.NewLaunchState;
+            var embed = _launchNotificationEmbedBuilder.Build(launchNotification);
+            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
-            };
+            var timeLeft = (launchNotification.NewLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
 
-            var timeLeft = (launch.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
-
-            switch (launchNotification.Type)
-            {
-                case LaunchNotificationType.Reminder:
-                {
-                    var timeLeftDescription = timeLeft > 60 ? Math.Ceiling(timeLeft / 60) + " hours" : Math.Ceiling(timeLeft) + " minutes";
-
-                    var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
-
-                    embed.AddField(":rocket: Launch is upcoming!", descriptionBuilder.ToString());
-                    break;
-                }
-
-                case LaunchNotificationType.Scrub:
-                {
-                    var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from " +
-                                              $"**{oldLaunchState.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)}** to " +
-                                              $"**{launch.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)}**.");
-
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
-
-                    embed.AddField(":warning: Scrub!", descriptionBuilder.ToString());
-                    break;
-                }
-
-                case LaunchNotificationType.NewTarget:
-                {
-                    var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
-                    descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** at {launchNotification.NewLaunchState.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC. ");
-
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
-
-                    embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());
-                    break;
-                }
-            }
-
-            embed.AddField("\u200b", "*Click below reaction to subscribe this flight and be notified on DM 10 minutes before the launch.*");
-
-            var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
-            foreach (var channelId in channelIds)
+            foreach (var channelData in channels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
                     var sentMessage = await channel.SendMessageAsync("", false, embed);
 
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
@@ -101,14 +56,32 @@ namespace InElonWeTrust.Core.Commands
                         databaseContext.SaveChanges();
                     }
 
-                    if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launch.Links.VideoLink != null)
+                    if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launchNotification.NewLaunchState.Links.VideoLink != null)
                     {
-                        await channel.SendMessageAsync($"**YouTube stream:** {launch.Links.VideoLink}");
+                        await channel.SendMessageAsync($"**YouTube stream:** {launchNotification.NewLaunchState.Links.VideoLink}");
                     }
+                }
+                catch (UnauthorizedException ex)
+                {
+                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                    var guildOwner = guild.Owner;
+
+                    _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+
+                    var ownerDm = await guildOwner.CreateDmChannelAsync();
+                    var errorEmbed = _launchNotificationEmbedBuilder.BuildUnauthorizedError();
+
+                    await ownerDm.SendMessageAsync(embed: errorEmbed);
+                }
+                catch (NotFoundException ex)
+                {
+                    _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send launch notification to the channel with id {channelId}");
+                    _logger.Error(ex, $"Can't send launch notification on the channel with id {channelData.ChannelId}");
                 }
             }
         }

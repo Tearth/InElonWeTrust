@@ -104,6 +104,7 @@ namespace InElonWeTrust.Core
                 .Add<FlickrEmbedGenerator>()
                 .Add<RedditEmbedGenerator>()
                 .Add<TwitterEmbedGenerator>()
+                .Add<LaunchNotificationEmbedBuilder>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()
