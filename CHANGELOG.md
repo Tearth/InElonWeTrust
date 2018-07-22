@@ -1,3 +1,2 @@
-*Under development*
-
-No official releases yet :(
+**[22-07-2018]**
+ - Initial release
