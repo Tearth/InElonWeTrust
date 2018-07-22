@@ -6,8 +6,10 @@ using System.Web;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -20,13 +22,15 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly RedditService _redditService;
         private readonly SubscriptionsService _subscriptionsService;
+        private readonly RedditEmbedGenerator _redditEmbedGenerator;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RedditCommands(RedditService redditService, SubscriptionsService subscriptionsService)
+        public RedditCommands(RedditService redditService, SubscriptionsService subscriptionsService, RedditEmbedGenerator redditEmbedGenerator)
         {
             _redditService = redditService;
             _subscriptionsService = subscriptionsService;
+            _redditEmbedGenerator = redditEmbedGenerator;
 
             _redditService.OnNewHotTopic += Reddit_OnNewHotTopic;
         }
@@ -39,41 +43,44 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var topic = await _redditService.GetRandomTopic();
-            await DisplayTopic(ctx.Channel, topic);
-        }
+            var embed = _redditEmbedGenerator.Build(topic);
 
-        private async Task DisplayTopic(DiscordChannel channel, RedditChildData topic)
-        {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                Title = $"Reddit: {HttpUtility.HtmlDecode(topic.Title)}",
-                Url = "https://www.reddit.com" + topic.Permalink,
-                ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
-            };
-
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"{topic.Author} | {topic.Upvotes} upvotes\r\n");
-            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToUniversalTime().ToString("F", CultureInfo.InvariantCulture) + " UTC");
-
-            embed.AddField("\u200b", contentBuilder.ToString());
-
-            await channel.SendMessageAsync("", false, embed);
+            await ctx.RespondAsync(embed: embed);
         }
 
         private async void Reddit_OnNewHotTopic(object sender, RedditChildData e)
         {
-            var channelIds = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
-            foreach (var channelId in channelIds)
+            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
+            foreach (var channelData in channels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(channelId);
-                    await DisplayTopic(channel, e);
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                    var embed = _redditEmbedGenerator.Build(e);
+
+                    await channel.SendMessageAsync(embed: embed);
+                }
+                catch (UnauthorizedException ex)
+                {
+                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.ChannelId));
+                    var guildOwner = guild.Owner;
+
+                    _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+
+                    var ownerDm = await guildOwner.CreateDmChannelAsync();
+                    var errorEmbed = _redditEmbedGenerator.BuildUnauthorizedError();
+
+                    await ownerDm.SendMessageAsync(embed: errorEmbed);
+                }
+                catch (NotFoundException ex)
+                {
+                    _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send hot reddit topic to the channel with id {channelId}");
+                    _logger.Error(ex, $"Can't send Reddit topic on the channel with id {channelData.ChannelId}");
                 }
             }
         }

@@ -92,7 +92,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send flickr photo on the channel with id {channelData.ChannelId}");
+                    _logger.Error(ex, $"Can't send Flickr photo on the channel with id {channelData.ChannelId}");
                 }
             }
         }
