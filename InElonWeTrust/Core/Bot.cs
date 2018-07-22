@@ -95,6 +95,8 @@ namespace InElonWeTrust.Core
             return new DependencyCollectionBuilder()
                 .AddInstance(_oddity)
                 .AddInstance(_cacheService)
+                .Add<LaunchInfoEmbedGenerator>()
+                .Add<ChangelogEmbedGenerator>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()
@@ -105,7 +107,6 @@ namespace InElonWeTrust.Core
                 .Add<RedditService>()
                 .Add<SubscriptionsService>()
                 .Add<TwitterService>()
-                .Add<LaunchInfoEmbedGenerator>()
                 .Add<UserLaunchSubscriptionsService>()
                 .Build();
         }

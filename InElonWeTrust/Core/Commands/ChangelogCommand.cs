@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
-using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Changelog;
 
 namespace InElonWeTrust.Core.Commands
@@ -13,10 +12,12 @@ namespace InElonWeTrust.Core.Commands
     public class ChangelogCommand
     {
         private readonly ChangelogService _changelogService;
+        private readonly ChangelogEmbedGenerator _changelogEmbedGenerator;
 
-        public ChangelogCommand(ChangelogService changelogService)
+        public ChangelogCommand(ChangelogService changelogService, ChangelogEmbedGenerator changelogEmbedGenerator)
         {
             _changelogService = changelogService;
+            _changelogEmbedGenerator = changelogEmbedGenerator;
         }
 
         [Command("Changelog")]
@@ -25,13 +26,8 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
             var changelog = await _changelogService.GetChangelog();
-            embed.AddField("Changelog", changelog);
+            var embed = _changelogEmbedGenerator.Build(changelog);
 
             await ctx.RespondAsync("", false, embed);
         }
