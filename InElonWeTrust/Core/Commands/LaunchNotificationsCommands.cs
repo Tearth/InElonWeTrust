@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
-using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Subscriptions;
 using NLog;
@@ -20,10 +16,10 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Notifications)]
     public class LaunchNotificationsCommands
     {
-        private SubscriptionsService _subscriptionsService;
-        private LaunchNotificationsService _launchNotificationsService;
+        private readonly SubscriptionsService _subscriptionsService;
+        private readonly LaunchNotificationsService _launchNotificationsService;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService)
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -15,7 +12,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class ChangelogCommand
     {
-        private ChangelogService _changelogService;
+        private readonly ChangelogService _changelogService;
 
         public ChangelogCommand(ChangelogService changelogService)
         {

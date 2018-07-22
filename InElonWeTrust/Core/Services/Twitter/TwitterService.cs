@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -13,7 +12,6 @@ using Tweetinvi.Events;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
 using Tweetinvi.Streaming;
-using LogLevel = DSharpPlus.LogLevel;
 
 namespace InElonWeTrust.Core.Services.Twitter
 {
@@ -21,10 +19,10 @@ namespace InElonWeTrust.Core.Services.Twitter
     {
         public event EventHandler<ITweet> OnNewTweet;
 
-        private Dictionary<TwitterUserType, string> _users;
+        private readonly Dictionary<TwitterUserType, string> _users;
         private IFilteredStream _stream;
         private bool _reloadingCache;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TwitterService()
         {

@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.Settings
     public static class SettingsLoader
     {
         public static SettingsContainer Data { get; private set; }
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const string ConfigsPatch = "Settings/";
 
         static SettingsLoader()

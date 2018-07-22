@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Notifications)]
     public class SubscriptionCommands
     {
-        private SubscriptionsService _subscriptionsService;
+        private readonly SubscriptionsService _subscriptionsService;
 
         public SubscriptionCommands(SubscriptionsService subscriptionsService)
         {

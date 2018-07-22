@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Forms.VisualStyles;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
-using InElonWeTrust.Core.Services.Pagination;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Cache
 {
     public class CacheService
     {
-        private Dictionary<CacheContentType, Func<string, Task<object>>> _dataProviders;
-        private Dictionary<Tuple<CacheContentType, string>, CacheItem> _items;
+        private readonly Dictionary<CacheContentType, Func<string, Task<object>>> _dataProviders;
+        private readonly Dictionary<Tuple<CacheContentType, string>, CacheItem> _items;
 
-        private Timer _cacheStatsTimer;
+        private readonly Timer _cacheStatsTimer;
         private int _cacheItemsAdded;
         private int _cacheItemsHitted;
         private int _cacheItemsUpdated;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int CacheItemLifeLengthMinutes = 30;
         private const int IntervalMinutes = 15;

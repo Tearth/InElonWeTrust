@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
 {
     public class SubscriptionsService
     {
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task<bool> AddSubscriptionAsync(ulong channelId, SubscriptionType type)
         {

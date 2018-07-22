@@ -1,4 +1,4 @@
-﻿namespace InElonWeTrust.Core.Services.Pagination
+﻿namespace InElonWeTrust.Core.Services.Cache
 {
     public enum CacheContentType
     {

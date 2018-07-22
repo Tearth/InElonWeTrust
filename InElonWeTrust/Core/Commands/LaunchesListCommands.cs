@@ -22,9 +22,9 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Launches)]
     public class LaunchesListCommands
     {
-        private OddityCore _oddity;
-        private PaginationService _paginationService;
-        private CacheService _cacheService;
+        private readonly OddityCore _oddity;
+        private readonly PaginationService _paginationService;
+        private readonly CacheService _cacheService;
 
         private const int _missionNumberLength = 4;
         private const int _missionNameLength = 23;
@@ -34,7 +34,7 @@ namespace InElonWeTrust.Core.Commands
 
         private int _totalLength => _missionNumberLength + _missionNameLength + _launchDateLength + _siteNameLength + _landingLength;
 
-        private Dictionary<CacheContentType, string> _listHeader;
+        private readonly Dictionary<CacheContentType, string> _listHeader;
 
         public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService)
         {

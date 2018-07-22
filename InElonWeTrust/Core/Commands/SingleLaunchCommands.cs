@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -14,20 +11,17 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
-using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
 using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launch.Rocket.FirstStage;
-using Oddity.API.Models.Launch.Rocket.SecondStage;
 
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Launches)]
     public class SingleLaunchCommands
     {
-        private OddityCore _oddity;
-        private CacheService _cacheService;
-        private LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
+        private readonly OddityCore _oddity;
+        private readonly CacheService _cacheService;
+        private readonly LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
 
         public SingleLaunchCommands(OddityCore oddity, CacheService cacheService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
         {

@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class PingCommand
     {
-        private DateTime _startTime;
+        private readonly DateTime _startTime;
 
         public PingCommand()
         {

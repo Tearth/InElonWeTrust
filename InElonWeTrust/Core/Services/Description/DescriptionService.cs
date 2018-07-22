@@ -9,10 +9,10 @@ namespace InElonWeTrust.Core.Services.Description
 {
     public class DescriptionService
     {
-        private Timer _descriptionRefreshTimer;
-        private OddityCore _oddity;
+        private readonly Timer _descriptionRefreshTimer;
+        private readonly OddityCore _oddity;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int InitialIntervalSeconds = 5;
         private const int IntervalMinutes = 30;

@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Services.Cache;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Pagination
 {
     public class PaginationService
     {
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string FirstEmojiName = ":track_previous:";
         private const string LeftEmojiName = ":arrow_left:";

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
@@ -16,16 +15,15 @@ namespace InElonWeTrust.Core.Services.Reddit
     {
         public event EventHandler<RedditChildData> OnNewHotTopic;
 
-        private Timer _notificationsUpdateTimer;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int IntervalMinutes = 15;
 
         public RedditService()
         {
-            _notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
-            _notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
-            _notificationsUpdateTimer.Start();
+            var notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
+            notificationsUpdateTimer.Start();
         }
 
         public async Task<RedditChildData> GetRandomTopic()

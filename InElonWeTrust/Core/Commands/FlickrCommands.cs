@@ -17,10 +17,10 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Media)]
     public class FlickrCommands
     {
-        private FlickrService _flickrService;
-        private SubscriptionsService _subscriptionsService;
+        private readonly FlickrService _flickrService;
+        private readonly SubscriptionsService _subscriptionsService;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public FlickrCommands(FlickrService flickrService, SubscriptionsService subscriptionsService)
         {

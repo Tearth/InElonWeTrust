@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -15,7 +13,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class UsefulLinksCommand
     {
-        private UsefulLinksService _userfulLunksService;
+        private readonly UsefulLinksService _userfulLunksService;
 
         public UsefulLinksCommand(UsefulLinksService userfulLunksService)
         {

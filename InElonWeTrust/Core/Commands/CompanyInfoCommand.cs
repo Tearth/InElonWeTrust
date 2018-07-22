@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +19,9 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CompanyInfoCommand
     {
-        private OddityCore _oddity;
-        private PaginationService _paginationService;
-        private CacheService _cacheService;
+        private readonly OddityCore _oddity;
+        private readonly PaginationService _paginationService;
+        private readonly CacheService _cacheService;
 
         private const int _idLength = 4;
         private const int _dateLength = 23;

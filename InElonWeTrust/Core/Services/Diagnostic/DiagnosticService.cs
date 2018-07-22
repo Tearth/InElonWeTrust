@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Timers;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -13,8 +10,8 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 {
     public class DiagnosticService
     {
-        private Timer _displayDiagnosticTimer;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Timer _displayDiagnosticTimer;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int IntervalMinutes = 30;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,7 +9,6 @@ using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
-using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
 using NLog;
@@ -20,10 +18,10 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Media)]
     public class RedditCommands
     {
-        private RedditService _redditService;
-        private SubscriptionsService _subscriptionsService;
+        private readonly RedditService _redditService;
+        private readonly SubscriptionsService _subscriptionsService;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public RedditCommands(RedditService redditService, SubscriptionsService subscriptionsService)
         {

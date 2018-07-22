@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using Oddity.API.Models.Launch;
@@ -146,27 +143,27 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var reusedPartsList = new List<string>();
 
-            if (reused.Core.HasValue && reused.Core.Value)
+            if (reused.Core ?? false)
             {
                 reusedPartsList.Add("Core");
             }
 
-            if (reused.Capsule.HasValue && reused.Capsule.Value)
+            if (reused.Capsule ?? false)
             {
                 reusedPartsList.Add("Capsule");
             }
 
-            if (reused.Fairings.HasValue && reused.Fairings.Value)
+            if (reused.Fairings ?? false)
             {
                 reusedPartsList.Add("Fairings");
             }
 
-            if (reused.FirstSideCore.HasValue && reused.FirstSideCore.Value)
+            if (reused.FirstSideCore ?? false)
             {
                 reusedPartsList.Add("First side core");
             }
 
-            if (reused.SecondSideCore.HasValue && reused.SecondSideCore.Value)
+            if (reused.SecondSideCore ?? false)
             {
                 reusedPartsList.Add("Second side core");
             }

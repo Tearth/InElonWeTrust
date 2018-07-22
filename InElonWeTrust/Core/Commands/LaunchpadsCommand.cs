@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,7 +10,6 @@ using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
-using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
 using Oddity.API.Models.Launchpad;
 
@@ -20,8 +18,8 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class LaunchpadsCommand
     {
-        private OddityCore _oddity;
-        private CacheService _cacheService;
+        private readonly OddityCore _oddity;
+        private readonly CacheService _cacheService;
 
         public LaunchpadsCommand(OddityCore oddity, CacheService cacheService)
         {

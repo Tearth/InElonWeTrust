@@ -20,10 +20,10 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Media)]
     public class TwitterCommands
     {
-        private TwitterService _twitterService;
-        private SubscriptionsService _subscriptionsService;
+        private readonly TwitterService _twitterService;
+        private readonly SubscriptionsService _subscriptionsService;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public TwitterCommands(TwitterService twitterService, SubscriptionsService subscriptionsService)
         {

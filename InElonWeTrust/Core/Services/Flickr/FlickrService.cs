@@ -13,7 +13,6 @@ using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NLog;
-using LogLevel = DSharpPlus.LogLevel;
 
 namespace InElonWeTrust.Core.Services.Flickr
 {
@@ -21,9 +20,9 @@ namespace InElonWeTrust.Core.Services.Flickr
     {
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
-        private Timer _imageRangesUpdateTimer;
+        private readonly Timer _imageRangesUpdateTimer;
         private bool _reloadingCache;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
         private const int IntervalMinutes = 15;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +9,7 @@ using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
-using InElonWeTrust.Core.Services.Pagination;
 using Oddity;
-using Oddity.API.Models.Launchpad;
 using Oddity.API.Models.Rocket;
 
 namespace InElonWeTrust.Core.Commands
@@ -21,8 +17,8 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class RocketsCommand
     {
-        private OddityCore _oddity;
-        private CacheService _cacheService;
+        private readonly OddityCore _oddity;
+        private readonly CacheService _cacheService;
 
         private const int FieldLength = 30;
 

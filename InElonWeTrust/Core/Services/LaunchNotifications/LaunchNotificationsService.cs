@@ -13,12 +13,12 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
     {
         public event EventHandler<LaunchNotification> OnLaunchNoification;
 
-        private Timer _notificationsUpdateTimer;
-        private OddityCore _oddity;
+        private readonly Timer _notificationsUpdateTimer;
+        private readonly OddityCore _oddity;
         private LaunchInfo _nextLaunchState;
-        private List<int> _notificationTimes;
+        private readonly List<int> _notificationTimes;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int IntervalMinutes = 1;
 

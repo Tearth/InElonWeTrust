@@ -9,7 +9,7 @@ namespace InElonWeTrust
 {
     internal class Program
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private static async Task Main(string[] args)
         {

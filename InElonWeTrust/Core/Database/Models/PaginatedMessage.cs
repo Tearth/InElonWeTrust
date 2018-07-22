@@ -1,4 +1,4 @@
-﻿using InElonWeTrust.Core.Services.Pagination;
+﻿using InElonWeTrust.Core.Services.Cache;
 
 namespace InElonWeTrust.Core.Database.Models
 {

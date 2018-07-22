@@ -5,7 +5,7 @@ namespace InElonWeTrust.Core.Helpers
 {
     public static class Extensions
     {
-        private static Random _random;
+        private static readonly Random _random;
 
         static Extensions()
         {

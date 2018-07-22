@@ -7,20 +7,18 @@ using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
-using InElonWeTrust.Core.Services.Pagination;
 using NLog;
-using Oddity;
 using Oddity.API.Models.Launch;
 
 namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 {
     public class UserLaunchSubscriptionsService
     {
-        private CacheService _cacheService;
-        private LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
-        private Timer _notificationsUpdateTimer;
+        private readonly CacheService _cacheService;
+        private readonly LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
+        private readonly Timer _notificationsUpdateTimer;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private bool _notified;
 

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -28,7 +26,6 @@ using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
-using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using Oddity;
 
@@ -43,7 +40,7 @@ namespace InElonWeTrust.Core
         private CacheService _cacheService;
         private DiagnosticService _diagnosticService;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task Run()
         {

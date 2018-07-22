@@ -16,9 +16,9 @@ namespace InElonWeTrust.Core.Helpers
     {
         private string _commandName;
         private string _commandDescription;
-        private List<string> _aliases;
-        private List<string> _parameters;
-        private Dictionary<GroupType, List<string>> _subCommands;
+        private readonly List<string> _aliases;
+        private readonly List<string> _parameters;
+        private readonly Dictionary<GroupType, List<string>> _subCommands;
 
         public CustomHelpFormatter()
         {
