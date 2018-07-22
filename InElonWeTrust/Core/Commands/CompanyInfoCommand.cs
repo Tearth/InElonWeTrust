@@ -140,7 +140,7 @@ namespace InElonWeTrust.Core.Commands
             foreach (var historyEvent in itemsToDisplay)
             {
                 historyBuilder.Append($"{i}.".PadRight(_idLength));
-                historyBuilder.Append(historyEvent.EventDate.Value.ToString("G").PadRight(_dateLength));
+                historyBuilder.Append(historyEvent.EventDate.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(_dateLength));
                 historyBuilder.Append(historyEvent.Title.PadRight(_titleLength));
                 historyBuilder.Append("\r\n");
 

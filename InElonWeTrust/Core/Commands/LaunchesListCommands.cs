@@ -162,7 +162,7 @@ namespace InElonWeTrust.Core.Commands
             {
                 launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(_missionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(_missionNameLength - 5).PadRight(_missionNameLength));
-                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("G").PadRight(_launchDateLength));
+                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(_launchDateLength));
                 launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(_siteNameLength));
 
                 var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
