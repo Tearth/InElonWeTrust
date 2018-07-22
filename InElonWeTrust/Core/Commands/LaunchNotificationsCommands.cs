@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
@@ -16,7 +17,7 @@ using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":warning:", "Launch notifications", "Commands to manage notifications when launch is incoming")]
+    [Commands(GroupType.Notifications)]
     public class LaunchNotificationsCommands
     {
         private SubscriptionsService _subscriptionsService;

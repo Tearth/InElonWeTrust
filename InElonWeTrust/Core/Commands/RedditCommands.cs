@@ -8,6 +8,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Reddit;
@@ -16,7 +17,7 @@ using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":frame_photo:", "Media", "Commands related with Twitter, Flickr and Reddit")]
+    [Commands(GroupType.Media)]
     public class RedditCommands
     {
         private RedditService _redditService;

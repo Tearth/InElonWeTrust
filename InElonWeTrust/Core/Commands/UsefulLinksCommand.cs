@@ -6,12 +6,13 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.UsefulLinks;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":question:", "Misc", "Other strange commands")]
+    [Commands(GroupType.Miscellaneous)]
     public class UsefulLinksCommand
     {
         private UsefulLinksService _userfulLunksService;

@@ -5,12 +5,13 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":newspaper2:", "Notifications", "subscribe to get all newest content")]
+    [Commands(GroupType.Notifications)]
     public class SubscriptionCommands
     {
         private SubscriptionsService _subscriptionsService;

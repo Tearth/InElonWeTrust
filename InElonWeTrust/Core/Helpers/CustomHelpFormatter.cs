@@ -8,8 +8,7 @@ using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
-using InElonWeTrust.Core.Settings;
-using Microsoft.Extensions.Primitives;
+using InElonWeTrust.Core.Commands.Definitions;
 
 namespace InElonWeTrust.Core.Helpers
 {
@@ -19,13 +18,13 @@ namespace InElonWeTrust.Core.Helpers
         private string _commandDescription;
         private List<string> _aliases;
         private List<string> _parameters;
-        private Dictionary<CommandsAttribute, List<string>> _subCommands;
+        private Dictionary<GroupType, List<string>> _subCommands;
 
         public CustomHelpFormatter()
         {
             _aliases = new List<string>();
             _parameters = new List<string>();
-            _subCommands = new Dictionary<CommandsAttribute, List<string>>();
+            _subCommands = new Dictionary<GroupType, List<string>>();
         }
 
         public IHelpFormatter WithCommandName(string name)
@@ -90,18 +89,18 @@ namespace InElonWeTrust.Core.Helpers
 
                         if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
                         {
-                            if (!_subCommands.ContainsKey(groupAttribute))
+                            if (!_subCommands.ContainsKey(groupAttribute.GroupType))
                             {
-                                _subCommands.Add(groupAttribute, new List<string>());
+                                _subCommands.Add(groupAttribute.GroupType, new List<string>());
                             }
 
-                            _subCommands[groupAttribute].Add($"`{commandAttribute.Name}`");
+                            _subCommands[groupAttribute.GroupType].Add($"`{commandAttribute.Name}`");
                         }
                     }
 
-                    if (_subCommands.ContainsKey(groupAttribute))
+                    if (_subCommands.ContainsKey(groupAttribute.GroupType))
                     {
-                        _subCommands[groupAttribute] = _subCommands[groupAttribute].OrderBy(p => p).ToList();
+                        _subCommands[groupAttribute.GroupType] = _subCommands[groupAttribute.GroupType].OrderBy(p => p).ToList();
                     }
                 }
             }
@@ -123,7 +122,7 @@ namespace InElonWeTrust.Core.Helpers
 
             return _commandName == null ? BuildGeneralHelp(embed) : BuildCommandHelp(embed);
         }
-        
+
         private CommandHelpMessage BuildGeneralHelp(DiscordEmbedBuilder embed)
         {
             var helpBuilder = new StringBuilder();
@@ -138,11 +137,13 @@ namespace InElonWeTrust.Core.Helpers
             embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
             helpBuilder.Clear();
 
-            var orderedSubCommands = _subCommands.OrderBy(p => p.Key.Group).ToList();
+            var orderedSubCommands = _subCommands.OrderBy(p => p.Key).ToList();
             foreach (var group in orderedSubCommands)
             {
+                var groupDescription = GetGroupDescription(group.Key);
+
                 helpBuilder.Append($"\r\n\r\n");
-                helpBuilder.Append($"{group.Key.Icon} **{group.Key.Group}** *({group.Key.Description}):*\r\n");
+                helpBuilder.Append($"{groupDescription.Icon} **{groupDescription.Group}** *({groupDescription.Description}):*\r\n");
                 helpBuilder.Append($"{string.Join(", ", group.Value)}");
             }
 
@@ -159,6 +160,16 @@ namespace InElonWeTrust.Core.Helpers
             if (_parameters.Count > 0) embed.AddField("Parameters", string.Join("\r\n", _parameters));
 
             return new CommandHelpMessage(string.Empty, embed);
+        }
+
+        private GroupTypeDescriptionAttribute GetGroupDescription(GroupType group)
+        {
+            var groupType = group.GetType();
+            var enumMember = groupType.GetMember(group.ToString())[0];
+            var attributes = enumMember.GetCustomAttributes(typeof(GroupTypeDescriptionAttribute));
+            var groupTypeDescription = (GroupTypeDescriptionAttribute)attributes.ElementAt(0);
+
+            return groupTypeDescription;
         }
     }
 }

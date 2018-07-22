@@ -8,6 +8,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
@@ -21,7 +22,7 @@ using Oddity.API.Models.Launch.Rocket.SecondStage;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":rocket:", "Launches", "Information about all SpaceX launches")]
+    [Commands(GroupType.Launches)]
     public class SingleLaunchCommands
     {
         private OddityCore _oddity;

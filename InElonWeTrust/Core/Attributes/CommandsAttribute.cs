@@ -1,36 +1,17 @@
 ﻿using System;
+using InElonWeTrust.Core.Commands;
+using InElonWeTrust.Core.Commands.Definitions;
 
 namespace InElonWeTrust.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class CommandsAttribute : Attribute
     {
-        public string Icon { get; }
-        public string Group { get; }
-        public string Description { get; }
+        public GroupType GroupType { get; }
 
-        public CommandsAttribute(string icon, string group, string description)
+        public CommandsAttribute(GroupType groupType)
         {
-            Icon = icon;
-            Group = group;
-            Description = description;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is CommandsAttribute item))
-            {
-                return false;
-            }
-
-            return Icon == item.Icon &&
-                   Group == item.Group &&
-                   Description == item.Description;
-        }
-
-        public override int GetHashCode()
-        {
-            return Icon.GetHashCode() + Group.GetHashCode() + Description.GetHashCode();
+            GroupType = groupType;
         }
     }
 }

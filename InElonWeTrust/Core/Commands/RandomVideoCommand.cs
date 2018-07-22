@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(":question:", "Misc", "Other strange commands")]
+    [Commands(GroupType.Miscellaneous)]
     public class RandomVideoCommand
     {
         [Command("RandomVideo")]
