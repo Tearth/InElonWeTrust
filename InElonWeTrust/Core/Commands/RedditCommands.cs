@@ -62,7 +62,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (UnauthorizedException ex)
                 {
-                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.ChannelId));
+                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
                     _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
