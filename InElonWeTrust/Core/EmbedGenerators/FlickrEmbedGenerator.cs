@@ -21,5 +21,17 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField($"Flickr: {photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
             return embed;
         }
+
+        public DiscordEmbedBuilder BuildUnauthorizedError()
+        {
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor(Constants.EmbedErrorColor)
+            };
+
+            embed.AddField(":octagonal_sign: Oops!", "It seems that bot have no enough permissions to post Flickr photos. Check it and subscribe Flickr again.");
+
+            return embed;
+        }
     }
 }

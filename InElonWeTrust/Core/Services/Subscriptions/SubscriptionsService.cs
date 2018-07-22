@@ -76,14 +76,12 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             }
         }
 
-        public List<ulong> GetSubscribedChannels(SubscriptionType type)
+        public List<SubscribedChannel> GetSubscribedChannels(SubscriptionType type)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 return databaseContext.SubscribedChannels
                     .Where(p => p.SubscriptionType == type)
-                    .ToList()
-                    .Select(p => ulong.Parse(p.ChannelId))
                     .ToList();
             }
         }

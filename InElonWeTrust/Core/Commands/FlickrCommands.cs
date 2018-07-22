@@ -62,27 +62,37 @@ namespace InElonWeTrust.Core.Commands
 
         private async void FlickrServiceOnNewFlickrServicePhoto(object sender, CachedFlickrPhoto e)
         {
-            var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
-            foreach (var channelId in channels)
+            var subscribedChannels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
+            foreach (var channelData in subscribedChannels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(channelId);
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
                     var embed = _flickrEmbedGenerator.Build(e);
 
                     await channel.SendMessageAsync("", false, embed);
                 }
                 catch (UnauthorizedException ex)
                 {
+                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.ChannelId));
+                    var guildOwner = guild.Owner;
 
+                    _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+
+                    var ownerDm = await guildOwner.CreateDmChannelAsync();
+                    var errorEmbed = _flickrEmbedGenerator.BuildUnauthorizedError();
+
+                    await ownerDm.SendMessageAsync(embed: errorEmbed);
                 }
                 catch (NotFoundException ex)
                 {
-
+                    _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send flickr photo to the channel with id {channelId}");
+                    _logger.Error(ex, $"Can't send flickr photo on the channel with id {channelData.ChannelId}");
                 }
             }
         }

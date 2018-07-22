@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public FlickrService()
         {
-            _imageRangesUpdateTimer = new Timer(2000);
+            _imageRangesUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
             _imageRangesUpdateTimer.Start();
 
