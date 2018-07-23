@@ -8,6 +8,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.EmbedGenerators;
@@ -188,44 +189,65 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Commands_CommandErrored(CommandErrorEventArgs e)
+        private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
             var errorEmbedBuilder = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
 
+            var sendErrorMessageOnChannel = true;
             switch (e.Exception)
             {
                 case CommandNotFoundException _:
                 {
                     errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+
                     break;
                 }
 
                 case ArgumentException _:
                 {
                     errorEmbedBuilder.AddField(":octagonal_sign: Error", $"Invalid parameter, type `e!help {e.Command.Name}` to get more info.");
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+
                     break;
                 }
 
                 case ChecksFailedException _:
                 {
                     errorEmbedBuilder.AddField(":octagonal_sign: Error", "You have no permissions to do this action. Remember that some commands (related with subscriptions) requires Manage Messages permission.");
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+
+                    break;
+                }
+
+                case UnauthorizedException _:
+                {
+                    errorEmbedBuilder.AddField(":octagonal_sign: Error", $"It seems that bot has no required permission to write on channel {e.Context.Channel.Name}.");
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+
+                    var userDm = await Client.CreateDmAsync(e.Context.User);
+                    await userDm.SendMessageAsync(embed: errorEmbedBuilder);
+
+                    sendErrorMessageOnChannel = false;
                     break;
                 }
 
                 default:
                 {
                     errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been reported about this accident.");
+                    _logger.Error(e.Exception, GetCommandInfo(e.Context));
+
                     break;
                 }
             }
 
-            _logger.Error(e.Exception, GetCommandInfo(e.Context));
-            e.Context.RespondAsync("", false, errorEmbedBuilder);
-
-            return Task.CompletedTask;
+            if (sendErrorMessageOnChannel)
+            {
+                await e.Context.RespondAsync("", false, errorEmbedBuilder);
+            }
         }
 
         private string GetCommandInfo(CommandContext ctx)
