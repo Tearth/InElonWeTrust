@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.UsefulLinks;
 
@@ -14,10 +15,12 @@ namespace InElonWeTrust.Core.Commands
     public class UsefulLinksCommand
     {
         private readonly UsefulLinksService _userfulLunksService;
+        private readonly UsefulLinksEmbedGenerator _usefulLinksEmbedGenerator;
 
-        public UsefulLinksCommand(UsefulLinksService userfulLunksService)
+        public UsefulLinksCommand(UsefulLinksService userfulLunksService, UsefulLinksEmbedGenerator usefulLinksEmbedGenerator)
         {
             _userfulLunksService = userfulLunksService;
+            _usefulLinksEmbedGenerator = usefulLinksEmbedGenerator;
         }
 
         [Command("Links")]
@@ -27,32 +30,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var links = _userfulLunksService.GetUsefulLinks();
-            var embedBuilder = new DiscordEmbedBuilder
-            {
-                Title = "Useful links",
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
+            var embed = _usefulLinksEmbedGenerator.Build(links);
 
-            var firstColumnContentBuilder = new StringBuilder();
-            var secondColumnContentBuilder = new StringBuilder();
-
-            var firstColumn = links.GetRange(0, links.Count / 2);
-            var secondColumn = links.GetRange(links.Count / 2, links.Count - (links.Count / 2));
-
-            foreach (var link in firstColumn)
-            {
-                firstColumnContentBuilder.Append($"[{link.Name}]({link.Link})\r\n");
-            }
-
-            foreach (var link in secondColumn)
-            {
-                secondColumnContentBuilder.Append($"[{link.Name}]({link.Link})\r\n");
-            }
-
-            embedBuilder.AddField("\u200b", firstColumnContentBuilder.ToString(), true);
-            embedBuilder.AddField("\u200b", secondColumnContentBuilder.ToString(), true);
-
-            await ctx.RespondAsync("", false, embedBuilder);
+            await ctx.RespondAsync(embed: embed);
         }
     }
 }
