@@ -108,6 +108,7 @@ namespace InElonWeTrust.Core
                 .Add<LaunchpadsEmbedGenerator>()
                 .Add<QuoteEmbedGenerator>()
                 .Add<RocketsEmbedGenerator>()
+                .Add<SubscriptionEmbedGenerator>()
                 .Add<LaunchNotificationEmbedBuilder>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()

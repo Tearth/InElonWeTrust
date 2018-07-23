@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 
@@ -15,10 +16,12 @@ namespace InElonWeTrust.Core.Commands
     public class SubscriptionCommands
     {
         private readonly SubscriptionsService _subscriptionsService;
+        private readonly SubscriptionEmbedGenerator _subscriptionEmbedGenerator;
 
-        public SubscriptionCommands(SubscriptionsService subscriptionsService)
+        public SubscriptionCommands(SubscriptionsService subscriptionsService, SubscriptionEmbedGenerator subscriptionEmbedGenerator)
         {
             _subscriptionsService = subscriptionsService;
+            _subscriptionEmbedGenerator = subscriptionEmbedGenerator;
         }
 
         [Command("ToggleElonTwitter")]
@@ -28,10 +31,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ToggleElonTwitterNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, "Twitter has been subscribed! Now bot will post all newest tweets from " +
-                                           "[Elon Musk](https://twitter.com/elonmusk) profile.",
-                                           "Twitter subscription has been removed.",
-                                           SubscriptionType.ElonTwitter);
+            await ToggleNotifications(ctx, SubscriptionType.ElonTwitter);
         }
 
         [Command("ToggleSpaceXTwitter")]
@@ -41,10 +41,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ToggleSpaceXTwitterNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, "Twitter has been subscribed! Now bot will post all newest tweets from " +
-                                           "[SpaceX](https://twitter.com/SpaceX) profile.",
-                "Twitter subscription has been removed.",
-                SubscriptionType.SpaceXTwitter);
+            await ToggleNotifications(ctx, SubscriptionType.SpaceXTwitter);
         }
 
         [Command("ToggleFlickr")]
@@ -54,10 +51,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ToggleFlickrNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, "Flickr has been subscribed! Now bot will post all newest photos from " +
-                                           "[SpaceX](https://www.flickr.com/photos/spacex/) profile",
-                "Flickr subscribion has been removed.",
-                SubscriptionType.Flickr);
+            await ToggleNotifications(ctx, SubscriptionType.Flickr);
         }
 
         [Command("ToggleLaunches")]
@@ -67,10 +61,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ToggleLaunchNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, "Launch notifications has been subscribed! Now bot will post all newest information " +
-                                           "about upcoming launch.",
-                "Launch notifications subscription has been removed.",
-                SubscriptionType.NextLaunch);
+            await ToggleNotifications(ctx, SubscriptionType.NextLaunch);
         }
 
         [Command("ToggleReddit")]
@@ -80,10 +71,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task ToggleRedditNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, "Reddit notifications has been subscribed! Now bot will post all newest information " +
-                                           "about upcoming Reddit.",
-                "Reddit notifications subscription has been removed.",
-                SubscriptionType.Reddit);
+            await ToggleNotifications(ctx, SubscriptionType.Reddit);
         }
 
         [Command("EnableAllNotifications")]
@@ -129,45 +117,27 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
+            var status = await _subscriptionsService.GetSubscriptionStatusForChannel(ctx.Channel.Id);
+            var embed = _subscriptionEmbedGenerator.BuildStatus(status);
 
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"**Elon Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.ElonTwitter)}\r\n");
-            contentBuilder.Append($"**SpaceX Twitter:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.SpaceXTwitter)}\r\n");
-            contentBuilder.Append($"**Flickr:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Flickr)}\r\n");
-            contentBuilder.Append($"**Launches:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.NextLaunch)}\r\n");
-            contentBuilder.Append($"**Reddit:** {await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, SubscriptionType.Reddit)}");
-
-            embed.AddField("Notifications status", contentBuilder.ToString());
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(embed: embed);
         }
 
-        private async Task ToggleNotifications(CommandContext ctx, string messageOnAdd, string messageOnRemove, SubscriptionType type)
+        private async Task ToggleNotifications(CommandContext ctx,  SubscriptionType type)
         {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
+            DiscordEmbedBuilder embed;
             if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))
             {
                 await _subscriptionsService.RemoveSubscriptionAsync(ctx.Channel.Id, type);
-
-                embed.Color = new DiscordColor(Constants.EmbedColor);
-                embed.AddField(":rocket: Success!", messageOnRemove);
+                embed = _subscriptionEmbedGenerator.BuildMessageOnAdd(type);
             }
             else
             {
                 await _subscriptionsService.AddSubscriptionAsync(ctx.Guild.Id, ctx.Channel.Id, type);
-
-                embed.Color = new DiscordColor(Constants.EmbedColor);
-                embed.AddField(":rocket: Success!", messageOnAdd);
+                embed = _subscriptionEmbedGenerator.BuildMessageOnRemove(type);
             }
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(embed: embed);
         }
     }
 }

@@ -94,5 +94,17 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                 return await databaseContext.SubscribedChannels.AnyAsync(p => p.ChannelId == fixedChannelId && p.SubscriptionType == type);
             }
         }
+
+        public async Task<SubscriptionStatus> GetSubscriptionStatusForChannel(ulong channelId)
+        {
+            return new SubscriptionStatus
+            {
+                ElonTwitter = await IsChannelSubscribed(channelId, SubscriptionType.ElonTwitter),
+                SpaceXTwitter = await IsChannelSubscribed(channelId, SubscriptionType.SpaceXTwitter),
+                Flickr = await IsChannelSubscribed(channelId, SubscriptionType.Flickr),
+                Launches = await IsChannelSubscribed(channelId, SubscriptionType.NextLaunch),
+                Reddit = await IsChannelSubscribed(channelId, SubscriptionType.Reddit),
+            };
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace InElonWeTrust.Core.Helpers
 {
@@ -38,6 +39,13 @@ namespace InElonWeTrust.Core.Helpers
             convertedDateTime = convertedDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
 
             return convertedDateTime;
+        }
+
+        public static string ConvertToYesNo(this bool b, bool capitalize = true)
+        {
+            return capitalize ?
+               (b ? "Yes" : "No") :
+               (b ? "yes" : "no");
         }
     }
 }
