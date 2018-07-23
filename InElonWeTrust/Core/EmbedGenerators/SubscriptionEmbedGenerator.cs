@@ -9,8 +9,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class SubscriptionEmbedGenerator
     {
-        private Dictionary<SubscriptionType, string> _messagesOnAdd;
-        private Dictionary<SubscriptionType, string> _messagesOnRemove;
+        private readonly Dictionary<SubscriptionType, string> _messagesOnAdd;
+        private readonly Dictionary<SubscriptionType, string> _messagesOnRemove;
 
         public SubscriptionEmbedGenerator()
         {

@@ -14,12 +14,12 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class UsefulLinksCommand
     {
-        private readonly UsefulLinksService _userfulLunksService;
+        private readonly UsefulLinksService _usefulLinksService;
         private readonly UsefulLinksEmbedGenerator _usefulLinksEmbedGenerator;
 
-        public UsefulLinksCommand(UsefulLinksService userfulLunksService, UsefulLinksEmbedGenerator usefulLinksEmbedGenerator)
+        public UsefulLinksCommand(UsefulLinksService usefulLinksService, UsefulLinksEmbedGenerator usefulLinksEmbedGenerator)
         {
-            _userfulLunksService = userfulLunksService;
+            _usefulLinksService = usefulLinksService;
             _usefulLinksEmbedGenerator = usefulLinksEmbedGenerator;
         }
 
@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var links = _userfulLunksService.GetUsefulLinks();
+            var links = _usefulLinksService.GetUsefulLinks();
             var embed = _usefulLinksEmbedGenerator.Build(links);
 
             await ctx.RespondAsync(embed: embed);

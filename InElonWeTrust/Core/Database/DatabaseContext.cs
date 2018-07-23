@@ -25,7 +25,7 @@ namespace InElonWeTrust.Core.Database
 
         private static DbContextOptions GetOptions(string connectionString)
         {
-            return SqliteDbContextOptionsBuilderExtensions.UseSqlite(new DbContextOptionsBuilder(), connectionString).Options;
+            return new DbContextOptionsBuilder().UseSqlite(connectionString).Options;
         }
     }
 }

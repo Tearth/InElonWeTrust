@@ -11,7 +11,7 @@ namespace InElonWeTrust
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Target.Register<DiscordLogTarget>("Discord");

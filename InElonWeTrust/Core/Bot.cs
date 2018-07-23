@@ -252,11 +252,13 @@ namespace InElonWeTrust.Core
 
         private string GetCommandInfo(CommandContext ctx)
         {
-            var infoList = new List<string>();
-            infoList.Add($"Guild: {ctx.Guild.Name}");
-            infoList.Add($"Channel: {ctx.Channel.Name}");
-            infoList.Add($"User: {ctx.User.Username}");
-            infoList.Add($"Call: {ctx.Message.Content}");
+            var infoList = new List<string>
+            {
+                $"Guild: {ctx.Guild.Name}",
+                $"Channel: {ctx.Channel.Name}",
+                $"User: {ctx.User.Username}",
+                $"Call: {ctx.Message.Content}"
+            };
 
             return string.Join(", ", infoList);
         }

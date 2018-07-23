@@ -30,10 +30,10 @@ namespace InElonWeTrust.Core.Commands
             _launchNotificationsService = launchNotificationsService;
             _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
-            _launchNotificationsService.OnLaunchNoification += LaunchNotificationsOnLaunchNoification;
+            _launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
         }
 
-        private async void LaunchNotificationsOnLaunchNoification(object sender, LaunchNotification launchNotification)
+        private async void LaunchNotificationsOnLaunchNotification(object sender, LaunchNotification launchNotification)
         {
             var embed = _launchNotificationEmbedBuilder.Build(launchNotification);
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);

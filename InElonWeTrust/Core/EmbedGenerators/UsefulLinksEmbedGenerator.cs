@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var secondColumnContentBuilder = new StringBuilder();
 
             var firstColumn = links.GetRange(0, links.Count / 2);
-            var secondColumn = links.GetRange(links.Count / 2, links.Count - (links.Count / 2));
+            var secondColumn = links.GetRange(links.Count / 2, links.Count - links.Count / 2);
 
             foreach (var link in firstColumn)
             {

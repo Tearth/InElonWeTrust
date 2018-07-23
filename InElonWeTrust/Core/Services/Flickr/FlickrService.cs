@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private readonly Timer _imageRangesUpdateTimer;
-        private object _reloadingCacheLock;
+        private readonly object _reloadingCacheLock;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

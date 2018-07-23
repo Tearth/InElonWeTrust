@@ -8,30 +8,30 @@ namespace InElonWeTrust.Core.TableGenerators
 {
     public class CompanyHistoryTableGenerator
     {
-        private int _idLength = 4;
-        private int _dateLength = 23;
-        private int _titleLength = 45;
-        private int _totalLength => _idLength + _dateLength + _titleLength;
+        private const int IdLength = 4;
+        private const int DateLength = 23;
+        private const int TitleLength = 45;
+        private const int TotalLength = IdLength + DateLength + TitleLength;
 
         public string Build(List<HistoryEvent> history, int currentPage, string paginationFooter)
         {
             var historyBuilder = new StringBuilder();
             historyBuilder.Append("```");
 
-            historyBuilder.Append("No. ".PadRight(_idLength));
-            historyBuilder.Append("Date".PadRight(_dateLength));
-            historyBuilder.Append("Title".PadRight(_titleLength));
+            historyBuilder.Append("No. ".PadRight(IdLength));
+            historyBuilder.Append("Date".PadRight(DateLength));
+            historyBuilder.Append("Title".PadRight(TitleLength));
             historyBuilder.Append("\r\n");
-            historyBuilder.Append(new string('-', _totalLength));
+            historyBuilder.Append(new string('-', TotalLength));
             historyBuilder.Append("\r\n");
 
             var i = (currentPage - 1) * PaginationService.ItemsPerPage + 1;
 
             foreach (var historyEvent in history)
             {
-                historyBuilder.Append($"{i}.".PadRight(_idLength));
-                historyBuilder.Append(historyEvent.EventDate.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(_dateLength));
-                historyBuilder.Append(historyEvent.Title.PadRight(_titleLength));
+                historyBuilder.Append($"{i}.".PadRight(IdLength));
+                historyBuilder.Append(historyEvent.EventDate.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(DateLength));
+                historyBuilder.Append(historyEvent.Title.PadRight(TitleLength));
                 historyBuilder.Append("\r\n");
 
                 i++;

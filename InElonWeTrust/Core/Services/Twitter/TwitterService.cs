@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
         private IFilteredStream _stream;
-        private object _reloadingCacheLock;
+        private readonly object _reloadingCacheLock;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

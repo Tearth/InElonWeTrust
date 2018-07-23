@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.Settings
     public static class SettingsLoader
     {
         public static SettingsContainer Data { get; private set; }
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string ConfigsPatch = "Settings/";
 
         static SettingsLoader()
@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.Settings
         {
             var configPatch = GetConfigPatch();
 
-            _logger.Info($"Loading {configPatch}...");
+            Logger.Info($"Loading {configPatch}...");
             using (var jsonReader = new StreamReader(configPatch))
             {
                 var jsonContent = jsonReader.ReadToEnd();
@@ -30,9 +30,9 @@ namespace InElonWeTrust.Core.Settings
         private static string GetConfigPatch()
         {
 #if DEBUG
-            var configName = "debug.json";
+            const string configName = "debug.json";
 #else
-            var configName = "release.json";
+            const var configName = "release.json";
 #endif
 
             return ConfigsPatch + configName;

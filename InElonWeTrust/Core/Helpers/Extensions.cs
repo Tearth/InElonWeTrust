@@ -6,16 +6,16 @@ namespace InElonWeTrust.Core.Helpers
 {
     public static class Extensions
     {
-        private static readonly Random _random;
+        private static readonly Random Random;
 
         static Extensions()
         {
-            _random = new Random();
+            Random = new Random();
         }
 
         public static T GetRandomItem<T>(this List<T> enumerable)
         {
-            var index = _random.Next(0, enumerable.Count - 1);
+            var index = Random.Next(0, enumerable.Count - 1);
             return enumerable[index];
         }
 

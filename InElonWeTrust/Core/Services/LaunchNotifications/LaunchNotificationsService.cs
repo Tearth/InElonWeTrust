@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 {
     public class LaunchNotificationsService
     {
-        public event EventHandler<LaunchNotification> OnLaunchNoification;
+        public event EventHandler<LaunchNotification> OnLaunchNotification;
 
         private readonly Timer _notificationsUpdateTimer;
         private readonly OddityCore _oddity;
@@ -58,8 +58,8 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 {
                     if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
                     {
-                        OnLaunchNoification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
-                        _logger.Info($"Scrub notification sent to {OnLaunchNoification.GetInvocationList().Length} channels");
+                        OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
+                        _logger.Info($"Scrub notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
                     }
                     else
                     {
@@ -68,15 +68,15 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
                         if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
                         {
-                            OnLaunchNoification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
-                            _logger.Info($"Reminder notification sent to {OnLaunchNoification.GetInvocationList().Length} channels");
+                            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
+                            _logger.Info($"Reminder notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
                         }
                     }
                 }
                 else
                 {
-                    OnLaunchNoification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
-                    _logger.Info($"New target notification sent to {OnLaunchNoification.GetInvocationList().Length} channels");
+                    OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
+                    _logger.Info($"New target notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
                 }
 
                 _nextLaunchState = newLaunchState;

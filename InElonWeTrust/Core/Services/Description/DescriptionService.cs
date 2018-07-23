@@ -46,7 +46,7 @@ namespace InElonWeTrust.Core.Services.Description
             _descriptionRefreshTimer.Interval = IntervalMinutes * 1000 * 60;
 
             var nextLaunch = await _oddity.Launches.GetNext().ExecuteAsync();
-            var description = string.Empty;
+            string description;
 
             if (nextLaunch.LaunchDateUtc == null)
             {

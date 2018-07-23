@@ -13,13 +13,13 @@ namespace InElonWeTrust.Core.TableGenerators
     {
         private readonly Dictionary<CacheContentType, string> _listHeader;
 
-        private const int _missionNumberLength = 4;
-        private const int _missionNameLength = 23;
-        private const int _launchDateLength = 21;
-        private const int _siteNameLength = 18;
-        private const int _landingLength = 7;
+        private const int MissionNumberLength = 4;
+        private const int MissionNameLength = 23;
+        private const int LaunchDateLength = 21;
+        private const int SiteNameLength = 18;
+        private const int LandingLength = 7;
 
-        private int _totalLength => _missionNumberLength + _missionNameLength + _launchDateLength + _siteNameLength + _landingLength;
+        private const int TotalLength = MissionNumberLength + MissionNameLength + LaunchDateLength + SiteNameLength + LandingLength;
 
         public LaunchesListTableGenerator()
         {
@@ -42,24 +42,24 @@ namespace InElonWeTrust.Core.TableGenerators
 
             launchesListBuilder.Append("```");
 
-            launchesListBuilder.Append("No. ".PadRight(_missionNumberLength));
-            launchesListBuilder.Append("Mission name".PadRight(_missionNameLength));
-            launchesListBuilder.Append("Launch date UTC".PadRight(_launchDateLength));
-            launchesListBuilder.Append("Launch site".PadRight(_siteNameLength));
-            launchesListBuilder.Append("Landing".PadRight(_landingLength));
+            launchesListBuilder.Append("No. ".PadRight(MissionNumberLength));
+            launchesListBuilder.Append("Mission name".PadRight(MissionNameLength));
+            launchesListBuilder.Append("Launch date UTC".PadRight(LaunchDateLength));
+            launchesListBuilder.Append("Launch site".PadRight(SiteNameLength));
+            launchesListBuilder.Append("Landing".PadRight(LandingLength));
             launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append(new string('-', _totalLength));
+            launchesListBuilder.Append(new string('-', TotalLength));
             launchesListBuilder.Append("\r\n");
 
             foreach (var launch in launches)
             {
-                launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(_missionNumberLength));
-                launchesListBuilder.Append(launch.MissionName.ShortenString(_missionNameLength - 5).PadRight(_missionNameLength));
-                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(_launchDateLength));
-                launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(_siteNameLength));
+                launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(MissionNumberLength));
+                launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 5).PadRight(MissionNameLength));
+                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(LaunchDateLength));
+                launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(SiteNameLength));
 
                 var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
-                launchesListBuilder.Append((landing ? "yes" : "no").PadRight(_landingLength));
+                launchesListBuilder.Append((landing ? "yes" : "no").PadRight(LandingLength));
                 launchesListBuilder.Append("\r\n");
             }
 

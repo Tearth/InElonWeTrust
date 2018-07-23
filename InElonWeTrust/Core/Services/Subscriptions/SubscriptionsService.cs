@@ -103,7 +103,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                 SpaceXTwitter = await IsChannelSubscribed(channelId, SubscriptionType.SpaceXTwitter),
                 Flickr = await IsChannelSubscribed(channelId, SubscriptionType.Flickr),
                 Launches = await IsChannelSubscribed(channelId, SubscriptionType.NextLaunch),
-                Reddit = await IsChannelSubscribed(channelId, SubscriptionType.Reddit),
+                Reddit = await IsChannelSubscribed(channelId, SubscriptionType.Reddit)
             };
         }
     }

@@ -38,7 +38,7 @@ namespace InElonWeTrust.Core.Services.Cache
             _dataProviders.TryAdd(type, dataProviderDelegate);
         }
 
-        public async Task<D> Get<D>(CacheContentType type, string parameter = null)
+        public async Task<TData> Get<TData>(CacheContentType type, string parameter = null)
         {
             if (!_dataProviders.TryGetValue(type, out var dataProvider))
             {
@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.Services.Cache
                 _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
                 _cacheItemsAdded++;
 
-                return (D)data;
+                return (TData)data;
             }
 
             var cachedItem = _items[new Tuple<CacheContentType, string>(type, parameter)];
@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.Services.Cache
                 _cacheItemsHit++;
             }
 
-            return (D)cachedItem.Data;
+            return (TData)cachedItem.Data;
         }
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
