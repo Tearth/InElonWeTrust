@@ -28,12 +28,24 @@ namespace InElonWeTrust.Core.Commands
         private readonly CacheService _cacheService;
         private readonly LaunchesListTableGenerator _launchesListTableGenerator;
 
+        private readonly List<CacheContentType> _allowedPaginationTypes;
+
         public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService, LaunchesListTableGenerator launchesListTableGenerator)
         {
             _oddity = oddity;
             _paginationService = paginationService;
             _cacheService = cacheService;
             _launchesListTableGenerator = launchesListTableGenerator;
+
+            _allowedPaginationTypes = new List<CacheContentType>
+            {
+                CacheContentType.UpcomingLaunches,
+                CacheContentType.PastLaunches,
+                CacheContentType.AllLaunches,
+                CacheContentType.FailedStarts,
+                CacheContentType.FailedLandings,
+                CacheContentType.LaunchesWithOrbit
+            };
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
 
@@ -150,28 +162,21 @@ namespace InElonWeTrust.Core.Commands
             if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
             {
                 var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                List<LaunchInfo> items = null;
 
-                // TODO: temp workaround, change to something more professional
-                try
+                if (_allowedPaginationTypes.Contains(paginationData.ContentType))
                 {
-                    items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
-                }
-                catch
-                {
-                    return;
-                }
-
-                if (items != null)
-                {
-                    if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                    var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
+                    if (items != null)
                     {
-                        var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                        var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
-                        await e.Message.ModifyAsync(launchesList);
-                    }
+                        if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                        {
+                            var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+                            var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
+                            await e.Message.ModifyAsync(launchesList);
+                        }
 
-                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                        await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    }
                 }
             }
         }
