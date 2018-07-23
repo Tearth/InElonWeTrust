@@ -13,11 +13,11 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         private readonly Timer _displayDiagnosticTimer;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int IntervalMinutes = 30;
+        private const int DisplayDiagnosticIntervalMinutes = 30;
 
         public DiagnosticService()
         {
-            _displayDiagnosticTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
             _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsed;
             _displayDiagnosticTimer.Start();
         }

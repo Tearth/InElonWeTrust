@@ -12,7 +12,8 @@ namespace InElonWeTrust.Core.Services.Quotes
         {
             using (var databaseContext = new DatabaseContext())
             {
-                return (await databaseContext.Quotes.OrderBy(p => Guid.NewGuid()).FirstAsync()).Text;
+                var quote = await databaseContext.Quotes.OrderBy(p => Guid.NewGuid()).FirstAsync();
+                return quote.Text;
             }
         }
     }

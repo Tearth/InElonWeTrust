@@ -17,22 +17,26 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int IntervalMinutes = 15;
+        private const int UpdateNotificationsIntervalMinutes = 15;
+        private const string RandomTopicUrl = "https://www.reddit.com/r/spacex/random/.json";
+        private const string HotTopicsUrl = "https://www.reddit.com/r/spacex/hot/.json";
 
         public RedditService()
         {
-            var notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            var notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
             notificationsUpdateTimer.Start();
         }
 
         public async Task<RedditChildData> GetRandomTopic()
         {
-            var httpClient = new HttpClient();
-            var response = await httpClient.GetStringAsync("https://www.reddit.com/r/spacex/random/.json");
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetStringAsync(RandomTopicUrl);
 
-            var parsedResponse = JsonConvert.DeserializeObject<List<RedditResponse>>(response);
-            return parsedResponse.First().Data.Children.First().Data;
+                var parsedResponse = JsonConvert.DeserializeObject<List<RedditResponse>>(response);
+                return parsedResponse.First().Data.Children.First().Data;
+            }
         }
 
         private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -44,7 +48,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                 var sendNotifies = databaseContext.CachedRedditTopics.Any();
 
                 var httpClient = new HttpClient();
-                var response = await httpClient.GetStringAsync("https://www.reddit.com/r/spacex/hot/.json");
+                var response = await httpClient.GetStringAsync(HotTopicsUrl);
 
                 var names = JsonConvert.DeserializeObject<RedditResponse>(response);
                 foreach (var topic in names.Data.Children.Select(p => p.Data))

@@ -19,15 +19,15 @@ namespace InElonWeTrust.Core.Services.Cache
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int CacheItemLifeLengthMinutes = 30;
-        private const int IntervalMinutes = 15;
+        private const int CacheItemLifeLengthMinutes = 10;
+        private const int CacheStatsIntervalMinutes = 15;
 
         public CacheService()
         {
             _dataProviders = new ConcurrentDictionary<CacheContentType, Func<string, Task<object>>>();
             _items = new ConcurrentDictionary<Tuple<CacheContentType, string>, CacheItem>();
 
-            _cacheStatsTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _cacheStatsTimer = new Timer(CacheStatsIntervalMinutes * 60 * 1000);
             _cacheStatsTimer.Elapsed += CacheStatsTimerOnElapsed;
             _cacheStatsTimer.Start();
         }

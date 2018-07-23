@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private bool _notified;
 
-        private const int IntervalMinutes = 1;
+        private const int UpdateNotificationsIntervalMinutes = 1;
         private const int MinutesToLaunchToNotify = 10;
 
         public UserLaunchSubscriptionsService(CacheService cacheService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
             Bot.Client.MessageReactionRemoved += ClientOnMessageReactionRemoved;
 
-            _notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
         }

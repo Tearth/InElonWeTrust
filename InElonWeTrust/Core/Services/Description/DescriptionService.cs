@@ -17,13 +17,14 @@ namespace InElonWeTrust.Core.Services.Description
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int IntervalMinutes = 1;
+        private const int DescriptionUpdateIntervalMinutes = 1;
+        private const int HoursMinutesEdge = 99;
         private const string DescriptionPattern = "e!help";
         private const string DescriptionPatternExtended = "e!help | {0} to launch";
 
         public DescriptionService(CacheService cacheService, OddityCore oddity)
         {
-            _descriptionRefreshTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _descriptionRefreshTimer = new Timer(DescriptionUpdateIntervalMinutes * 60 * 1000);
             _descriptionRefreshTimer.Elapsed += DescriptionRefreshTimer_Elapsed;
             _descriptionRefreshTimer.Start();
 
@@ -57,7 +58,7 @@ namespace InElonWeTrust.Core.Services.Description
             else
             {
                 var timeToLaunch = nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow;
-                if (timeToLaunch.TotalMinutes <= 99)
+                if (timeToLaunch.TotalMinutes <= HoursMinutesEdge)
                 {
                     description = string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min");
                 }

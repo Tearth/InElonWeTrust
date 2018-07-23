@@ -20,14 +20,14 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const int IntervalMinutes = 1;
+        private const int UpdateNotificationsIntervalMinutes = 1;
 
-        public LaunchNotificationsService()
+        public LaunchNotificationsService(OddityCore oddity)
         {
-            _oddity = new OddityCore();
+            _oddity = oddity;
             _notificationTimes = new List<int> { 2, 10, 60, 60 * 12, 60 * 24, 60 * 24 * 7 };
 
-            _notificationsUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
         }
@@ -63,7 +63,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                     }
                     else
                     {
-                        var previousStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.AddMinutes(-IntervalMinutes).ToUniversalTime()).Value.TotalMinutes;
+                        var previousStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.AddMinutes(-UpdateNotificationsIntervalMinutes).ToUniversalTime()).Value.TotalMinutes;
                         var newStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
 
                         if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))

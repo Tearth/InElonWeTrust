@@ -26,11 +26,15 @@ namespace InElonWeTrust.Core.Services.Flickr
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string SpaceXProfileId = "130608600@N05";
-        private const int IntervalMinutes = 15;
+        private const string ImagesListUrl = "https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={0}&user_id={1}&per_page=500&page={2}&format=json&nojsoncallback=1";
+        private const string ImageSizesUrl = "https://www.flickr.com/services/rest?method=flickr.photos.getSizes&api_key={0}&photo_id={1}&format=json&nojsoncallback=1";
+        private const string ImageDetailsUrl = "https://www.flickr.com/services/rest?method=flickr.photos.getInfo&api_key={0}&photo_id={1}&format=json&nojsoncallback=1";
+
+        private const int UpdateNotificationsIntervalMinutes = 15;
 
         public FlickrService()
         {
-            _imageRangesUpdateTimer = new Timer(IntervalMinutes * 60 * 1000);
+            _imageRangesUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
             _imageRangesUpdateTimer.Start();
 
@@ -62,7 +66,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                     var currentPage = 1;
                     while (true)
                     {
-                        var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.people.getPhotos&api_key={SettingsLoader.Data.FlickrKey}&user_id={SpaceXProfileId}&per_page=500&page={currentPage}&format=json&nojsoncallback=1");
+                        var response = await httpClient.GetStringAsync(string.Format(ImagesListUrl, SettingsLoader.Data.FlickrKey, SpaceXProfileId, currentPage));
                         var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
 
                         foreach (var photo in parsedResponse.Photos.Photo)
@@ -121,7 +125,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             var httpClient = new HttpClient();
 
-            var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.photos.getSizes&api_key={SettingsLoader.Data.FlickrKey}&photo_id={photoId}&format=json&nojsoncallback=1");
+            var response = await httpClient.GetStringAsync(string.Format(ImageSizesUrl, SettingsLoader.Data.FlickrKey, photoId));
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoSizesResponse>(response);
 
             return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
@@ -131,7 +135,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             var httpClient = new HttpClient();
 
-            var response = await httpClient.GetStringAsync($"https://www.flickr.com/services/rest?method=flickr.photos.getInfo&api_key={SettingsLoader.Data.FlickrKey}&photo_id={photoId}&format=json&nojsoncallback=1");
+            var response = await httpClient.GetStringAsync(string.Format(ImageDetailsUrl, SettingsLoader.Data.FlickrKey, photoId));
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoInfoResponse>(response);
 
             return new DateTime().UnixTimeStampToDateTime(long.Parse(parsedResponse.Photo.DateUploaded));
