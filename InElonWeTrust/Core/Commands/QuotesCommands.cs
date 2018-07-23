@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Quotes;
 
@@ -13,10 +14,12 @@ namespace InElonWeTrust.Core.Commands
     public class QuotesCommands
     {
         private readonly QuotesService _quotesService;
+        private readonly QuoteEmbedGenerator _quoteEmbedGenerator;
 
-        public QuotesCommands(QuotesService quotesService)
+        public QuotesCommands(QuotesService quotesService, QuoteEmbedGenerator quoteEmbedGenerator)
         {
             _quotesService = quotesService;
+            _quoteEmbedGenerator = quoteEmbedGenerator;
         }
 
         [Command("RandomElonQuote")]
@@ -27,19 +30,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var quote = await _quotesService.GetRandomQuoteAsync();
-            await DisplayQuote(ctx, quote);
-        }
+            var embed = _quoteEmbedGenerator.Build(quote);
 
-        private async Task DisplayQuote(CommandContext ctx, string quote)
-        {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
-            embed.AddField("Elon Musk said:", $"*{quote}*\r\n");
-
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(embed: embed);
         }
     }
 }
