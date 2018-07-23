@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Quotes;
 
 namespace InElonWeTrust.Core.Commands

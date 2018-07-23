@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Text;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
@@ -8,7 +6,6 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Subscriptions;
 using NLog;

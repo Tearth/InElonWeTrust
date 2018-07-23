@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -15,7 +14,6 @@ using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
 using Oddity;
 using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launch.Rocket.FirstStage;
 using Oddity.API.Models.Launch.Rocket.SecondStage.Orbit;
 
 namespace InElonWeTrust.Core.Commands

@@ -2,13 +2,11 @@
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Settings;

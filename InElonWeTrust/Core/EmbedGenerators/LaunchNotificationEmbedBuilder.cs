@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
-using Oddity.API.Models.Launch;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {

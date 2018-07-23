@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Web;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database.Models;

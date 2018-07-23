@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 
 namespace InElonWeTrust.Core.EmbedGenerators

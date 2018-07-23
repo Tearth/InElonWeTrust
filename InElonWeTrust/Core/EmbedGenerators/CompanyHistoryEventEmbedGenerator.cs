@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using Oddity.API.Models.Company;
