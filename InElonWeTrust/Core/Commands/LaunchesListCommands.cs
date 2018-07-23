@@ -12,6 +12,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
+using InElonWeTrust.Core.TableGenerators;
 using Oddity;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
@@ -25,32 +26,14 @@ namespace InElonWeTrust.Core.Commands
         private readonly OddityCore _oddity;
         private readonly PaginationService _paginationService;
         private readonly CacheService _cacheService;
+        private readonly LaunchesListTableGenerator _launchesListTableGenerator;
 
-        private const int _missionNumberLength = 4;
-        private const int _missionNameLength = 23;
-        private const int _launchDateLength = 21;
-        private const int _siteNameLength = 18;
-        private const int _landingLength = 7;
-
-        private int _totalLength => _missionNumberLength + _missionNameLength + _launchDateLength + _siteNameLength + _landingLength;
-
-        private readonly Dictionary<CacheContentType, string> _listHeader;
-
-        public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService)
+        public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService, LaunchesListTableGenerator launchesListTableGenerator)
         {
             _oddity = oddity;
             _paginationService = paginationService;
             _cacheService = cacheService;
-
-            _listHeader = new Dictionary<CacheContentType, string>
-            {
-                {CacheContentType.UpcomingLaunches, "List of all upcoming launches:"},
-                {CacheContentType.PastLaunches, "List of all past launches:"},
-                {CacheContentType.AllLaunches, "List of all launches:"},
-                {CacheContentType.FailedStarts, "List of all failed starts:"},
-                {CacheContentType.FailedLandings, "List of all failed landings:"},
-                {CacheContentType.LaunchesWithOrbit, "List of launches with the specified orbit:"}
-            };
+            _launchesListTableGenerator = launchesListTableGenerator;
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
 
@@ -116,6 +99,17 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
         }
 
+        private string BuildTableWithPagination(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
+        {
+            var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);
+            itemsToDisplay = itemsToDisplay.OrderBy(p => p.LaunchDateUtc.Value).ToList();
+
+            var maxPagesCount = _paginationService.GetPagesCount(launches.Count);
+            var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
+
+            return _launchesListTableGenerator.Build(itemsToDisplay, contentType, currentPage, paginationFooter);
+        }
+
         private async Task DisplayLaunches(CommandContext ctx, CacheContentType contentType, string parameter = null)
         {
             await ctx.TriggerTypingAsync();
@@ -130,7 +124,7 @@ namespace InElonWeTrust.Core.Commands
                 return;
             }
 
-            var launchesList = GetLaunchesTable(launchData, contentType, 1);
+            var launchesList = BuildTableWithPagination(launchData, contentType, 1);
 
             var message = await ctx.RespondAsync(launchesList);
             await _paginationService.InitPagination(message, contentType, parameter);
@@ -139,49 +133,6 @@ namespace InElonWeTrust.Core.Commands
         private async Task<List<LaunchInfo>> GetLaunches(CacheContentType contentType, string parameter = null)
         {
             return await _cacheService.Get<List<LaunchInfo>>(contentType, parameter);
-        }
-
-        private string GetLaunchesTable(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
-        {
-            var launchesListBuilder = new StringBuilder();
-            launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");
-            launchesListBuilder.Append("\r\n");
-
-            launchesListBuilder.Append("```");
-
-            launchesListBuilder.Append("No. ".PadRight(_missionNumberLength));
-            launchesListBuilder.Append("Mission name".PadRight(_missionNameLength));
-            launchesListBuilder.Append("Launch date UTC".PadRight(_launchDateLength));
-            launchesListBuilder.Append("Launch site".PadRight(_siteNameLength));
-            launchesListBuilder.Append("Landing".PadRight(_landingLength));
-            launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append(new string('-', _totalLength));
-            launchesListBuilder.Append("\r\n");
-
-            var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);
-            foreach (var launch in itemsToDisplay)
-            {
-                launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(_missionNumberLength));
-                launchesListBuilder.Append(launch.MissionName.ShortenString(_missionNameLength - 5).PadRight(_missionNameLength));
-                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(_launchDateLength));
-                launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(_siteNameLength));
-
-                var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
-                launchesListBuilder.Append((landing ? "yes" : "no").PadRight(_landingLength));
-                launchesListBuilder.Append("\r\n");
-            }
-
-            var maxPagesCount = _paginationService.GetPagesCount(launches.Count);
-            var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
-
-            launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append("Type e!getlaunch <number> to get more information.");
-            launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append(paginationFooter);
-            launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append("```");
-
-            return launchesListBuilder.ToString();
         }
 
         private async Task<object> GetLaunchesWithOrbitDataProvider(string parameter)
@@ -216,7 +167,7 @@ namespace InElonWeTrust.Core.Commands
                     if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
                         var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                        var launchesList = GetLaunchesTable(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
+                        var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
                         await e.Message.ModifyAsync(launchesList);
                     }
 
