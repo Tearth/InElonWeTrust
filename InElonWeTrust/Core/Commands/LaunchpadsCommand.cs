@@ -8,6 +8,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
@@ -20,11 +21,13 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
+        private readonly LaunchpadsEmbedGenerator _launchpadsEmbedGenerator;
 
-        public LaunchpadsCommand(OddityCore oddity, CacheService cacheService)
+        public LaunchpadsCommand(OddityCore oddity, CacheService cacheService, LaunchpadsEmbedGenerator launchpadsEmbedGenerator)
         {
             _oddity = oddity;
             _cacheService = cacheService;
+            _launchpadsEmbedGenerator = launchpadsEmbedGenerator;
 
             _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await _oddity.Launchpads.GetAll().ExecuteAsync());
         }
@@ -36,44 +39,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchpads = await _cacheService.Get<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-            var embedBuilder = new DiscordEmbedBuilder
-            {
-                Title = "List of SpaceX launchpads: ",
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
+            var embed = _launchpadsEmbedGenerator.Build(launchpads);
 
-            var sortedLaunchpads = launchpads.OrderBy(p => p.FullName);
-            var lastLaunchpad = sortedLaunchpads.Last();
-
-            foreach (var launchpad in sortedLaunchpads)
-            {
-                var responseBuilder = new StringBuilder();
-                var latitude = launchpad.Location.Latitude.Value.ToString(CultureInfo.InvariantCulture);
-                var longitude = launchpad.Location.Longitude.Value.ToString(CultureInfo.InvariantCulture);
-
-                responseBuilder.Append($"**[GOOGLE MAPS](https://maps.google.com/maps?q={latitude}+{longitude}&t=k)**. ");
-                responseBuilder.Append(launchpad.Details);
-                responseBuilder.Append("\r\n");
-
-                if (launchpad != lastLaunchpad)
-                {
-                    responseBuilder.Append('\u200b');
-                }
-
-                var title = ":stadium: " + launchpad.FullName;
-                switch (launchpad.Status)
-                {
-                    case LaunchpadStatus.UnderConstruction: title += " (under construction)";
-                        break;
-
-                    case LaunchpadStatus.Retired: title += " (retired)";
-                        break;
-                }
-
-                embedBuilder.AddField(title, responseBuilder.ToString());
-            }
-
-            await ctx.RespondAsync("", false, embedBuilder);
+            await ctx.RespondAsync("", false, embed);
         }
     }
 }

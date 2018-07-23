@@ -105,6 +105,7 @@ namespace InElonWeTrust.Core
                 .Add<RedditEmbedGenerator>()
                 .Add<TwitterEmbedGenerator>()
                 .Add<LaunchesListTableGenerator>()
+                .Add<LaunchpadsEmbedGenerator>()
                 .Add<LaunchNotificationEmbedBuilder>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
