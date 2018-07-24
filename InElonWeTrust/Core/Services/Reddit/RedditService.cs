@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Services.Reddit
             }
         }
 
-        private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        public async Task ReloadCachedTopicsAsync()
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -67,6 +67,11 @@ namespace InElonWeTrust.Core.Services.Reddit
                 await databaseContext.SaveChangesAsync();
                 _logger.Info($"Reddit topics check end ({databaseContext.CachedRedditTopics.Count()} cached)");
             }
+        }
+
+        private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            await ReloadCachedTopicsAsync();
         }
     }
 }

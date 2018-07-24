@@ -49,7 +49,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
         }
 
-        public async Task ReloadCachedPhotosAsync(bool sendNotifyWhenNewPhoto)
+        public async Task ReloadCachedPhotosAsync()
         {
             if (!System.Threading.Monitor.TryEnter(_reloadingCacheLock))
             {
@@ -64,6 +64,8 @@ namespace InElonWeTrust.Core.Services.Flickr
                     _logger.Info("Reload Flickr cached photos starts");
 
                     var currentPage = 1;
+                    var sendNotifyWhenNewPhoto = databaseContext.CachedFlickrPhotos.Any();
+
                     while (true)
                     {
                         var response = await httpClient.GetStringAsync(string.Format(ImagesListUrl, SettingsLoader.Data.FlickrKey, SpaceXProfileId, currentPage));
@@ -113,7 +115,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             try
             {
-                await ReloadCachedPhotosAsync(true);
+                await ReloadCachedPhotosAsync();
             }
             catch (Exception ex)
             {

@@ -8,6 +8,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
+using InElonWeTrust.Core.Settings;
 using NLog;
 
 namespace InElonWeTrust.Core.Commands
@@ -41,6 +42,19 @@ namespace InElonWeTrust.Core.Commands
             var embed = _redditEmbedGenerator.Build(topic);
 
             await ctx.RespondAsync(embed: embed);
+        }
+
+        [HiddenCommand]
+        [Command("ReloadRedditCache")]
+        [Description("Reload cached Flickr photos in database.")]
+        public async Task ReloadRedditCache(CommandContext ctx)
+        {
+            if (ctx.User.Id != SettingsLoader.Data.OwnerId)
+            {
+                return;
+            }
+
+            await _redditService.ReloadCachedTopicsAsync();
         }
 
         private async void Reddit_OnNewHotTopic(object sender, RedditChildData e)

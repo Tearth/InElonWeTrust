@@ -55,7 +55,7 @@ namespace InElonWeTrust.Core.Commands
                 return;
             }
 
-            await _flickrService.ReloadCachedPhotosAsync(false);
+            await _flickrService.ReloadCachedPhotosAsync();
         }
 
         private async void FlickrServiceOnNewFlickrServicePhoto(object sender, CachedFlickrPhoto e)
