@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Settings
 #if DEBUG
             const string configName = "debug.json";
 #else
-            const var configName = "release.json";
+            const string configName = "release.json";
 #endif
 
             return ConfigsPatch + configName;
