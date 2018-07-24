@@ -17,7 +17,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             {
                 {SubscriptionType.ElonTwitter, "Twitter has been subscribed! Now bot will post all newest tweets from [Elon Musk](https://twitter.com/elonmusk) profile."},
                 {SubscriptionType.SpaceXTwitter, "Twitter has been subscribed! Now bot will post all newest tweets from [SpaceX](https://twitter.com/SpaceX) profile."},
-                {SubscriptionType.Flickr, "Flickr has been subscribed! Now bot will post all newest photos from [SpaceX](https://www.flickr.com/photos/spacex/) profile"},
+                {SubscriptionType.Flickr, "Flickr has been subscribed! Now bot will post all newest photos from [SpaceX](https://www.flickr.com/photos/spacex/) profile."},
+                {SubscriptionType.Reddit, "Reddit has been subscribed! Now bot will post all newest photos from [/r/spacex](https://www.reddit.com/r/spacex/)."},
                 {SubscriptionType.NextLaunch, "Launch notifications has been subscribed! Now bot will post all newest information about upcoming launch."}
             };
 
@@ -26,6 +27,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 {SubscriptionType.ElonTwitter, "Elon Twitter subscription has been removed."},
                 {SubscriptionType.SpaceXTwitter, "SpaceX Twitter subscription has been removed."},
                 {SubscriptionType.Flickr, "Flickr subscription has been removed."},
+                {SubscriptionType.Reddit, "Reddit subscription has been removed."},
                 {SubscriptionType.NextLaunch, "Launch notifications subscription has been removed."}
             };
         }
