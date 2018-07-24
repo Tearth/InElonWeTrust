@@ -55,6 +55,8 @@ namespace InElonWeTrust.Core
 
             Client.Ready += Client_Ready;
             Client.Heartbeated += Client_Heartbeated;
+            Client.GuildCreated += Client_GuildCreated;
+            Client.GuildDeleted += Client_GuildDeleted;
             Client.ClientErrored += Client_ClientError;
             Client.SocketErrored += Client_SocketErrored;
 
@@ -166,6 +168,18 @@ namespace InElonWeTrust.Core
         private Task Client_Heartbeated(HeartbeatEventArgs e)
         {
             _logger.Info($"Heartbeat - ping: {e.Ping} ms");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildCreated(GuildCreateEventArgs e)
+        {
+            _logger.Info($"Bot has joined to the new guild, welcome {e.Guild.Name}!");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_GuildDeleted(GuildDeleteEventArgs e)
+        {
+            _logger.Info($"Bot has been removed from {e.Guild.Name} guild.");
             return Task.CompletedTask;
         }
 
