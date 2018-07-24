@@ -92,7 +92,7 @@ namespace InElonWeTrust.Core.Commands
                     var guildOwner = guild.Owner;
 
                     _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
-                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
                     var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
@@ -102,7 +102,7 @@ namespace InElonWeTrust.Core.Commands
                 catch (NotFoundException ex)
                 {
                     _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
-                    await _subscriptionsService.RemoveAllSubscriptionsAsync(ulong.Parse(channelData.ChannelId));
+                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
                 {

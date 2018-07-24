@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
@@ -21,6 +23,9 @@ namespace InElonWeTrust.Core.Commands
         {
             _subscriptionsService = subscriptionsService;
             _subscriptionEmbedGenerator = subscriptionEmbedGenerator;
+
+            Bot.Client.GuildDeleted += Client_GuildDeleted;
+            Bot.Client.ChannelDeleted += Client_ChannelDeleted;
         }
 
         [Command("ToggleElonTwitter")]
@@ -98,7 +103,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task DisableAllNotifications(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await _subscriptionsService.RemoveAllSubscriptionsAsync(ctx.Channel.Id);
+            await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ctx.Channel.Id);
 
             var embed = new DiscordEmbedBuilder
             {
@@ -137,6 +142,16 @@ namespace InElonWeTrust.Core.Commands
             }
 
             await ctx.RespondAsync(embed: embed);
+        }
+
+        private async Task Client_GuildDeleted(GuildDeleteEventArgs e)
+        {
+            await _subscriptionsService.RemoveAllSubscriptionsFromGuildAsync(e.Guild.Id);
+        }
+
+        private async Task Client_ChannelDeleted(ChannelDeleteEventArgs e)
+        {
+            await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(e.Channel.Id);
         }
     }
 }

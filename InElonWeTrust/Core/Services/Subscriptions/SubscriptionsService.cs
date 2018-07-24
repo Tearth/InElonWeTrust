@@ -68,7 +68,24 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             }
         }
 
-        public async Task RemoveAllSubscriptionsAsync(ulong channelId)
+        public async Task RemoveAllSubscriptionsFromGuildAsync(ulong guildId)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var fixedGuildId = guildId.ToString();
+                var channelIds = databaseContext.SubscribedChannels.Where(p => p.GuildId == fixedGuildId).GroupBy(p => p.ChannelId).Select(p => p.Key).ToList();
+
+                foreach (var channelId in channelIds)
+                {
+                    foreach (var subscriptionType in (SubscriptionType[])Enum.GetValues(typeof(SubscriptionType)))
+                    {
+                        await RemoveSubscriptionAsync(ulong.Parse(channelId), subscriptionType);
+                    }
+                }
+            }
+        }
+
+        public async Task RemoveAllSubscriptionsFromChannelAsync(ulong channelId)
         {
             foreach (var subscriptionType in (SubscriptionType[])Enum.GetValues(typeof(SubscriptionType)))
             {

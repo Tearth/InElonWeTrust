@@ -58,14 +58,10 @@ namespace InElonWeTrust.Core.Services.Description
             else
             {
                 var timeToLaunch = nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow;
-                if (timeToLaunch.TotalMinutes <= HoursMinutesEdge)
-                {
-                    description = string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min");
-                }
-                else
-                {
-                    description = string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
-                }
+
+                description = timeToLaunch.TotalMinutes <= HoursMinutesEdge ?
+                    string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min") :
+                    string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
             }
 
             await Bot.Client.UpdateStatusAsync(new DiscordGame(description));
