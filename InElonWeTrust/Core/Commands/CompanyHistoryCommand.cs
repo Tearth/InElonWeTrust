@@ -3,12 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
+using NLog;
 using Oddity;
 using Oddity.API.Models.Company;
 
@@ -23,6 +26,7 @@ namespace InElonWeTrust.Core.Commands
         private readonly CompanyHistoryTableGenerator _companyHistoryTableGenerator;
 
         private readonly List<CacheContentType> _allowedPaginationTypes;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CompanyHistoryCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService, CompanyHistoryTableGenerator companyHistoryTableGenerator)
         {
@@ -76,16 +80,30 @@ namespace InElonWeTrust.Core.Commands
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
                 var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
+                DiscordMessage editedMessage = null;
 
                 if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                 {
                     var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
                     var tableWithPagination = BuildTableWithPagination(items, updatedPaginationData.CurrentPage);
 
-                    await e.Message.ModifyAsync(tableWithPagination);
+                    editedMessage = await e.Message.ModifyAsync(tableWithPagination);
                 }
 
-                await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                try
+                {
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                }
+                catch (UnauthorizedException)
+                {
+                    var oldMessageContent = editedMessage.Content;
+                    oldMessageContent += "\r\n";
+                    oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
+                                         "bot/channel permissions and be sure that I have ability to manage messages.*";
+
+                    _logger.Warn("Can't do pagination due to permissions.");
+                    await editedMessage.ModifyAsync(oldMessageContent);
+                }
             }
         }
     }
