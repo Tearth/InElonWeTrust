@@ -82,6 +82,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             if (!e.User.IsBot)
             {
                 await AddUserSubscription(e.Message.Id, e.User.Id);
+                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed to the launch subscription list.");
             }
         }
 
@@ -90,6 +91,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             if (!e.User.IsBot)
             {
                 await RemoveUserSubscription(e.Message.Id, e.User.Id);
+                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
             }
         }
 
@@ -131,6 +133,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             _logger.Error(ex, $"Can't send launch notification to the uesr with id {user.UserId}");
                         }
                     }
+
+                    _logger.Info($"{minutesToLaunch} to launch! {usersToNotify.Count} sent");
                 }
 
                 _notified = true;

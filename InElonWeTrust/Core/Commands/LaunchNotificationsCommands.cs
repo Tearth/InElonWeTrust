@@ -58,12 +58,12 @@ namespace InElonWeTrust.Core.Commands
                         await channel.SendMessageAsync($"**YouTube stream:** {launchNotification.NewLaunchState.Links.VideoLink}");
                     }
                 }
-                catch (UnauthorizedException ex)
+                catch (UnauthorizedException)
                 {
                     var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
-                    _logger.Error(ex, $"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
@@ -71,9 +71,9 @@ namespace InElonWeTrust.Core.Commands
 
                     await ownerDm.SendMessageAsync(embed: errorEmbed);
                 }
-                catch (NotFoundException ex)
+                catch (NotFoundException)
                 {
-                    _logger.Error(ex, $"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions.");
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)
