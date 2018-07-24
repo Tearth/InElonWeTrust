@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
         private IFilteredStream _stream;
-        private readonly object _reloadingCacheLock;
+        private bool _reloadingCacheState;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -40,8 +40,6 @@ namespace InElonWeTrust.Core.Services.Twitter
                 {TwitterUserType.ElonMusk, SubscriptionType.ElonTwitter},
                 {TwitterUserType.SpaceX, SubscriptionType.SpaceXTwitter}
             };
-
-            _reloadingCacheLock = new object();
 
             var consumerKey = SettingsLoader.Data.TwitterConsumerKey;
             var consumerSecret = SettingsLoader.Data.TwitterConsumerSecret;
@@ -82,11 +80,12 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async Task ReloadCachedTweetsAsync()
         {
-            if (!System.Threading.Monitor.TryEnter(_reloadingCacheLock))
+            if (_reloadingCacheState)
             {
                 return;
             }
 
+            _reloadingCacheState = true;
             try
             {
                 using (var databaseContext = new DatabaseContext())
@@ -131,7 +130,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
             finally
             {
-                System.Threading.Monitor.Exit(_reloadingCacheLock);
+                _reloadingCacheState = false;
             }
         }
 

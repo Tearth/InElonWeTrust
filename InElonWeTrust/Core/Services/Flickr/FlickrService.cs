@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private readonly Timer _imageRangesUpdateTimer;
-        private readonly object _reloadingCacheLock;
+        private bool _reloadingCacheState;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -37,8 +37,6 @@ namespace InElonWeTrust.Core.Services.Flickr
             _imageRangesUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
             _imageRangesUpdateTimer.Start();
-
-            _reloadingCacheLock = new object();
         }
 
         public async Task<CachedFlickrPhoto> GetRandomPhotoAsync()
@@ -51,11 +49,12 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync()
         {
-            if (!System.Threading.Monitor.TryEnter(_reloadingCacheLock))
+            if (_reloadingCacheState)
             {
                 return;
             }
 
+            _reloadingCacheState = true;
             try
             {
                 using (var databaseContext = new DatabaseContext())
@@ -107,7 +106,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
             finally
             {
-                System.Threading.Monitor.Exit(_reloadingCacheLock);
+                _reloadingCacheState = false;
             }
         }
 
