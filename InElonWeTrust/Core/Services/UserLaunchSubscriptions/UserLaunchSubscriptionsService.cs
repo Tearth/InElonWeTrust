@@ -24,6 +24,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private const int UpdateNotificationsIntervalMinutes = 1;
         private const int MinutesToLaunchToNotify = 10;
+        private const string SubscribeEmojiName = ":regional_indicator_s:";
 
         public UserLaunchSubscriptionsService(CacheService cacheService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
         {
@@ -79,19 +80,19 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot)
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName)
             {
                 await AddUserSubscription(e.Message.Id, e.User.Id);
-                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed to the launch subscription list.");
+                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
             }
         }
 
         private async Task ClientOnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
         {
-            if (!e.User.IsBot)
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName)
             {
                 await RemoveUserSubscription(e.Message.Id, e.User.Id);
-                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
+                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed from the launch subscription list.");
             }
         }
 
