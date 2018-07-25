@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Timers;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -54,6 +55,18 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
         private void DisplayDiagnosticTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
+            try
+            {
+                DisplayDiagnostic();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Can't display diagnostic data");
+            }
+        }
+
+        private void DisplayDiagnostic()
+        {
             var guildsCount = Bot.Client.Guilds.Count;
             var membersCount = Bot.Client.Guilds.Values.Sum(p => p.MemberCount);
 
@@ -67,8 +80,11 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 _logger.Info("Commands per guild usage:");
                 foreach (var guild in guildsStats)
                 {
-                    var guildName = Bot.Client.Guilds.First(p => p.Key == ulong.Parse(guild.GuildId)).Value.Name;
-                    _logger.Info($"    {guildName}: {guild.CommandExecutionsCount}");
+                    var guildData = Bot.Client.Guilds.FirstOrDefault(p => p.Key == ulong.Parse(guild.GuildId)).Value;
+                    if (guildData != null)
+                    {
+                        _logger.Info($"    {guildData.Name}: {guild.CommandExecutionsCount}");
+                    }
                 }
                 _logger.Info($" Total: {guildsStats.Sum(p => p.CommandExecutionsCount)}");
 
