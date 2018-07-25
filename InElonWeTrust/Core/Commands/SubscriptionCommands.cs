@@ -50,7 +50,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleFlickr")]
         [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
-        [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX).")]
+        [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX profile).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleFlickrNotifications(CommandContext ctx)
         {
@@ -70,7 +70,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleReddit")]
         [Aliases("SubscribeReddit", "SubReddit", "tr")]
-        [Description("Subscribe Reddit notifications (when next Reddit is incoming).")]
+        [Description("Subscribe Reddit notifications (bot will post all hottest Reddit topics).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleRedditNotifications(CommandContext ctx)
         {

@@ -83,8 +83,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("GetLaunch")]
         [Aliases("Launch", "gl")]
-        [Description("Get information about launch with the specified flight number (which can be obtained by `e!AllLaunches command`).")]
-        public async Task GetLaunch(CommandContext ctx, [Description("Launch number (type `e!AllLaunches to catch them all)")] int id)
+        [Description("Get information about launch with the specified flight number (which can be obtained by `e!AllLaunches` command).")]
+        public async Task GetLaunch(CommandContext ctx, [Description("Launch number (type `e!AllLaunches` to catch them all)")] int id)
         {
             await ctx.TriggerTypingAsync();
 

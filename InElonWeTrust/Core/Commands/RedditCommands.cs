@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomRedditTopic")]
         [Aliases("RandomReddit", "RandomTopic", "rrt")]
-        [Description("Get random Reddit topic from /s/spacex.")]
+        [Description("Get random Reddit topic from /r/spacex.")]
         public async Task RandomRedditTopic(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -46,7 +46,7 @@ namespace InElonWeTrust.Core.Commands
 
         [HiddenCommand]
         [Command("ReloadRedditCache")]
-        [Description("Reload cached Flickr photos in database.")]
+        [Description("Reload cached Reddit topics in database.")]
         public async Task ReloadRedditCache(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
