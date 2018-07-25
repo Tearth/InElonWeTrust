@@ -39,16 +39,14 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             _notificationsUpdateTimer.Start();
         }
 
-        private async Task AddUserSubscription(ulong messageId, ulong userId)
+        private async Task AddUserSubscription(ulong userId)
         {
-            var fixedMessageId = messageId.ToString();
             var fixedUserId = userId.ToString();
             var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
-                if (databaseContext.MessagesToSubscribe.Any(p => p.MessageId == fixedMessageId) &&
-                    !databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId))
+                if (!databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId))
                 {
                     databaseContext.UserLaunchSubscriptions.Add(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedUserId));
                     databaseContext.SaveChanges();
@@ -56,42 +54,47 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
         }
 
-        private async Task RemoveUserSubscription(ulong messageId, ulong userId)
+        private async Task RemoveUserSubscription(ulong userId)
         {
-            var fixedMessageId = messageId.ToString();
             var fixedUserId = userId.ToString();
             var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
-                if (databaseContext.MessagesToSubscribe.Any(p => p.MessageId == fixedMessageId))
-                {
-                    var userSubscription = databaseContext.UserLaunchSubscriptions
-                        .FirstOrDefault(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber);
+                var userSubscription = databaseContext.UserLaunchSubscriptions
+                    .FirstOrDefault(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber);
 
-                    if (userSubscription != null)
-                    {
-                        databaseContext.UserLaunchSubscriptions.Remove(userSubscription);
-                        databaseContext.SaveChanges();
-                    }
+                if (userSubscription != null)
+                {
+                    databaseContext.UserLaunchSubscriptions.Remove(userSubscription);
+                    databaseContext.SaveChanges();
                 }
+            }
+        }
+
+        private bool IsMessageSubscribable(ulong messageId)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var fixedMessageId = messageId.ToString();
+                return databaseContext.MessagesToSubscribe.Any(p => p.MessageId == fixedMessageId);
             }
         }
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName)
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
             {
-                await AddUserSubscription(e.Message.Id, e.User.Id);
+                await AddUserSubscription(e.User.Id);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
             }
         }
 
         private async Task ClientOnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName)
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
             {
-                await RemoveUserSubscription(e.Message.Id, e.User.Id);
+                await RemoveUserSubscription(e.User.Id);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed from the launch subscription list.");
             }
         }
