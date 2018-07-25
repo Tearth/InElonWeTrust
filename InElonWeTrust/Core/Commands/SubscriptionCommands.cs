@@ -133,12 +133,12 @@ namespace InElonWeTrust.Core.Commands
             if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))
             {
                 await _subscriptionsService.RemoveSubscriptionAsync(ctx.Channel.Id, type);
-                embed = _subscriptionEmbedGenerator.BuildMessageOnAdd(type);
+                embed = _subscriptionEmbedGenerator.BuildMessageOnRemove(type);
             }
             else
             {
                 await _subscriptionsService.AddSubscriptionAsync(ctx.Guild.Id, ctx.Channel.Id, type);
-                embed = _subscriptionEmbedGenerator.BuildMessageOnRemove(type);
+                embed = _subscriptionEmbedGenerator.BuildMessageOnAdd(type);
             }
 
             await ctx.RespondAsync(embed: embed);
