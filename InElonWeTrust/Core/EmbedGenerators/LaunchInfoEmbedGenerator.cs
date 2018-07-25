@@ -74,7 +74,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var coresDataBuilder = new StringBuilder();
             foreach (var core in cores)
             {
-                coresDataBuilder.Append($"{core.CoreSerial}");
+                coresDataBuilder.Append($"{core.CoreSerial ?? "Unknown"}");
                 if (core.Block != null)
                 {
                     coresDataBuilder.Append($" (block {core.Block})");
