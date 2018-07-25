@@ -1,4 +1,4 @@
-<h1 align="center">In Elon We Trust, In Thrust We Trust</h1>
+<h1 align="center" style="font-weight: bold">In Elon We Trust, In Thrust We Trust</h1>
 <p align="center">
 <img src="https://i.imgur.com/cYPoKXr.jpg" alt="SpaceXLogo">
 </p>
@@ -7,15 +7,22 @@ Discord bot providing a lot of funny (or not) commands related with SpaceX and E
 
 Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
 
+You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130016780337).
+
 **Main features**:
   * previous, upcoming and more specialized list of launches (missions with failed landings or to specified orbit? No problem!)
   * counter for the next launch
   * random stuff like SpaceX or Elon's tweet, photo or Reddit topic 
   * notifications (you will be noticed about all new tweets, Flickr photos, hottest topics on /r/spacex and upcoming launches)
   * other fun stuff: Elon's quotes, company data and history, random videos, launchpads, rockets and more
-  
-# Invitation link
-*will be posted in a few days*
+
+<h1 align="center" style="font-weight: bold">
+	<a href="https://discordapp.com/api/oauth2/authorize?client_id=462742130016780337&permissions=26688&scope=bot">Invitation link</a>
+</h1>
+
+<p align="center" style="font-style: italic">
+Requires Manage Messages permission to do pagination properly. It will work without it but it won't be that fun.
+</p>
 
 # Prefixes
 There is a few methods to call bot command (space between prefix and command is allowed):
@@ -29,9 +36,9 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!AllLaunches  | get list of all launches (past and upcoming) | None |
 | e!FailedLaunches  | get list of launches which landings were unsuccesfull | None |
 | e!FailedStarts  | get list of launches where rocket did rapid unscheduled | None |
-| e!GetLaunch <FlightNumber>  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
+| e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
 | e!LatestLaunch  | get information about the latest launch | None |
-| e!LaunchesWithOrbit <OrbitType> | get list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get list of them) | None |
+| e!LaunchesWithOrbit [OrbitType] | get list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get list of them) | None |
 | e!NextLaunch  | get information about the next lanuch | None |
 | e!PastLaunches  | get list of past launches | None |
 | e!RandomLaunch  | get information about the random launch | None |
@@ -51,7 +58,7 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!Changelog  | get bot changelog | None |
 | e!CompanyHistory  | get list of the most imporatnt events for SpaceX | None |
 | e!CompanyInfo  | get information about company info | None |
-| e!GetEvent <EventNumber>  | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
+| e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
 | e!Launchpads  | get list of all launchpads used by SpaceX | None |
 | e!Links  | get list useful links related with SpaceX | None |
 | e!Ping  | pong | None |
@@ -72,4 +79,8 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!ToggleSpaceXTwitter  | toggle SpaceX Twitter subscription (when enabled, all newest tweets from SpaceX profile will be posted at the specified channel) | Manage Messages |
 
 # Examples
-*will be posted in a few days*
+<p align="center">
+<img src="https://i.imgur.com/Z7qzpfn.jpg" alt="Example1">
+<img src="https://i.imgur.com/sbZIzQr.jpg" alt="Example2">
+<img src="https://i.imgur.com/LdchUF9.jpg" alt="Example3">
+</p>
