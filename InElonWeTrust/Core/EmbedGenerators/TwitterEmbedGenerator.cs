@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
-            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime()} UTC", contentBuilder.ToString());
+            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime():F} UTC", contentBuilder.ToString());
 
             return embed;
         }

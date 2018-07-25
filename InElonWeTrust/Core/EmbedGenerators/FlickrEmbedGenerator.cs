@@ -11,10 +11,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
+                Title = $"Flickr: {photo.Title} ({photo.UploadDate:F})",
+                Url = $"https://www.flickr.com/photos/spacex/{photo.Id}",
                 ImageUrl = photo.Source
             };
 
-            embed.AddField($"Flickr: {photo.Title} ({photo.UploadDate})", $"https://www.flickr.com/photos/spacex/{photo.Id}");
             return embed;
         }
 
