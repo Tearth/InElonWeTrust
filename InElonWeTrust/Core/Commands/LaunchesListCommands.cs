@@ -85,10 +85,10 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, CacheContentType.AllLaunches);
         }
 
-        [Command("FailedStarts")]
-        [Aliases("fs")]
+        [Command("FailedLaunches")]
+        [Aliases("FailedStarts", "fs")]
         [Description("Get information about all failed launches.")]
-        public async Task FailedStarts(CommandContext ctx)
+        public async Task FailedLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await DisplayLaunches(ctx, CacheContentType.FailedStarts);
