@@ -5,14 +5,17 @@ namespace InElonWeTrust.Core.Services.Changelog
 {
     public class ChangelogService
     {
+        private HttpClient _httpClient;
         private const string ReadmeUrl = "https://raw.githubusercontent.com/Tearth/InElonWeTrust/master/CHANGELOG.md";
+
+        public ChangelogService()
+        {
+            _httpClient = new HttpClient();
+        }
 
         public async Task<string> GetChangelog()
         {
-            using (var httpClient = new HttpClient())
-            {
-                return await httpClient.GetStringAsync(ReadmeUrl);
-            }
+            return await _httpClient.GetStringAsync(ReadmeUrl);
         }
     }
 }
