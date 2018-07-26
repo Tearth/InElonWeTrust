@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                Title = $"Reddit: {HttpUtility.HtmlDecode(topic.Title)}",
+                Title = $"Reddit: {HttpUtility.HtmlDecode(topic.Title).ShortenString(250)}",
                 Url = "https://www.reddit.com" + topic.Permalink,
                 ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
             };

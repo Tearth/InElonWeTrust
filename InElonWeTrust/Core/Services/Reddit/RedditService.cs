@@ -71,7 +71,14 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            await ReloadCachedTopicsAsync();
+            try
+            {
+                await ReloadCachedTopicsAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Can't refresh Reddit topics.");
+            }
         }
     }
 }

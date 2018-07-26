@@ -99,7 +99,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
         }
 
-        private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        private async Task UpdateLaunchNotifications()
         {
             var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
             var minutesToLaunch = (nextLaunch.LaunchDateUtc.Value - DateTime.Now.ToUniversalTime()).TotalMinutes;
@@ -142,6 +142,18 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                 }
 
                 _notified = true;
+            }
+        }
+
+        private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            try
+            {
+                await UpdateLaunchNotifications();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Can't update user launch notifications");
             }
         }
     }
