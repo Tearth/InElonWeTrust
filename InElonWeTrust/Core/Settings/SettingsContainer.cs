@@ -8,6 +8,9 @@ namespace InElonWeTrust.Core.Settings
         public string Token { get; set; }
         public List<string> Prefixes { get; set; }
 
+        [JsonProperty("bot_id")]
+        public ulong BotId { get; set; }
+
         [JsonProperty("owner_id")]
         public ulong OwnerId { get; set; }
 
@@ -28,5 +31,8 @@ namespace InElonWeTrust.Core.Settings
 
         [JsonProperty("flickr_secret")]
         public string FlickrSecret { get; set; }
+
+        [JsonProperty("discord_bot_list_token")]
+        public string DiscordBotListToken { get; set; }
     }
 }

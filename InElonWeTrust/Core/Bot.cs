@@ -17,6 +17,7 @@ using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Description;
 using InElonWeTrust.Core.Services.Diagnostic;
+using InElonWeTrust.Core.Services.DiscordBotList;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using InElonWeTrust.Core.Services.Pagination;
@@ -126,6 +127,7 @@ namespace InElonWeTrust.Core
                 .Add<SubscriptionsService>()
                 .Add<TwitterService>()
                 .Add<UserLaunchSubscriptionsService>()
+                .Add<DiscordBotListService>()
                 .Build();
         }
 
