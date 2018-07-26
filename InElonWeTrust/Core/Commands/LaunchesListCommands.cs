@@ -77,7 +77,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("AllLaunches")]
-        [Aliases("All", "al")]
+        [Aliases("All", "Launches", "al")]
         [Description("Get information about all launches.")]
         public async Task AllLaunches(CommandContext ctx)
         {
