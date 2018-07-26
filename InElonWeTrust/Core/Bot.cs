@@ -114,6 +114,7 @@ namespace InElonWeTrust.Core
                 .Add<SubscriptionEmbedGenerator>()
                 .Add<UsefulLinksEmbedGenerator>()
                 .Add<LaunchNotificationEmbedBuilder>()
+                .Add<RoadsterEmbedBuilder>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()

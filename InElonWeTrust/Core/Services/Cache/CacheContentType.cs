@@ -14,6 +14,7 @@
         CompanyHistory,
         Launchpads,
         Rockets,
-        Changelog
+        Changelog,
+        Roadster
     }
 }
