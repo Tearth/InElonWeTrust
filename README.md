@@ -23,7 +23,7 @@ You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130
   * previous, upcoming and more specialized list of launches (missions with failed landings or to specified orbit? No problem!)
   * counter for the next launch
   * random stuff like SpaceX or Elon's tweet, photo or Reddit topic 
-  * notifications (you will be noticed about all new tweets, Flickr photos, hottest topics on /r/spacex and upcoming launches)
+  * notifications (you will be notified about all new tweets, Flickr photos, hottest topics on /r/spacex and upcoming launches)
   * other fun stuff: Elon's quotes, company data and history, random videos, launchpads, rockets and more
 
 <h1 align="center" style="font-weight: bold">
