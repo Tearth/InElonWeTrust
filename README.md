@@ -3,6 +3,16 @@
 <img src="https://i.imgur.com/cYPoKXr.jpg" alt="SpaceXLogo">
 </p>
 
+<p align="center">
+<a href="https://discordbots.org/bot/462742130016780337" >
+<img src="https://discordbots.org/api/widget/status/462742130016780337.svg" alt="InElonWeTrust" />
+<img src="https://discordbots.org/api/widget/servers/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
+<img src="https://discordbots.org/api/widget/upvotes/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
+<img src="https://discordbots.org/api/widget/lib/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
+</a>
+</p>
+
+
 Discord bot providing a lot of funny (or not) commands related with SpaceX and Elon Musk. Written at the beginning only to collect information about the upcoming start, it developed into a full-fledged bot providing a lot of information about SpaceX and Elon Musk. 
 
 Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
