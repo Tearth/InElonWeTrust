@@ -53,6 +53,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private void InitStream()
         {
             _stream = Stream.CreateFilteredStream();
+            _stream.StallWarnings = true;
 
             foreach (var user in _users)
             {
@@ -60,6 +61,8 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
 
             _stream.MatchingTweetReceived += Stream_MatchingTweetReceived;
+            _stream.DisconnectMessageReceived += Stream_DisconnectMessageReceived;
+            _stream.WarningFallingBehindDetected += Stream_WarningFallingBehindDetected;
             _stream.StartStreamMatchingAllConditionsAsync();
         }
 
@@ -146,6 +149,30 @@ namespace InElonWeTrust.Core.Services.Twitter
 
                 OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
             }
+        }
+
+        private void Stream_DisconnectMessageReceived(object sender, DisconnectedEventArgs e)
+        {
+            try
+            {
+                _logger.Warn("Twitter stream disconnected! Reason: " + e.DisconnectMessage.Reason);
+
+                _stream.MatchingTweetReceived -= Stream_MatchingTweetReceived;
+                _stream.DisconnectMessageReceived -= Stream_DisconnectMessageReceived;
+                _stream.WarningFallingBehindDetected -= Stream_WarningFallingBehindDetected;
+                _stream.StopStream();
+
+                InitStream();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Can't reconnect to Twiter stream!");
+            }
+        }
+
+        private void Stream_WarningFallingBehindDetected(object sender, WarningFallingBehindEventArgs e)
+        {
+            _logger.Error("Stream falling behind detected: " + e.WarningMessage.Message);
         }
     }
 }
