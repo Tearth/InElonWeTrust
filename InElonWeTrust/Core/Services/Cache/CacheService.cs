@@ -16,6 +16,7 @@ namespace InElonWeTrust.Core.Services.Cache
         private int _cacheItemsAdded;
         private int _cacheItemsHit;
         private int _cacheItemsUpdated;
+        private System.Threading.SemaphoreSlim _cacheLock;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -30,6 +31,8 @@ namespace InElonWeTrust.Core.Services.Cache
             _cacheStatsTimer = new Timer(CacheStatsIntervalMinutes * 60 * 1000);
             _cacheStatsTimer.Elapsed += CacheStatsTimerOnElapsed;
             _cacheStatsTimer.Start();
+
+            _cacheLock = new System.Threading.SemaphoreSlim(1, 1);
         }
 
         public void RegisterDataProvider(CacheContentType type, Func<string, Task<object>> dataProviderDelegate)
@@ -39,35 +42,44 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public async Task<TData> Get<TData>(CacheContentType type, string parameter = null)
         {
-            if (!_dataProviders.TryGetValue(type, out var dataProvider))
+            await _cacheLock.WaitAsync();
+
+            try
             {
-                throw new NoDataProviderException($"{type} data provider doesn't exists in cache.");
-            }
+                if (!_dataProviders.TryGetValue(type, out var dataProvider))
+                {
+                    throw new NoDataProviderException($"{type} data provider doesn't exists in cache.");
+                }
 
-            if (!_items.ContainsKey(new Tuple<CacheContentType, string>(type, parameter)))
+                if (!_items.ContainsKey(new Tuple<CacheContentType, string>(type, parameter)))
+                {
+                    var data = await dataProvider(parameter);
+
+                    _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
+                    _cacheItemsAdded++;
+
+                    return (TData)data;
+                }
+
+                var cachedItem = _items[new Tuple<CacheContentType, string>(type, parameter)];
+                if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= CacheItemLifeLengthMinutes)
+                {
+                    var data = await dataProvider(parameter);
+                    cachedItem.Update(data);
+
+                    _cacheItemsUpdated++;
+                }
+                else
+                {
+                    _cacheItemsHit++;
+                }
+
+                return (TData)cachedItem.Data;
+            }
+            finally
             {
-                var data = await dataProvider(parameter);
-
-                _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
-                _cacheItemsAdded++;
-
-                return (TData)data;
+                _cacheLock.Release();
             }
-
-            var cachedItem = _items[new Tuple<CacheContentType, string>(type, parameter)];
-            if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= CacheItemLifeLengthMinutes)
-            {
-                var data = await dataProvider(parameter);
-                cachedItem.Update(data);
-
-                _cacheItemsUpdated++;
-            }
-            else
-            {
-                _cacheItemsHit++;
-            }
-
-            return (TData)cachedItem.Data;
         }
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
