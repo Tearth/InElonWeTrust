@@ -29,8 +29,10 @@ using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
 using InElonWeTrust.Core.TableGenerators;
+using Newtonsoft.Json.Serialization;
 using NLog;
 using Oddity;
+using Oddity.API.Builders;
 
 namespace InElonWeTrust.Core
 {
@@ -50,6 +52,10 @@ namespace InElonWeTrust.Core
             _oddity = new OddityCore();
             _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
+
+            _oddity.OnRequestSend += Oddity_OnRequestSend;
+            _oddity.OnResponseReceive += Oddity_OnResponseReceive;
+            _oddity.OnDeserializationError += Oddity_OnDeserializationError;
 
             Client = new DiscordClient(GetClientConfiguration());
             Client.SetWebSocketClient<WebSocket4NetCoreClient>();
@@ -265,6 +271,27 @@ namespace InElonWeTrust.Core
             {
                 await e.Context.RespondAsync("", false, errorEmbedBuilder);
             }
+        }
+
+        private void Oddity_OnRequestSend(object sender, RequestSendEventArgs e)
+        {
+            var message = $"Oddity request sent to {e.Url}";
+            if (e.Filters.Any())
+            {
+                message += $" with filters: {string.Join(", ", e.Filters)}";
+            }
+
+            _logger.Info(message);
+        }
+
+        private void Oddity_OnResponseReceive(object sender, ResponseReceiveEventArgs e)
+        {
+            _logger.Info($"Oddity response received ({e.Response?.Length} chars, status {e.StatusCode}).");
+        }
+
+        private void Oddity_OnDeserializationError(object sender, ErrorEventArgs e)
+        {
+            _logger.Warn(e.ErrorContext.Error, "Oddity deserialization error.");
         }
 
         private string GetCommandInfo(CommandContext ctx)
