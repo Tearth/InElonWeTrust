@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -80,7 +81,7 @@ namespace InElonWeTrust.Core.Commands
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
                 var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
-                DiscordMessage editedMessage = null;
+                var editedMessage = e.Message;
 
                 if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                 {
@@ -96,11 +97,14 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (UnauthorizedException)
                 {
-                    var oldMessageContent = editedMessage.Content;
-                    oldMessageContent += "\r\n";
-                    oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
-                                         "bot/channel permissions and be sure that I have ability to manage messages.*";
+                    var oldMessageContent = editedMessage.Content ?? (await e.Channel.GetMessageAsync(e.Message.Id)).Content;
 
+                    if (oldMessageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        oldMessageContent += "\r\n";
+                        oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
+                                             "bot/channel permissions and be sure that I have ability to manage messages.*";
+                    }
                     _logger.Warn("Can't do pagination due to permissions.");
                     await editedMessage.ModifyAsync(oldMessageContent);
                 }

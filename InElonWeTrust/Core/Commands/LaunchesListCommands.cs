@@ -160,38 +160,46 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task Client_MessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && _paginationService.IsPaginationSet(e.Message))
+            if (e.User.IsBot || !_paginationService.IsPaginationSet(e.Message))
             {
-                var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+                return;
+            }
 
-                if (_allowedPaginationTypes.Contains(paginationData.ContentType))
+            var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+            if (_allowedPaginationTypes.Contains(paginationData.ContentType))
+            {
+                var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
+                if (items != null)
                 {
-                    var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
-                    if (items != null)
+                    var editedMessage = e.Message;
+
+                    if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
-                        DiscordMessage editedMessage = null;
+                        var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+                        var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType,
+                            updatedPaginationData.CurrentPage);
+                        editedMessage = await e.Message.ModifyAsync(launchesList);
+                    }
 
-                        if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
-                        {
-                            var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                            var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
-                            editedMessage = await e.Message.ModifyAsync(launchesList);
-                        }
+                    try
+                    {
+                        await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    }
+                    catch (UnauthorizedException)
+                    {
+                        var oldMessageContent = editedMessage.Content ??
+                                                (await e.Channel.GetMessageAsync(e.Message.Id)).Content;
 
-                        try
+                        if (oldMessageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                        }
-                        catch (UnauthorizedException)
-                        {
-                            var oldMessageContent = editedMessage.Content;
                             oldMessageContent += "\r\n";
-                            oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
-                                                 "bot/channel permissions and be sure that I have ability to manage messages.*";
-
-                            _logger.Warn("Can't do pagination due to permissions.");
-                            await editedMessage.ModifyAsync(oldMessageContent);
+                            oldMessageContent +=
+                                "*It seems that I have no enough permissions to do pagination properly. Please check " +
+                                "bot/channel permissions and be sure that I have ability to manage messages.*";
                         }
+
+                        _logger.Warn("Can't do pagination due to permissions.");
+                        await editedMessage.ModifyAsync(oldMessageContent);
                     }
                 }
             }
