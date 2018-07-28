@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using InElonWeTrust.Core.Services.Cache;
 using NLog;
 using Oddity;
 using Oddity.API.Models.Launch;
@@ -15,6 +16,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private readonly Timer _notificationsUpdateTimer;
         private readonly OddityCore _oddity;
+        private CacheService _cacheService;
         private LaunchInfo _nextLaunchState;
         private readonly List<int> _notificationTimes;
 
@@ -22,14 +24,17 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private const int UpdateNotificationsIntervalMinutes = 1;
 
-        public LaunchNotificationsService(OddityCore oddity)
+        public LaunchNotificationsService(OddityCore oddity, CacheService cacheService)
         {
             _oddity = oddity;
+            _cacheService = cacheService;
             _notificationTimes = new List<int> { 2, 10, 60, 60 * 12, 60 * 24, 60 * 24 * 7 };
 
             _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
+
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
         }
 
         private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -48,11 +53,11 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         {
             if (_nextLaunchState == null)
             {
-                _nextLaunchState = await _oddity.Launches.GetNext().ExecuteAsync();
+                _nextLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
             }
             else
             {
-                var newLaunchState = await _oddity.Launches.GetNext().ExecuteAsync();
+                var newLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
                 if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value)
                 {
