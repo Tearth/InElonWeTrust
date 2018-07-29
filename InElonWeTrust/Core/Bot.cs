@@ -196,7 +196,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            _logger.Error(e.Exception, $"Event Name: {e.EventName}");
+            _logger.Warn(e.Exception, $"Event Name: {e.EventName}");
             return Task.CompletedTask;
         }
 
