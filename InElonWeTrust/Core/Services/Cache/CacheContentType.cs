@@ -16,6 +16,7 @@
         Rockets,
         Changelog,
         Roadster,
-        Cores
+        Cores,
+        CoreInfo
     }
 }

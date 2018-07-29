@@ -123,6 +123,7 @@ namespace InElonWeTrust.Core
                 .Add<UsefulLinksEmbedGenerator>()
                 .Add<LaunchNotificationEmbedBuilder>()
                 .Add<RoadsterEmbedBuilder>()
+                .Add<CoreInfoEmbedGenerator>()
                 .Add<DescriptionService>()
                 .Add<ChangelogService>()
                 .Add<UsefulLinksService>()

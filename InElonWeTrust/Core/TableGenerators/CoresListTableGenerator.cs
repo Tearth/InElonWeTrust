@@ -43,7 +43,7 @@ namespace InElonWeTrust.Core.TableGenerators
             }
 
             historyBuilder.Append("\r\n");
-            historyBuilder.Append("Type e!getcore <number> to get more information.");
+            historyBuilder.Append("Type e!core <number> to get more information.");
 
             historyBuilder.Append("\r\n");
             historyBuilder.Append(paginationFooter);

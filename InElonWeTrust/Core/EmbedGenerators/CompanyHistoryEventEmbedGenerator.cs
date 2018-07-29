@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
 
-            errorEmbedBuilder.AddField("Error", "History event with the specified id doesn't exists, type `e!CompanyHistory` to list them.");
+            errorEmbedBuilder.AddField(":octagonal_sign: Oops", "History event with the specified id doesn't exists, type `e!CompanyHistory` to list them.");
 
             return errorEmbedBuilder;
         }
