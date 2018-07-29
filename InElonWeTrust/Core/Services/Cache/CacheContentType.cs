@@ -15,6 +15,7 @@
         Launchpads,
         Rockets,
         Changelog,
-        Roadster
+        Roadster,
+        Cores
     }
 }

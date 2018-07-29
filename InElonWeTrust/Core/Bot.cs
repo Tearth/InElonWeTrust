@@ -115,6 +115,7 @@ namespace InElonWeTrust.Core
                 .Add<RedditEmbedGenerator>()
                 .Add<TwitterEmbedGenerator>()
                 .Add<LaunchesListTableGenerator>()
+                .Add<CoresListTableGenerator>()
                 .Add<LaunchpadsEmbedGenerator>()
                 .Add<QuoteEmbedGenerator>()
                 .Add<RocketsEmbedGenerator>()
