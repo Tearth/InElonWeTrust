@@ -229,6 +229,7 @@ namespace InElonWeTrust.Core
                     errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
                     _logger.Warn(e.Exception, GetCommandInfo(e.Context));
 
+                    sendErrorMessageOnChannel = false;  // TODO: check if this is truly required
                     break;
                 }
 
