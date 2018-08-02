@@ -69,7 +69,7 @@ namespace InElonWeTrust.Core.Commands
                 return;
             }
 
-            await _twitterService.ReloadCachedTweetsAsync();
+            await _twitterService.ReloadCachedTweetsAsync(false);
         }
 
         private async void Twitter_OnNewTweet(object sender, ITweet tweet)

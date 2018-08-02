@@ -70,7 +70,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
         }
 
-        public async Task ReloadCachedTweetsAsync()
+        public async Task ReloadCachedTweetsAsync(bool checkOnlyLastTweets)
         {
             if (_reloadingCacheState)
             {
@@ -116,6 +116,11 @@ namespace InElonWeTrust.Core.Services.Twitter
                                 }
                             }
 
+                            if (checkOnlyLastTweets)
+                            {
+                                break;
+                            }
+
                             minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
                             firstRequest = false;
                         }
@@ -139,7 +144,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         {
             try
             {
-                await ReloadCachedTweetsAsync();
+                await ReloadCachedTweetsAsync(true);
             }
             catch (Exception ex)
             {
