@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -20,12 +21,13 @@ namespace InElonWeTrust.Core.Services.Twitter
     {
         public event EventHandler<ITweet> OnNewTweet;
 
+        private readonly Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
-        private IFilteredStream _stream;
         private bool _reloadingCacheState;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private const int UpdateNotificationsIntervalMinutes = 5;
 
         public TwitterService()
         {
@@ -47,23 +49,10 @@ namespace InElonWeTrust.Core.Services.Twitter
             var accessTokenSecret = SettingsLoader.Data.TwitterAccessTokenSecret;
 
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
-            InitStream();
-        }
 
-        private void InitStream()
-        {
-            _stream = Stream.CreateFilteredStream();
-            _stream.StallWarnings = true;
-
-            foreach (var user in _users)
-            {
-                _stream.AddFollow(User.GetUserFromScreenName(user.Value));
-            }
-
-            _stream.MatchingTweetReceived += Stream_MatchingTweetReceived;
-            _stream.DisconnectMessageReceived += Stream_DisconnectMessageReceived;
-            _stream.WarningFallingBehindDetected += Stream_WarningFallingBehindDetected;
-            _stream.StartStreamMatchingAllConditionsAsync();
+            _tweetsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            _tweetsUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
+            _tweetsUpdateTimer.Start();
         }
 
         public SubscriptionType GetSubscriptionTypeByUserName(string username)
@@ -95,6 +84,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                 {
                     _logger.Info("Twitter reload cached tweets starts");
 
+                    var sendNotifyWhenNewTweet = databaseContext.CachedTweets.Any();
                     foreach (var account in _users)
                     {
                         var firstRequest = true;
@@ -113,9 +103,14 @@ namespace InElonWeTrust.Core.Services.Twitter
                                 break;
                             }
 
-                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)))
+                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)).Reverse())
                             {
                                 await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
+
+                                if (sendNotifyWhenNewTweet)
+                                {
+                                    OnNewTweet?.Invoke(msg.CreatedBy, msg);
+                                }
                             }
 
                             minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
@@ -137,42 +132,16 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
         }
 
-        private async void Stream_MatchingTweetReceived(object sender, MatchedTweetReceivedEventArgs e)
-        {
-            if (e.MatchOn == MatchOn.Follower)
-            {
-                using (var databaseContext = new DatabaseContext())
-                {
-                    await databaseContext.CachedTweets.AddAsync(new CachedTweet(e.Tweet));
-                    await databaseContext.SaveChangesAsync();
-                }
-
-                OnNewTweet?.Invoke(e.Tweet.CreatedBy, e.Tweet);
-            }
-        }
-
-        private void Stream_DisconnectMessageReceived(object sender, DisconnectedEventArgs e)
+        private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                _logger.Warn("Twitter stream disconnected! Reason: " + e.DisconnectMessage.Reason);
-
-                _stream.MatchingTweetReceived -= Stream_MatchingTweetReceived;
-                _stream.DisconnectMessageReceived -= Stream_DisconnectMessageReceived;
-                _stream.WarningFallingBehindDetected -= Stream_WarningFallingBehindDetected;
-                _stream.StopStream();
-
-                InitStream();
+                await ReloadCachedTweetsAsync();
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Can't reconnect to Twiter stream!");
+                _logger.Error(ex, "Failed to reload cached tweets.");
             }
-        }
-
-        private void Stream_WarningFallingBehindDetected(object sender, WarningFallingBehindEventArgs e)
-        {
-            _logger.Error("Stream falling behind detected: " + e.WarningMessage.Message);
         }
     }
 }
