@@ -1,3 +1,8 @@
+**v1.2 [02-08-2018]**
+ - add Roadster, Core and Cores commands
+ - fix issues with Twitter notifications
+ - fix misspellings, invalid links and other minor stuff
+
 **v1.1 [26-07-2018]**
  - add better error handling, now bot will inform (on channel or DM) if he has no required permissions to do some action
  - add more detailed description (will display minutes to launch instead of hours)
