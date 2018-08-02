@@ -49,6 +49,8 @@ namespace InElonWeTrust.Core.Services.Reddit
                 var response = await _httpClient.GetStringAsync(HotTopicsUrl);
 
                 var names = JsonConvert.DeserializeObject<RedditResponse>(response);
+                var newTopics = 0;
+
                 foreach (var topic in names.Data.Children.Select(p => p.Data))
                 {
                     if (!databaseContext.CachedRedditTopics.Any(p => p.Name == topic.Name))
@@ -58,12 +60,15 @@ namespace InElonWeTrust.Core.Services.Reddit
                             OnNewHotTopic?.Invoke(this, topic);
                         }
 
+                        newTopics++;
                         databaseContext.CachedRedditTopics.Add(new CachedRedditTopic(topic.Name));
                     }
                 }
 
                 await databaseContext.SaveChangesAsync();
-                _logger.Info($"Reddit topics check end ({databaseContext.CachedRedditTopics.Count()} cached)");
+
+                var topicsCount = databaseContext.CachedRedditTopics.Count();
+                _logger.Info($"Reddit update finished ({newTopics} sent to {OnNewHotTopic.GetInvocationList().Length} channels, {topicsCount} tweets in database)");
             }
         }
 
