@@ -85,6 +85,8 @@ namespace InElonWeTrust.Core.Services.Twitter
                     _logger.Info("Twitter reload cached tweets starts");
 
                     var sendNotifyWhenNewTweet = databaseContext.CachedTweets.Any();
+                    var newTweets = 0;
+
                     foreach (var account in _users)
                     {
                         var firstRequest = true;
@@ -106,6 +108,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                             foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)).Reverse())
                             {
                                 await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
+                                newTweets++;
 
                                 if (sendNotifyWhenNewTweet)
                                 {
@@ -123,7 +126,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                     await databaseContext.SaveChangesAsync();
 
                     var tweetsCount = await databaseContext.CachedTweets.CountAsync();
-                    _logger.Info($"Twitter download finished ({tweetsCount} tweets downloaded)");
+                    _logger.Info($"Twitter update finished ({newTweets} sent to {OnNewTweet.GetInvocationList().Length} channels, {tweetsCount} tweets in database)");
                 }
             }
             finally

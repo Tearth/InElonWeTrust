@@ -65,7 +65,9 @@ namespace InElonWeTrust.Core.Services.Flickr
                     _logger.Info("Reload Flickr cached photos starts");
 
                     var currentPage = 1;
+
                     var sendNotifyWhenNewPhoto = databaseContext.CachedFlickrPhotos.Any();
+                    var newPhotos = 0;
 
                     while (true)
                     {
@@ -80,7 +82,9 @@ namespace InElonWeTrust.Core.Services.Flickr
                                 var date = await GetImageUploadDateAsync(photo.Id);
 
                                 var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
+
                                 await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
+                                newPhotos++;
 
                                 if (sendNotifyWhenNewPhoto)
                                 {
@@ -103,7 +107,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                     await databaseContext.SaveChangesAsync();
 
                     var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
-                    _logger.Info($"Flickr download finished ({photosCount} photos downloaded)");
+                    _logger.Info($"Flickr update finished ({newPhotos} sent to {OnNewFlickrPhoto.GetInvocationList().Length} channels, {photosCount} photos in database)");
                 }
             }
             finally
