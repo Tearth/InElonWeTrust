@@ -64,7 +64,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                     if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
                     {
                         OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
-                        _logger.Info($"Scrub notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
+                        _logger.Info($"Scrub notification sent");
                     }
                     else
                     {
@@ -74,14 +74,14 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                         if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
                         {
                             OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
-                            _logger.Info($"Reminder notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
+                            _logger.Info($"Reminder notification sent");
                         }
                     }
                 }
                 else
                 {
                     OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
-                    _logger.Info($"New target notification sent to {OnLaunchNotification.GetInvocationList().Length} channels");
+                    _logger.Info($"New target notification sent");
                 }
 
                 _nextLaunchState = newLaunchState;

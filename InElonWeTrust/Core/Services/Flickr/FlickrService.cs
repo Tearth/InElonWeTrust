@@ -107,7 +107,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                     await databaseContext.SaveChangesAsync();
 
                     var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
-                    _logger.Info($"Flickr update finished ({newPhotos} sent to {OnNewFlickrPhoto.GetInvocationList().Length} channels, {photosCount} photos in database)");
+                    _logger.Info($"Flickr update finished ({newPhotos} sent, {photosCount} photos in database)");
                 }
             }
             finally

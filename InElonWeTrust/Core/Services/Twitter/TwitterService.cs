@@ -131,7 +131,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                     await databaseContext.SaveChangesAsync();
 
                     var tweetsCount = await databaseContext.CachedTweets.CountAsync();
-                    _logger.Info($"Twitter update finished ({newTweets} sent to {OnNewTweet.GetInvocationList().Length} channels, {tweetsCount} tweets in database)");
+                    _logger.Info($"Twitter update finished ({newTweets} sent, {tweetsCount} tweets in database)");
                 }
             }
             finally

@@ -109,6 +109,8 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send tweet on the channel with id {channelData.ChannelId}");
                 }
             }
+
+            _logger.Info($"Twitter notifications sent to {channels.Count} channels");
         }
     }
 }

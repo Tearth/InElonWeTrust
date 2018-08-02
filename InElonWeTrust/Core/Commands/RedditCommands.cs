@@ -92,6 +92,8 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send Reddit topic on the channel with id {channelData.ChannelId}");
                 }
             }
+
+            _logger.Info($"Reddit notifications sent to {channels.Count} channels");
         }
     }
 }

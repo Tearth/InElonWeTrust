@@ -81,6 +81,8 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send launch notification on the channel with id {channelData.ChannelId}");
                 }
             }
+
+            _logger.Info($"Launch notifications sent to {channels.Count} channels");
         }
     }
 }

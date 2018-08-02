@@ -93,6 +93,8 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send Flickr photo on the channel with id {channelData.ChannelId}");
                 }
             }
+
+            _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
         }
     }
 }
