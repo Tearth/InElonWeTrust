@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                         var response = await _httpClient.GetStringAsync(string.Format(ImagesListUrl, SettingsLoader.Data.FlickrKey, SpaceXProfileId, currentPage));
                         var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
 
-                        foreach (var photo in parsedResponse.Photos.Photo)
+                        foreach (var photo in parsedResponse.Photos.Photo.AsEnumerable().Reverse())
                         {
                             if (!await databaseContext.CachedFlickrPhotos.AnyAsync(p => p.Id == photo.Id))
                             {
@@ -129,7 +129,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             var response = await _httpClient.GetStringAsync(string.Format(ImageSizesUrl, SettingsLoader.Data.FlickrKey, photoId));
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoSizesResponse>(response);
 
-            return parsedResponse.Sizes.Size.First(p => p.Label == "Original").Source;
+            return parsedResponse.Sizes.Size.Last().Source;
         }
 
         private async Task<DateTime> GetImageUploadDateAsync(string photoId)
