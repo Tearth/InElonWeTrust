@@ -100,7 +100,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                                 MaximumNumberOfTweetsToRetrieve = 200
                             });
 
-                            if (!messages.Any())
+                            if (messages == null || !messages.Any())
                             {
                                 break;
                             }
