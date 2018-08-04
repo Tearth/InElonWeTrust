@@ -5,7 +5,7 @@ using DiscordBotsList.Api;
 using InElonWeTrust.Core.Settings;
 using NLog;
 
-namespace InElonWeTrust.Core.Services.DiscordBotList
+namespace InElonWeTrust.Core.Services.BotLists
 {
     public class DiscordBotListService
     {
