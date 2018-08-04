@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -10,7 +10,7 @@ using NLog;
 
 namespace InElonWeTrust.Core.Services.BotLists
 {
-    public class BotsForDiscordService
+    public class BotlistService
     {
         private readonly HttpClient _httpClient;
         private readonly Timer _statusRefreshTimer;
@@ -19,11 +19,11 @@ namespace InElonWeTrust.Core.Services.BotLists
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public BotsForDiscordService()
+        public BotlistService()
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://botsfordiscord.com/api/v1/");
-            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", SettingsLoader.Data.BotsForDiscordToken);
+            _httpClient.BaseAddress = new Uri("https://botlist.space/api/");
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", SettingsLoader.Data.BotlistToken);
 
             _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 60 * 1000);
             _statusRefreshTimer.Elapsed += StatusRefreshTimer_Elapsed;
@@ -38,14 +38,14 @@ namespace InElonWeTrust.Core.Services.BotLists
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unable to update bot status on BotsForDiscord.com");
+                _logger.Error(ex, "Unable to update bot status on Botlist.space");
             }
         }
 
         private async Task UpdateStatus()
         {
             var guildsCount = Bot.Client.Guilds.Count;
-            var requestModel = new BotsForDiscordRequest(guildsCount);
+            var requestModel = new BotlistRequest(guildsCount);
 
             var json = JsonConvert.SerializeObject(requestModel);
 

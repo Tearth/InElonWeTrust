@@ -5,11 +5,11 @@ namespace InElonWeTrust.Core.Services.BotLists
     public class BotsForDiscordRequest
     {
         [JsonProperty("count")]
-        public int Count { get; }
+        public int ServerCount { get; }
 
-        public BotsForDiscordRequest(int count)
+        public BotsForDiscordRequest(int serverCount)
         {
-            Count = count;
+            ServerCount = serverCount;
         }
     }
 }

@@ -138,6 +138,7 @@ namespace InElonWeTrust.Core
                 .Add<UserLaunchSubscriptionsService>()
                 .Add<DiscordBotListService>()
                 .Add<BotsForDiscordService>()
+                .Add<BotlistService>()
                 .Build();
         }
 

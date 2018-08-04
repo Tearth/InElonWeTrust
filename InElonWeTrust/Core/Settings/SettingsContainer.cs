@@ -37,5 +37,8 @@ namespace InElonWeTrust.Core.Settings
 
         [JsonProperty("bots_for_discord_token")]
         public string BotsForDiscordToken { get; set; }
+
+        [JsonProperty("botlist_token")]
+        public string BotlistToken { get; set; }
     }
 }
