@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         private readonly Timer _notificationsUpdateTimer;
         private bool _reloadingCacheState;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

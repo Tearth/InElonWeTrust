@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.Services.Reddit
     public class RedditService
     {
         public event EventHandler<RedditChildData> OnNewHotTopic;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

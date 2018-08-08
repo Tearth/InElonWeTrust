@@ -28,8 +28,6 @@ namespace InElonWeTrust.Core.TableGenerators
             historyBuilder.Append(new string('-', TotalLength));
             historyBuilder.Append("\r\n");
 
-            var i = (currentPage - 1) * PaginationService.ItemsPerPage + 1;
-
             foreach (var core in cores)
             {
                 historyBuilder.Append(core.CoreSerial.PadRight(SerialLength));
@@ -38,8 +36,6 @@ namespace InElonWeTrust.Core.TableGenerators
                 historyBuilder.Append(core.Missions.Count.ToString().PadRight(MissionsCountLength));
                 historyBuilder.Append(core.Status.Value.ToString().PadRight(StatusLength));
                 historyBuilder.Append("\r\n");
-
-                i++;
             }
 
             historyBuilder.Append("\r\n");

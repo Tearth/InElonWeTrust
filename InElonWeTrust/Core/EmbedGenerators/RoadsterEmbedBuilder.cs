@@ -8,11 +8,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
     public class RoadsterEmbedBuilder
     {
         private const string StarmanImageUrl = "https://i.imgur.com/wQg7DBS.jpg";
-        private readonly DateTime LaunchDate = new DateTime(2018, 2, 6);
+        private readonly DateTime _launchDate = new DateTime(2018, 2, 6);
 
         public DiscordEmbedBuilder Build(RoadsterInfo roadster)
         {
-            var daysFromLaunch = (int)(DateTime.Now - LaunchDate).TotalDays;
+            var daysFromLaunch = (int)(DateTime.Now - _launchDate).TotalDays;
 
             var embedBuilder = new DiscordEmbedBuilder
             {

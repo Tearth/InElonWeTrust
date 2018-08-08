@@ -16,7 +16,7 @@ namespace InElonWeTrust.Core.Services.Cache
         private int _cacheItemsAdded;
         private int _cacheItemsHit;
         private int _cacheItemsUpdated;
-        private System.Threading.SemaphoreSlim _cacheLock;
+        private readonly System.Threading.SemaphoreSlim _cacheLock;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

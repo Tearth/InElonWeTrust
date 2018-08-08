@@ -5,7 +5,7 @@ namespace InElonWeTrust.Core.Services.Changelog
 {
     public class ChangelogService
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private const string ReadmeUrl = "https://raw.githubusercontent.com/Tearth/InElonWeTrust/master/CHANGELOG.md";
 
         public ChangelogService()
