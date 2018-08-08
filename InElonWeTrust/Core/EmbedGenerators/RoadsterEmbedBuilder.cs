@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using Oddity.API.Models.Roadster;
-using Oddity.API.Models.Rocket;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {

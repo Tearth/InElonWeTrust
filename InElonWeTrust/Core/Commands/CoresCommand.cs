@@ -13,7 +13,6 @@ using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
 using NLog;
 using Oddity;
-using Oddity.API.Models.Company;
 using Oddity.API.Models.DetailedCore;
 
 namespace InElonWeTrust.Core.Commands

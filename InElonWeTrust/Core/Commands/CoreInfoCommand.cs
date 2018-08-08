@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Attributes;
@@ -9,7 +6,6 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
-using Oddity.API.Models.Company;
 using Oddity.API.Models.DetailedCore;
 
 namespace InElonWeTrust.Core.Commands

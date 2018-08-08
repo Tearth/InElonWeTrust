@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using Oddity.API.Models.DetailedCore;
-using Oddity.API.Models.Launch;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {

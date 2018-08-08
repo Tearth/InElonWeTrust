@@ -10,10 +10,8 @@ using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Tweetinvi;
-using Tweetinvi.Events;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
-using Tweetinvi.Streaming;
 
 namespace InElonWeTrust.Core.Services.Twitter
 {
