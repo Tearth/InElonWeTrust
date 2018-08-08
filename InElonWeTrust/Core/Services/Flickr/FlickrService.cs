@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Services.Flickr
     {
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
-        private readonly Timer _imageRangesUpdateTimer;
+        private readonly Timer _notificationsUpdateTimer;
         private bool _reloadingCacheState;
         private HttpClient _httpClient;
 
@@ -37,9 +37,9 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             _httpClient = new HttpClient {BaseAddress = new Uri("https://www.flickr.com/services/rest")};
 
-            _imageRangesUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
-            _imageRangesUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
-            _imageRangesUpdateTimer.Start();
+            _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            _notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
+            _notificationsUpdateTimer.Start();
         }
 
         public async Task<CachedFlickrPhoto> GetRandomPhotoAsync()
@@ -116,7 +116,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
         }
 
-        private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             try
             {

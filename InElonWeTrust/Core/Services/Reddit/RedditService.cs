@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                 await databaseContext.SaveChangesAsync();
 
                 var topicsCount = databaseContext.CachedRedditTopics.Count();
-                _logger.Info($"Reddit update finished ({newTopics} sent, {topicsCount} tweets in database)");
+                _logger.Info($"Reddit update finished ({newTopics} sent, {topicsCount} topics in database)");
             }
         }
 

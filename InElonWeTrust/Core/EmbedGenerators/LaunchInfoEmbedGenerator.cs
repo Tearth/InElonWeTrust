@@ -24,7 +24,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
-            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
+            embed.AddField(":recycle: Reused parts:", GetReusedPartsData(launch.Reuse));
 
             var linksData = GetLinksData(launch);
             if (linksData.Length > 0)
