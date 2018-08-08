@@ -1,3 +1,8 @@
+**v1.3 [08-08-2018]**
+ - add more information to Roadster command
+ - fix bug with retrieving launches by alllaunches, upcoming and similar commands
+ - other small changes and fixes
+
 **v1.2 [02-08-2018]**
  - add Roadster, Core and Cores commands
  - fix issues with Twitter notifications

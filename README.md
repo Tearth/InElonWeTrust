@@ -68,12 +68,15 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!Changelog  | get bot changelog | None |
 | e!CompanyHistory  | get list of the most imporatnt events for SpaceX | None |
 | e!CompanyInfo  | get information about company info | None |
+| e!CoreInfo [CoreSerial] | get information about the specified core | None |
+| e!Cores | get list of all cores | None |
 | e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
 | e!Launchpads  | get list of all launchpads used by SpaceX | None |
 | e!Links  | get list useful links related with SpaceX | None |
 | e!Ping  | pong | None |
 | e!RandomElonQuote  | get random Elon Musk's quote | None |
 | e!RandomVideo  | get random video related with SpaceX | None |
+| e!Roadster  | get information about Roadster launched by Falcon Heavy | None |
 | e!Rockets  | get list of all rockets used by SpaceX | None |
 | e!Uptime  | how long am I working? | None |
 
