@@ -20,12 +20,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             var embedBuilder = new DiscordEmbedBuilder
             {
-                Title = roadster.Name,
-                Url = "http://www.whereisroadster.com/",
                 Color = new DiscordColor(Constants.EmbedColor),
                 ImageUrl = StarmanImageUrl,
                 Footer = new DiscordEmbedBuilder.EmbedFooter {Text = $"Roadster has been launched {daysFromLaunch} days ago."}
             };
+
+            embedBuilder.AddField(roadster.Name, $"{roadster.Details} [[Wikipedia]]({roadster.Wikipedia})");
 
             embedBuilder.AddField("Speed", $"{roadster.SpeedKph:# ### ###}  kph", true);
             embedBuilder.AddField("Period", $"{(int)roadster.PeriodDays} days", true);
