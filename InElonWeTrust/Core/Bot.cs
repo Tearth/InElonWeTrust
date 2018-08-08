@@ -276,7 +276,7 @@ namespace InElonWeTrust.Core
 
                 default:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been reported about this accident.");
+                    errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been notified about this accident and will fix it as soon as possible. Thanks for your patience!");
                     _logger.Error(e.Exception, GetCommandInfo(e.Context));
 
                     break;
