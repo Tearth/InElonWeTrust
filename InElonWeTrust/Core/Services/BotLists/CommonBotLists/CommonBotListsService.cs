@@ -3,27 +3,31 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Collections.Generic;
+using InElonWeTrust.Core.Services.BotLists.CommonBotLists;
 using InElonWeTrust.Core.Settings;
 using Newtonsoft.Json;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.BotLists
 {
-    public class BotlistService
+    public class CommonBotListsService
     {
-        private readonly HttpClient _httpClient;
         private readonly Timer _statusRefreshTimer;
-
-        private const int StatusUpdateIntervalMinutes = 10;
+        private readonly List<BotListUpdater> _botListDefinitions;
+        private const int StatusUpdateIntervalMinutes = 1;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public BotlistService()
+        public CommonBotListsService()
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://botlist.space/api/");
-            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", SettingsLoader.Data.BotlistToken);
-
+            _botListDefinitions = new List<BotListUpdater>
+            {
+                new BotListUpdater("https://botlist.space/api/bots/{0}", SettingsLoader.Data.BotlistToken),
+                new BotListUpdater("https://botsfordiscord.com/api/v1/bots/{0}", SettingsLoader.Data.BotsForDiscordToken),
+                new BotListUpdater("https://bots.discord.pw/api/bots/{0}/stats", SettingsLoader.Data.DiscordPwToken),
+            };
+            
             _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 60 * 1000);
             _statusRefreshTimer.Elapsed += StatusRefreshTimer_Elapsed;
             _statusRefreshTimer.Start();
@@ -43,13 +47,10 @@ namespace InElonWeTrust.Core.Services.BotLists
 
         private async Task UpdateStatus()
         {
-            var guildsCount = Bot.Client.Guilds.Count;
-            var requestModel = new BotlistRequest(guildsCount);
-
-            var json = JsonConvert.SerializeObject(requestModel);
-
-            var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
-            await _httpClient.PostAsync($"bots/{SettingsLoader.Data.BotId}", requestContent);
+            foreach (var botList in _botListDefinitions)
+            {
+                await botList.UpdateStatus(Bot.Client.Guilds.Count);
+            }
         }
     }
 }

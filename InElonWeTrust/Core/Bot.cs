@@ -14,6 +14,7 @@ using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.BotLists;
+using InElonWeTrust.Core.Services.BotLists.DiscordBotList;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Description;
@@ -137,8 +138,7 @@ namespace InElonWeTrust.Core
                 .Add<TwitterService>()
                 .Add<UserLaunchSubscriptionsService>()
                 .Add<DiscordBotListService>()
-                .Add<BotsForDiscordService>()
-                .Add<BotlistService>()
+                .Add<CommonBotListsService>()
                 .Build();
         }
 

@@ -2,12 +2,12 @@
 
 namespace InElonWeTrust.Core.Services.BotLists
 {
-    public class BotlistRequest
+    public class CommonBotListsRequest
     {
         [JsonProperty("server_count")]
         public int ServerCount { get; }
 
-        public BotlistRequest(int serverCount)
+        public CommonBotListsRequest(int serverCount)
         {
             ServerCount = serverCount;
         }
