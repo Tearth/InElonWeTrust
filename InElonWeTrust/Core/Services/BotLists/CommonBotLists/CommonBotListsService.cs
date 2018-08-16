@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.Services.BotLists
     {
         private readonly Timer _statusRefreshTimer;
         private readonly List<BotListUpdater> _botListDefinitions;
-        private const int StatusUpdateIntervalMinutes = 1;
+        private const int StatusUpdateIntervalMinutes = 15;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

@@ -28,6 +28,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Rockets")]
+        [Aliases("GetRockets")]
         [Description("Get list of all SpaceX rockets.")]
         public async Task Rockets(CommandContext ctx)
         {

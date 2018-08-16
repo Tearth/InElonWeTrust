@@ -28,6 +28,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Launchpads")]
+        [Aliases("GetLaunchpads", "LaunchpadList")]
         [Description("Get list of all SpaceX launchpads.")]
         public async Task Launchpads(CommandContext ctx)
         {

@@ -45,7 +45,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Cores")]
-        [Aliases("c")]
+        [Aliases("c", "CoresList")]
         [Description("Get list of all SpaceX cores.")]
         public async Task Cores(CommandContext ctx)
         {

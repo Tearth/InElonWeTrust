@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Roadster")]
-        [Aliases("TeslaRoadster")]
+        [Aliases("TeslaRoadster", "Starman")]
         [Description("Get information Tesla Roadster sent on Falcon Heavy (`e!getlaunch 55`).")]
         public async Task CompanyInfo(CommandContext ctx)
         {

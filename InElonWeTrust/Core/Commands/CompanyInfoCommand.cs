@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("CompanyInfo")]
-        [Aliases("Company", "ci")]
+        [Aliases("Company", "ci", "info")]
         [Description("Get information about SpaceX.")]
         public async Task CompanyInfo(CommandContext ctx)
         {
