@@ -26,8 +26,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embedBuilder.AddField("Speed", $"{roadster.SpeedKph:# ### ###}  kph", true);
             embedBuilder.AddField("Period", $"{(int)roadster.PeriodDays} days", true);
 
-            embedBuilder.AddField("Distance to Earth", $"{roadster.EarthDistanceKm:# ### ### ###} km", true);
-            embedBuilder.AddField("Distance to Mars", $"{roadster.MarsDistanceKm:# ### ### ###} km", true);
+            embedBuilder.AddField("Distance to Earth", $"{roadster.EarthDistanceKilometers:# ### ### ###} km", true);
+            embedBuilder.AddField("Distance to Mars", $"{roadster.MarsDistanceKilometers:# ### ### ###} km", true);
 
             embedBuilder.AddField("Apoapsis", $"{roadster.ApoapsisAu:0.###} au = {roadster.ApoapsisAu * 149_597_871:# ### ### ###} km", true);
             embedBuilder.AddField("Periapsis", $"{roadster.PeriapsisAu:0.###} au = {roadster.PeriapsisAu * 149_597_871:# ### ### ###} km", true);
