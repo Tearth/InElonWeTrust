@@ -199,9 +199,10 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private async Task Client_GuildDeleted(GuildDeleteEventArgs e)
+        private Task Client_GuildDeleted(GuildDeleteEventArgs e)
         {
             _logger.Info($"Bot has been removed from {e.Guild.Name} guild.");
+            return Task.CompletedTask;
         }
 
         private Task Client_ClientError(ClientErrorEventArgs e)
