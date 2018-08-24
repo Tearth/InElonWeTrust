@@ -76,7 +76,7 @@ namespace InElonWeTrust.Core.Helpers
                         var methodAttributes = method.GetCustomAttributes();
                         var commandAttribute = (CommandAttribute)methodAttributes.FirstOrDefault(p => p is CommandAttribute);
 
-                        if (commandAttribute != null)
+                        if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
                         {
                             if (!_subCommands.ContainsKey(groupAttribute.GroupType))
                             {
@@ -86,7 +86,10 @@ namespace InElonWeTrust.Core.Helpers
                             _subCommands[groupAttribute.GroupType].Add($"`{commandAttribute.Name}`");
                         }
 
-                        _subCommands[groupAttribute.GroupType] = _subCommands[groupAttribute.GroupType].OrderBy(p => p).ToList();
+                        if (_subCommands.ContainsKey(groupAttribute.GroupType))
+                        {
+                            _subCommands[groupAttribute.GroupType] = _subCommands[groupAttribute.GroupType].OrderBy(p => p).ToList();
+                        }
                     }
                 }
             }

@@ -96,7 +96,7 @@ namespace InElonWeTrust.Core.Commands
                     Color = new DiscordColor(Constants.EmbedErrorColor)
                 };
 
-                errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist");
+                errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist, type `e!alllaunches` to list them.");
                 await ctx.RespondAsync("", false, errorEmbedBuilder);
             }
             else
