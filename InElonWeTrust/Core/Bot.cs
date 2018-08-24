@@ -201,7 +201,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_GuildDeleted(GuildDeleteEventArgs e)
         {
-            _logger.Info($"Bot has been removed from {e.Guild.Name} guild.");
+            _logger.Info($"Bot has been removed from {e.Guild.Name} guild. Unavailable: {e.Unavailable}.");
             return Task.CompletedTask;
         }
 
