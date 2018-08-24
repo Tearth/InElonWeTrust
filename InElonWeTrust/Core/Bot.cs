@@ -207,17 +207,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            var ignoredErrors = new List<string>
-            {
-                "MESSAGE_REACTION_ADDED",
-                "MESSAGE_REACTION_REMOVED"
-            };
-
-            if (ignoredErrors.All(p => p != e.EventName))
-            {
-                _logger.Warn(e.Exception, $"Event Name: {e.EventName}");
-            }
-
+            _logger.Warn(e.Exception, $"Event Name: {e.EventName}");
             return Task.CompletedTask;
         }
 
