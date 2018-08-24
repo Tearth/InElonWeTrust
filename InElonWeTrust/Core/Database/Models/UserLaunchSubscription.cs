@@ -15,6 +15,7 @@
         public UserLaunchSubscription(uint launchId, string guildId, string userId)
         {
             LaunchId = launchId;
+            GuildId = guildId;
             UserId = userId;
         }
     }
