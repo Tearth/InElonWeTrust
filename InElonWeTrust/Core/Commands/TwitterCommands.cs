@@ -16,7 +16,7 @@ using Tweetinvi.Models;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Media)]
-    public class TwitterCommands
+    public class TwitterCommands : BaseCommandModule
     {
         private readonly TwitterService _twitterService;
         private readonly SubscriptionsService _subscriptionsService;

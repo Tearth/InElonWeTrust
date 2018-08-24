@@ -64,7 +64,7 @@ namespace InElonWeTrust.Core.Services.Description
                     string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
             }
 
-            await Bot.Client.UpdateStatusAsync(new DiscordGame(description));
+            await Bot.Client.UpdateStatusAsync(new DiscordActivity(description));
         }
 
         private int GetMinutesToLaunch(TimeSpan time)

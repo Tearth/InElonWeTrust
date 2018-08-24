@@ -39,30 +39,34 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             _notificationsUpdateTimer.Start();
         }
 
-        private async Task AddUserSubscription(ulong userId)
+        private async Task AddUserSubscription(ulong userId, ulong guildId)
         {
             var fixedUserId = userId.ToString();
+            var fixedGuildId = guildId.ToString();
+
             var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
                 if (!databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId))
                 {
-                    databaseContext.UserLaunchSubscriptions.Add(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedUserId));
+                    databaseContext.UserLaunchSubscriptions.Add(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedGuildId, fixedUserId));
                     databaseContext.SaveChanges();
                 }
             }
         }
 
-        private async Task RemoveUserSubscription(ulong userId)
+        private async Task RemoveUserSubscription(ulong userId, ulong guildId)
         {
             var fixedUserId = userId.ToString();
+            var fixedGuildId = guildId.ToString();
+
             var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
                 var userSubscription = databaseContext.UserLaunchSubscriptions
-                    .FirstOrDefault(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber);
+                    .FirstOrDefault(p => p.UserId == fixedUserId && p.GuildId == fixedGuildId && p.LaunchId == nextLaunch.FlightNumber);
 
                 if (userSubscription != null)
                 {
@@ -85,7 +89,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         {
             if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
             {
-                await AddUserSubscription(e.User.Id);
+                await AddUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
             }
         }
@@ -94,7 +98,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         {
             if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
             {
-                await RemoveUserSubscription(e.User.Id);
+                await RemoveUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed from the launch subscription list.");
             }
         }
@@ -118,17 +122,17 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                     {
                         try
                         {
-                            var discordUser = await Bot.Client.GetUserAsync(ulong.Parse(user.UserId));
-                            var userDm = await Bot.Client.CreateDmAsync(discordUser);
+                            var guild = await Bot.Client.GetGuildAsync(ulong.Parse(user.GuildId));
+                            var member = await guild.GetMemberAsync(ulong.Parse(user.UserId));
 
-                            await userDm.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, _launchInfoEmbedGenerator.Build(nextLaunch, false));
+                            await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, _launchInfoEmbedGenerator.Build(nextLaunch, false));
 
                             if (nextLaunch.Links.VideoLink != null)
                             {
-                                await userDm.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
+                                await member.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
                             }
 
-                            await userDm.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
+                            await member.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
                                                           "subscription is one-time and you have to do it again if you want to receive similar notification " +
                                                           "about next launch in the future.*");
                         }

@@ -12,7 +12,7 @@ using Oddity.API.Models.Rocket;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class RocketsCommand
+    public class RocketsCommand : BaseCommandModule
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;

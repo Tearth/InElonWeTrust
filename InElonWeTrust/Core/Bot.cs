@@ -11,6 +11,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.BotLists;
@@ -30,6 +31,7 @@ using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
 using InElonWeTrust.Core.Settings;
 using InElonWeTrust.Core.TableGenerators;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using NLog;
 using Oddity;
@@ -41,7 +43,7 @@ namespace InElonWeTrust.Core
     {
         public static DiscordClient Client { get; set; }
 
-        private CommandsNextModule _commands;
+        private CommandsNextExtension _commands;
         private OddityCore _oddity;
         private CacheService _cacheService;
         private DiagnosticService _diagnosticService;
@@ -59,7 +61,6 @@ namespace InElonWeTrust.Core
             _oddity.OnDeserializationError += Oddity_OnDeserializationError;
 
             Client = new DiscordClient(GetClientConfiguration());
-            Client.SetWebSocketClient<WebSocket4NetCoreClient>();
 
             Client.Ready += Client_Ready;
             Client.Heartbeated += Client_Heartbeated;
@@ -84,6 +85,7 @@ namespace InElonWeTrust.Core
             {
                 Token = SettingsLoader.Data.Token,
                 TokenType = TokenType.Bot,
+                WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
 
                 AutoReconnect = true,
                 UseInternalLogHandler = false
@@ -97,49 +99,55 @@ namespace InElonWeTrust.Core
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 CaseSensitive = false,
-                CustomPrefixPredicate = CustomPrefixPredicate,
+                PrefixResolver = CustomPrefixPredicate,
 
-                Dependencies = BuildDependencies()
+                Services = BuildDependencies()
             };
         }
 
-        private DependencyCollection BuildDependencies()
+        private ServiceProvider BuildDependencies()
         {
-            return new DependencyCollectionBuilder()
-                .AddInstance(_oddity)
-                .AddInstance(_cacheService)
-                .Add<LaunchInfoEmbedGenerator>()
-                .Add<ChangelogEmbedGenerator>()
-                .Add<CompanyInfoEmbedGenerator>()
-                .Add<CompanyHistoryTableGenerator>()
-                .Add<CompanyHistoryEventEmbedGenerator>()
-                .Add<FlickrEmbedGenerator>()
-                .Add<RedditEmbedGenerator>()
-                .Add<TwitterEmbedGenerator>()
-                .Add<LaunchesListTableGenerator>()
-                .Add<CoresListTableGenerator>()
-                .Add<LaunchpadsEmbedGenerator>()
-                .Add<QuoteEmbedGenerator>()
-                .Add<RocketsEmbedGenerator>()
-                .Add<SubscriptionEmbedGenerator>()
-                .Add<UsefulLinksEmbedGenerator>()
-                .Add<LaunchNotificationEmbedBuilder>()
-                .Add<RoadsterEmbedBuilder>()
-                .Add<CoreInfoEmbedGenerator>()
-                .Add<DescriptionService>()
-                .Add<ChangelogService>()
-                .Add<UsefulLinksService>()
-                .Add<FlickrService>()
-                .Add<LaunchNotificationsService>()
-                .Add<PaginationService>()
-                .Add<QuotesService>()
-                .Add<RedditService>()
-                .Add<SubscriptionsService>()
-                .Add<TwitterService>()
-                .Add<UserLaunchSubscriptionsService>()
-                .Add<DiscordBotListService>()
-                .Add<CommonBotListsService>()
-                .Build();
+            return new ServiceCollection()
+                .AddSingleton(_oddity)
+                .AddSingleton(_cacheService)
+
+                // Embed generators
+                .AddScoped<LaunchInfoEmbedGenerator>()
+                .AddScoped<ChangelogEmbedGenerator>()
+                .AddScoped<CompanyInfoEmbedGenerator>()
+                .AddScoped<CompanyHistoryTableGenerator>()
+                .AddScoped<CompanyHistoryEventEmbedGenerator>()
+                .AddScoped<FlickrEmbedGenerator>()
+                .AddScoped<RedditEmbedGenerator>()
+                .AddScoped<TwitterEmbedGenerator>()
+                .AddScoped<LaunchesListTableGenerator>()
+                .AddScoped<CoresListTableGenerator>()
+                .AddScoped<LaunchpadsEmbedGenerator>()
+                .AddScoped<QuoteEmbedGenerator>()
+                .AddScoped<RocketsEmbedGenerator>()
+                .AddScoped<SubscriptionEmbedGenerator>()
+                .AddScoped<UsefulLinksEmbedGenerator>()
+                .AddScoped<LaunchNotificationEmbedBuilder>()
+                .AddScoped<RoadsterEmbedBuilder>()
+                .AddScoped<CoreInfoEmbedGenerator>()
+
+                // Singleton services
+                .AddSingleton(new DescriptionService(_cacheService, _oddity))
+                .AddSingleton(new UserLaunchSubscriptionsService(_cacheService, new LaunchInfoEmbedGenerator()))
+                .AddSingleton(new DiscordBotListService())
+                .AddSingleton(new CommonBotListsService())
+
+                // Normal services
+                .AddScoped<ChangelogService>()
+                .AddScoped<UsefulLinksService>()
+                .AddScoped<FlickrService>()
+                .AddScoped<LaunchNotificationsService>()
+                .AddScoped<PaginationService>()
+                .AddScoped<QuotesService>()
+                .AddScoped<RedditService>()
+                .AddScoped<SubscriptionsService>()
+                .AddScoped<TwitterService>()
+                .BuildServiceProvider();
         }
 
         private Task<int> CustomPrefixPredicate(DiscordMessage msg)
@@ -267,10 +275,9 @@ namespace InElonWeTrust.Core
                     errorEmbedBuilder.AddField(":octagonal_sign: Error", $"It seems that bot has no required permission to write on channel {e.Context.Channel.Name}.");
                     _logger.Warn(e.Exception, GetCommandInfo(e.Context));
 
-                    var userDm = await Client.CreateDmAsync(e.Context.User);
-                    await userDm.SendMessageAsync(embed: errorEmbedBuilder);
-
+                    await e.Context.Member.SendMessageAsync(embed: errorEmbedBuilder);
                     sendErrorMessageOnChannel = false;
+
                     break;
                 }
 

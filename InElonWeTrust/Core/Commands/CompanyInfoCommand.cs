@@ -11,7 +11,7 @@ using Oddity.API.Models.Company;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class CompanyInfoCommand
+    public class CompanyInfoCommand : BaseCommandModule
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;

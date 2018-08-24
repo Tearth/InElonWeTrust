@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Settings;
 using NLog;
@@ -19,8 +20,10 @@ namespace InElonWeTrust.Core.Helpers
                     var embed = new DiscordEmbedBuilder { Color = new DiscordColor(Constants.EmbedErrorColor) };
                     embed.AddField("Error", logMessage.Substring(0, Math.Min(1024, logMessage.Length)));
 
-                    var dm = await Bot.Client.CreateDmAsync(await Bot.Client.GetUserAsync(SettingsLoader.Data.OwnerId));
-                    await dm.SendMessageAsync("", false, embed);
+                    var supportGuild = await Bot.Client.GetGuildAsync(SettingsLoader.Data.SupportServerId);
+                    var ownerMember = await supportGuild.GetMemberAsync(SettingsLoader.Data.OwnerId);
+
+                    await ownerMember.SendMessageAsync("", false, embed);
                 }
             }
             catch (Exception e)

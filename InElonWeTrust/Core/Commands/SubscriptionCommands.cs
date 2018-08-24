@@ -13,7 +13,7 @@ using InElonWeTrust.Core.Services.Subscriptions;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Notifications)]
-    public class SubscriptionCommands
+    public class SubscriptionCommands : BaseCommandModule
     {
         private readonly SubscriptionsService _subscriptionsService;
         private readonly SubscriptionEmbedGenerator _subscriptionEmbedGenerator;

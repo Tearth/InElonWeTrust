@@ -11,7 +11,7 @@ using Oddity.API.Models.Roadster;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class RoadsterCommand
+    public class RoadsterCommand : BaseCommandModule
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;

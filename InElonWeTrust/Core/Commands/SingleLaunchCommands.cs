@@ -17,7 +17,7 @@ using Oddity.API.Models.Launch;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Launches)]
-    public class SingleLaunchCommands
+    public class SingleLaunchCommands : BaseCommandModule
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;

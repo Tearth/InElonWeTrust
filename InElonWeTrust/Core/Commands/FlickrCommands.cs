@@ -15,7 +15,7 @@ using NLog;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Media)]
-    public class FlickrCommands
+    public class FlickrCommands : BaseCommandModule
     {
         private readonly FlickrService _flickrService;
         private readonly SubscriptionsService _subscriptionsService;

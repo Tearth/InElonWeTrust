@@ -7,7 +7,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class PingCommand
+    public class PingCommand : BaseCommandModule
     {
         [Command("Ping")]
         [Description("Ping command")]

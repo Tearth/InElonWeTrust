@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.Quotes;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class QuotesCommands
+    public class QuotesCommands : BaseCommandModule
     {
         private readonly QuotesService _quotesService;
         private readonly QuoteEmbedGenerator _quoteEmbedGenerator;

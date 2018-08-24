@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public uint LaunchId { get; set; }
+        public string GuildId { get; set; }
         public string UserId { get; set; }
 
         public UserLaunchSubscription()
@@ -11,7 +12,7 @@
 
         }
 
-        public UserLaunchSubscription(uint launchId, string userId)
+        public UserLaunchSubscription(uint launchId, string guildId, string userId)
         {
             LaunchId = launchId;
             UserId = userId;

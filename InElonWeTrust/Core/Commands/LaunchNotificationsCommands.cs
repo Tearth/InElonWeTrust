@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
@@ -13,7 +16,7 @@ using NLog;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Notifications)]
-    public class LaunchNotificationsCommands
+    public class LaunchNotificationsCommands : BaseCommandModule
     {
         private readonly SubscriptionsService _subscriptionsService;
         private readonly LaunchNotificationsService _launchNotificationsService;
@@ -28,6 +31,12 @@ namespace InElonWeTrust.Core.Commands
             _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
             _launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
+        }
+
+        [Command("FooBar")]
+        public async Task FooBar(CommandContext ctx)
+        {
+            // TODO: think about it and create issue
         }
 
         private async void LaunchNotificationsOnLaunchNotification(object sender, LaunchNotification launchNotification)

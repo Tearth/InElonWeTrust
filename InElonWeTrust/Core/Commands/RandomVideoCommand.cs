@@ -10,7 +10,7 @@ using InElonWeTrust.Core.Database;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class RandomVideoCommand
+    public class RandomVideoCommand : BaseCommandModule
     {
         [Command("RandomVideo")]
         [Aliases("Video", "rv")]

@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.UsefulLinks;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class UsefulLinksCommand
+    public class UsefulLinksCommand : BaseCommandModule
     {
         private readonly UsefulLinksService _usefulLinksService;
         private readonly UsefulLinksEmbedGenerator _usefulLinksEmbedGenerator;

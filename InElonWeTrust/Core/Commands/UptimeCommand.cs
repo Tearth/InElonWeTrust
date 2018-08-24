@@ -8,7 +8,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class UptimeCommand
+    public class UptimeCommand : BaseCommandModule
     {
         private readonly DateTime _startTime;
 

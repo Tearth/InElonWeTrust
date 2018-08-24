@@ -12,7 +12,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 
 namespace InElonWeTrust.Core.Helpers
 {
-    public class CustomHelpFormatter : IHelpFormatter
+    public class CustomHelpFormatter : BaseHelpFormatter
     {
         private string _commandName;
         private string _commandDescription;
@@ -20,46 +20,35 @@ namespace InElonWeTrust.Core.Helpers
         private readonly List<string> _parameters;
         private readonly Dictionary<GroupType, List<string>> _subCommands;
 
-        public CustomHelpFormatter()
+        public CustomHelpFormatter(CommandContext ctx) : base(ctx)
         {
             _aliases = new List<string>();
             _parameters = new List<string>();
             _subCommands = new Dictionary<GroupType, List<string>>();
         }
 
-        public IHelpFormatter WithCommandName(string name)
+        public override BaseHelpFormatter WithCommand(Command command)
         {
-            _commandName = name;
-            return this;
-        }
+            _commandName = command.Name;
+            _commandDescription = command.Description;
 
-        public IHelpFormatter WithDescription(string description)
-        {
-            _commandDescription = description;
-            return this;
-        }
-
-        public IHelpFormatter WithArguments(IEnumerable<CommandArgument> arguments)
-        {
-            foreach (var argument in arguments)
+            if (command.Overloads.Count > 0)
             {
-                var argumentBuilder = new StringBuilder();
-                argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
-
-                if (argument.DefaultValue != null)
+                foreach (var argument in command.Overloads[0].Arguments)
                 {
-                    argumentBuilder.Append($" Default value: {argument.DefaultValue}");
-                }
+                    var argumentBuilder = new StringBuilder();
+                    argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
 
-                _parameters.Add(argumentBuilder.ToString());
+                    if (argument.DefaultValue != null)
+                    {
+                        argumentBuilder.Append($" Default value: {argument.DefaultValue}");
+                    }
+
+                    _parameters.Add(argumentBuilder.ToString());
+                }
             }
 
-            return this;
-        }
-
-        public IHelpFormatter WithAliases(IEnumerable<string> aliases)
-        {
-            foreach (var alias in aliases)
+            foreach (var alias in command.Aliases)
             {
                 _aliases.Add($"`{alias}`");
             }
@@ -67,7 +56,7 @@ namespace InElonWeTrust.Core.Helpers
             return this;
         }
 
-        public IHelpFormatter WithSubcommands(IEnumerable<Command> subcommands)
+        public override BaseHelpFormatter WithSubcommands(IEnumerable<Command> subcommands)
         {
             var assembly = Assembly.GetExecutingAssembly();
             var assemblyTypes = assembly.GetTypes();
@@ -87,7 +76,7 @@ namespace InElonWeTrust.Core.Helpers
                         var methodAttributes = method.GetCustomAttributes();
                         var commandAttribute = (CommandAttribute)methodAttributes.FirstOrDefault(p => p is CommandAttribute);
 
-                        if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
+                        if (commandAttribute != null)
                         {
                             if (!_subCommands.ContainsKey(groupAttribute.GroupType))
                             {
@@ -96,10 +85,7 @@ namespace InElonWeTrust.Core.Helpers
 
                             _subCommands[groupAttribute.GroupType].Add($"`{commandAttribute.Name}`");
                         }
-                    }
 
-                    if (_subCommands.ContainsKey(groupAttribute.GroupType))
-                    {
                         _subCommands[groupAttribute.GroupType] = _subCommands[groupAttribute.GroupType].OrderBy(p => p).ToList();
                     }
                 }
@@ -108,12 +94,7 @@ namespace InElonWeTrust.Core.Helpers
             return this;
         }
 
-        public IHelpFormatter WithGroupExecutable()
-        {
-            return this;
-        }
-
-        public CommandHelpMessage Build()
+        public override CommandHelpMessage Build()
         {
             var embed = new DiscordEmbedBuilder
             {

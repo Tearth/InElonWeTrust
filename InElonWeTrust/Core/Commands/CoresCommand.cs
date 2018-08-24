@@ -18,7 +18,7 @@ using Oddity.API.Models.DetailedCore;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.Miscellaneous)]
-    public class CoresCommand
+    public class CoresCommand : BaseCommandModule
     {
         private readonly OddityCore _oddity;
         private readonly PaginationService _paginationService;
