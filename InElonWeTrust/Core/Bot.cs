@@ -182,6 +182,8 @@ namespace InElonWeTrust.Core
                 {
                     var genericRegisterCommandMethod = registerCommandsMethod.MakeGenericMethod(type);
                     genericRegisterCommandMethod.Invoke(_commands, null);
+
+                    _logger.Info($"{type.Name} registered");
                 }
             }
         }
