@@ -29,6 +29,7 @@ using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
+using InElonWeTrust.Core.Services.Watchdog;
 using InElonWeTrust.Core.Settings;
 using InElonWeTrust.Core.TableGenerators;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,7 @@ namespace InElonWeTrust.Core
         private OddityCore _oddity;
         private CacheService _cacheService;
         private DiagnosticService _diagnosticService;
+        private WatchdogService _watchdog;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -55,6 +57,7 @@ namespace InElonWeTrust.Core
             _oddity = new OddityCore();
             _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
+            _watchdog = new WatchdogService();
 
             _oddity.OnRequestSend += Oddity_OnRequestSend;
             _oddity.OnResponseReceive += Oddity_OnResponseReceive;
@@ -68,6 +71,7 @@ namespace InElonWeTrust.Core
             Client.GuildDeleted += Client_GuildDeleted;
             Client.ClientErrored += Client_ClientError;
             Client.SocketErrored += Client_SocketErrored;
+            Client.SocketClosed += Client_SocketClosed;
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
@@ -76,6 +80,7 @@ namespace InElonWeTrust.Core
 
             RegisterCommands();
 
+            _watchdog.Start();
             await Client.ConnectAsync();
         }
 
@@ -87,7 +92,7 @@ namespace InElonWeTrust.Core
                 TokenType = TokenType.Bot,
                 WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
 
-                AutoReconnect = true,
+                AutoReconnect = false,
                 UseInternalLogHandler = false
             };
         }
@@ -184,6 +189,8 @@ namespace InElonWeTrust.Core
         private Task Client_Ready(ReadyEventArgs e)
         {
             _logger.Info("In Elon We Trust, In Thrust We Trust.");
+            _watchdog.Stop();
+
             return Task.CompletedTask;
         }
 
@@ -284,6 +291,12 @@ namespace InElonWeTrust.Core
             {
                 await e.Context.RespondAsync("", false, errorEmbedBuilder);
             }
+        }
+
+        private Task Client_SocketClosed(SocketCloseEventArgs e)
+        {
+            _watchdog.ResetApp();
+            return Task.CompletedTask;
         }
 
         private void Oddity_OnRequestSend(object sender, RequestSendEventArgs e)
