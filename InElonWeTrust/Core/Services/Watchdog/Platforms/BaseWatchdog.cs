@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
     {
         protected readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        protected const int WatchdogSeconds = 10;
+        protected const int WatchdogSeconds = 15;
 
         protected BaseWatchdog()
         {
