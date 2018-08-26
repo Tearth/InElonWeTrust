@@ -40,10 +40,14 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
 
             _windowNumber = newWindowNumber;
             SwitchWindow(_windowNumber);
+
+            Environment.Exit(0);
         }
 
         private void WatchdogTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            WatchdogLogger.Info("Watchdog timer elapsed");
+
             StopTimer();
             ResetApp();
         }
@@ -84,8 +88,6 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
             };
 
             process.Start();
-
-            Environment.Exit(0);
         }
 
         private int GetWindowNumber()

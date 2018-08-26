@@ -32,6 +32,8 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
 
         private void WatchdogTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            WatchdogLogger.Info("Watchdog timer elapsed");
+
             StopTimer();
             ResetApp();
         }

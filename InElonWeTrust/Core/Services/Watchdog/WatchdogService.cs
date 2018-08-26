@@ -10,6 +10,7 @@ namespace InElonWeTrust.Core.Services.Watchdog
     {
         private BaseWatchdog _watchdog;
         protected readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        protected readonly Logger _watchdogLogger = LogManager.GetLogger("WatchdogLogger");
 
         public WatchdogService()
         {
@@ -32,6 +33,8 @@ namespace InElonWeTrust.Core.Services.Watchdog
         public void ResetApp()
         {
             _logger.Info("Resetting app...");
+            _watchdogLogger.Info("Resetting app...");
+
             _watchdog.ResetApp();
         }
     }
