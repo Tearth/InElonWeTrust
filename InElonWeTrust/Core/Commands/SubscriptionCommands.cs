@@ -113,10 +113,10 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync("", false, embed);
         }
 
-        [Command("NotificationsStatus")]
-        [Aliases("SubscriptionsStatus", "SubStatus", "ns")]
+        [Command("NotificationStatus")]
+        [Aliases("SubscriptionStatus", "SubStatus", "ns")]
         [Description("Get information about subscriptions related with this channel.")]
-        public async Task NotificationsStatus(CommandContext ctx)
+        public async Task NotificationStatus(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
