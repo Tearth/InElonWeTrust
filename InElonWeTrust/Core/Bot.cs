@@ -320,6 +320,7 @@ namespace InElonWeTrust.Core
         private void Oddity_OnDeserializationError(object sender, ErrorEventArgs e)
         {
             _logger.Warn(e.ErrorContext.Error, "Oddity deserialization error.");
+            e.ErrorContext.Handled = true;
         }
 
         private string GetCommandInfo(CommandContext ctx)
