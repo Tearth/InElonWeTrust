@@ -8,10 +8,10 @@
         [GroupTypeDescription(":frame_photo:", "Media", "commands related with Twitter, Flickr and Reddit")]
         Media,
 
-        [GroupTypeDescription(":question:", "Miscellaneous", "other strange commands")]
-        Miscellaneous,
-
         [GroupTypeDescription(":warning:", "Launch notifications", "subscribe to get all newest content")]
-        Notifications
+        Notifications,
+
+        [GroupTypeDescription(":question:", "Miscellaneous", "other strange commands")]
+        Miscellaneous
     }
 }
