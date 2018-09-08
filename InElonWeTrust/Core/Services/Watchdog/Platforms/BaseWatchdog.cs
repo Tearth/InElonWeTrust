@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
             var currentPath = AppDomain.CurrentDomain.BaseDirectory;
             var fullPath = Path.Combine(currentPath, "InElonWeTrust.dll");
 
-            return $"dotnet {fullPath}";
+            return fullPath;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace InElonWeTrust.Core.Services.Watchdog.Platforms
@@ -55,28 +56,31 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
         private void StartNewElonInstance()
         {
             var command = GetCommandToRunElon();
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "tmux",
-                    Arguments = $"new-window \"{command}\"",
-                    RedirectStandardOutput = false,
-                    UseShellExecute = false,
-                    CreateNoWindow = false
-                }
-            };
-
-            process.Start();
+            StartProcessWithoutOutputRedirect("tmux", "new-window");
+            StartProcessWithoutOutputRedirect("tmux", $"send-keys \"dotnet InElonWeTrust.dll\" ENTER");
         }
 
         private void CloseCurrentApp()
         {
+            StartProcessWithoutOutputRedirect("tmux", "kill-window");
+        }
+
+        private int GetWindowNumber()
+        {
+            return int.Parse(StartProcessWithOutputRedirect("tmux", "display-message -p #I"));
+        }
+
+        private void SwitchWindow(int number)
+        {
+            StartProcessWithoutOutputRedirect("tmux", $"select-window -t {number}");
+        }
+
+        private void StartProcessWithoutOutputRedirect(string command, string arguments)
+        {
             var processStartInfo = new ProcessStartInfo
             {
-                FileName = "tmux",
-                Arguments = "kill-window",
+                FileName = command,
+                Arguments = arguments,
                 RedirectStandardOutput = false,
                 UseShellExecute = false,
                 CreateNoWindow = false,
@@ -90,12 +94,12 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
             process.Start();
         }
 
-        private int GetWindowNumber()
+        private string StartProcessWithOutputRedirect(string command, string arguments)
         {
             var processStartInfo = new ProcessStartInfo
             {
-                FileName = "tmux",
-                Arguments = "display-message -p #I",
+                FileName = command,
+                Arguments = arguments,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = false,
@@ -108,27 +112,7 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
 
             process.Start();
 
-            var processOutput = process.StandardOutput.ReadToEnd();
-            return int.Parse(processOutput);
-        }
-
-        private void SwitchWindow(int number)
-        {
-            var processStartInfo = new ProcessStartInfo
-            {
-                FileName = "tmux",
-                Arguments = $"select-window -t {number}",
-                RedirectStandardOutput = false,
-                UseShellExecute = false,
-                CreateNoWindow = false,
-            };
-
-            var process = new Process
-            {
-                StartInfo = processStartInfo
-            };
-
-            process.Start();
+            return process.StandardOutput.ReadToEnd();
         }
     }
 }

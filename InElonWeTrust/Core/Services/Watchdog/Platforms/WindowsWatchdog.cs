@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = $"/c \"{command}\"",
+                    Arguments = $"/c \"dotnet {command}\"",
                     RedirectStandardOutput = false,
                     UseShellExecute = true,
                     CreateNoWindow = true

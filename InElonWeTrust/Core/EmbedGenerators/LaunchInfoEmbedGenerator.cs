@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details ?? "*No description at this moment :(*");
+            embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
             embed.AddField(":clock4: Launch date (UTC):", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
             embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
