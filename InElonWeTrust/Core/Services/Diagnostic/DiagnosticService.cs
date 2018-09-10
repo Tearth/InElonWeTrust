@@ -75,9 +75,9 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             using (var databaseContext = new DatabaseContext())
             {
                 var guildsStats = databaseContext.GuildsStats.OrderByDescending(p => p.CommandExecutionsCount).ToList();
-                var commandsStats = databaseContext.CommandsStats.OrderByDescending(p => p.ExecutionsCount).ToList();
+                //var commandsStats = databaseContext.CommandsStats.OrderByDescending(p => p.ExecutionsCount).ToList();
 
-                _logger.Info("Commands per guild usage:");
+                /*_logger.Info("Commands per guild usage:");
                 foreach (var guild in guildsStats)
                 {
                     var guildData = Bot.Client.Guilds.FirstOrDefault(p => p.Key == ulong.Parse(guild.GuildId)).Value;
@@ -85,15 +85,15 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                     {
                         _logger.Info($"    {guildData.Name}: {guild.CommandExecutionsCount}");
                     }
-                }
-                _logger.Info($" Total: {guildsStats.Sum(p => p.CommandExecutionsCount)}");
+                }*/
+                _logger.Info($" ==== Total commands usage: {guildsStats.Sum(p => p.CommandExecutionsCount)} ==== ");
 
-                _logger.Info("Commands executions:");
+                /*_logger.Info("Commands executions:");
                 foreach (var command in commandsStats)
                 {
                     _logger.Info($"    {command.CommandName}: {command.ExecutionsCount}");
                 }
-                _logger.Info($" Total: {commandsStats.Sum(p => p.ExecutionsCount)}");
+                _logger.Info($" Total: {commandsStats.Sum(p => p.ExecutionsCount)}");*/
             }
         }
     }
