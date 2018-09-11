@@ -37,9 +37,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return errorEmbedBuilder;
         }
 
-        private string GetMissionsList(List<string> missions)
+        private string GetMissionsList(List<CoreMissionInfo> missions)
         {
-            return missions.Any() ? string.Join(", ", missions) : "not launched yet";
+            return missions.Any() ? string.Join(", ", missions.Select(p => p.Name)) : "not launched yet";
         }
 
         private string GetLandingsData(DetailedCoreInfo core)
