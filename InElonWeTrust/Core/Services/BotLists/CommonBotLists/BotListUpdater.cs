@@ -4,19 +4,23 @@ using System.Text;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Settings;
 using Newtonsoft.Json;
+using NLog;
 
 namespace InElonWeTrust.Core.Services.BotLists.CommonBotLists
 {
     public class BotListUpdater
     {
         public string Link { get; }
+        public string CountFieldName { get; }
         public string Token { get; }
 
         private readonly HttpClient _httpClient;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public BotListUpdater(string link, string token)
+        public BotListUpdater(string link, string countFieldName, string token)
         {
             Link = link;
+            CountFieldName = countFieldName;
             Token = token;
 
             _httpClient = new HttpClient();
@@ -26,13 +30,16 @@ namespace InElonWeTrust.Core.Services.BotLists.CommonBotLists
 
         public async Task UpdateStatus(int guildsCount)
         {
-            var requestModel = new CommonBotListsRequest(guildsCount);
-            var json = JsonConvert.SerializeObject(requestModel);
+            var json = $"{{ \"{CountFieldName}\": {guildsCount} }}";
 
             var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
             var link = string.Format(Link, SettingsLoader.Data.BotId);
 
-            await _httpClient.PostAsync(link, requestContent);
+            var result = await _httpClient.PostAsync(link, requestContent);
+            if (!result.IsSuccessStatusCode)
+            {
+                _logger.Error("Can't update bot list: " + link);
+            }
         }
     }
 }

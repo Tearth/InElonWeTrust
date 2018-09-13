@@ -35,8 +35,8 @@ namespace InElonWeTrust.Core.Settings
         [JsonProperty("flickr_secret")]
         public string FlickrSecret { get; set; }
 
-        [JsonProperty("discord_bot_list_token")]
-        public string DiscordBotListToken { get; set; }
+        [JsonProperty("discord_bots_token")]
+        public string DiscordBotsToken { get; set; }
 
         [JsonProperty("bots_for_discord_token")]
         public string BotsForDiscordToken { get; set; }
@@ -46,5 +46,27 @@ namespace InElonWeTrust.Core.Settings
 
         [JsonProperty("discord_pw_token")]
         public string DiscordPwToken { get; set; }
+
+        [JsonProperty("discords_best_bots_token")]
+        public string DiscordsBestBotsToken { get; set; }
+
+        [JsonProperty("discord_bot_world_token")]
+        public string DiscordBotWorldToken { get; set; }
+
+        [JsonProperty("discord_bots_group_token")]
+        public string DiscordBotsGroupToken { get; set; }
+
+        [JsonProperty("discord_bot_list_token")]
+        public string DiscordBotListToken { get; set; }
+
+        [JsonProperty("bots_on_discord_token")]
+        public string BotsOnDiscordToken { get; set; }
+
+        [JsonProperty("bots_discord_list_token")]
+        public string BotsDiscordListToken { get; set; }
+
+        [JsonProperty("divine_discord_bots_token")]
+        public string DivineDiscordBotsToken { get; set; }
+
     }
 }

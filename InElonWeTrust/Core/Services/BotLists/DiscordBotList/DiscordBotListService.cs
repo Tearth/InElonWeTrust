@@ -35,6 +35,8 @@ namespace InElonWeTrust.Core.Services.BotLists.DiscordBotList
             {
                 _logger.Error(ex, "Unable to update bot status on DiscordBots.org");
             }
+
+            _logger.Log(LogLevel.Info, "Discord Bot List status updated.");
         }
 
         private async Task UpdateStatus()
