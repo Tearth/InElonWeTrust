@@ -45,7 +45,7 @@ There is a few methods to call bot command (space between prefix and command is 
 |---|---|---|
 | e!AllLaunches  | get list of all launches (past and upcoming) | None |
 | e!FailedLaunches  | get list of launches which landings were unsuccesfull | None |
-| e!FailedStarts  | get list of launches where rocket did rapid unscheduled | None |
+| e!FailedStarts  | get list of launches where rocket did rapid unscheduled disassembly | None |
 | e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
 | e!LatestLaunch  | get information about the latest launch | None |
 | e!LaunchesWithOrbit [OrbitType] | get list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get list of them) | None |
@@ -67,7 +67,7 @@ There is a few methods to call bot command (space between prefix and command is 
 |---|---|---|
 | e!Changelog  | get bot changelog | None |
 | e!CompanyHistory  | get list of the most imporatnt events for SpaceX | None |
-| e!CompanyInfo  | get information about company info | None |
+| e!CompanyInfo  | get information about company | None |
 | e!CoreInfo [CoreSerial] | get information about the specified core | None |
 | e!Cores | get list of all cores | None |
 | e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
