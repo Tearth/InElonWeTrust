@@ -15,7 +15,6 @@ using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.BotLists;
-using InElonWeTrust.Core.Services.BotLists.DiscordBotList;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Description;
@@ -139,8 +138,7 @@ namespace InElonWeTrust.Core
                 // Singleton services
                 .AddSingleton(new DescriptionService(_cacheService, _oddity))
                 .AddSingleton(new UserLaunchSubscriptionsService(_cacheService, new LaunchInfoEmbedGenerator()))
-                .AddSingleton(new DiscordBotListService())
-                .AddSingleton(new CommonBotListsService())
+                .AddSingleton(new BotListsService())
 
                 // Normal services
                 .AddScoped<ChangelogService>()
@@ -216,7 +214,10 @@ namespace InElonWeTrust.Core
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            _logger.Warn(e.Exception, $"Event Name: {e.EventName}");
+            if (e.Exception.InnerException?.Message.Contains("The given key") == false)
+            {
+                _logger.Error(e.Exception, $"Event Name: {e.EventName}");
+            }
             return Task.CompletedTask;
         }
 
