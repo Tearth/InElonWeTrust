@@ -25,6 +25,7 @@ namespace InElonWeTrust.Core.Services.BotLists.CommonBotLists
 
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(Link);
+            _httpClient.Timeout = new TimeSpan(0, 0, 0, 5);
             _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", Token);
         }
 
@@ -38,7 +39,7 @@ namespace InElonWeTrust.Core.Services.BotLists.CommonBotLists
             var result = await _httpClient.PostAsync(link, requestContent);
             if (!result.IsSuccessStatusCode)
             {
-                _logger.Error("Can't update bot list: " + link);
+                //_logger.Error("Can't update bot list: " + link);
             }
         }
     }
