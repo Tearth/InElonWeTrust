@@ -34,6 +34,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("FooBar")]
+        [HiddenCommand]
         public async Task FooBar(CommandContext ctx)
         {
             // TODO: think about it and create issue
