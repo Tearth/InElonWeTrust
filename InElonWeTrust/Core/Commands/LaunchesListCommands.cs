@@ -106,7 +106,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("LaunchesWithOrbit")]
         [Aliases("Orbit", "o")]
         [Description("Get information about all launches with the specified orbit.")]
-        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: ESL1, GTO, HCO, HEO, ISS, LEO, PO, SSO")] string orbitType)
+        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: PO, LEO, ISS, GTO, SSO, HCO, HEO, MEO, SO, ES-L1")] string orbitType)
         {
             await ctx.TriggerTypingAsync();
             await DisplayLaunches(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
