@@ -48,7 +48,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
             using (var databaseContext = new DatabaseContext())
             {
-                if (!databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId))
+                if (!databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber))
                 {
                     databaseContext.UserLaunchSubscriptions.Add(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedGuildId, fixedUserId));
                     databaseContext.SaveChanges();
@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             using (var databaseContext = new DatabaseContext())
             {
                 var userSubscription = databaseContext.UserLaunchSubscriptions
-                    .FirstOrDefault(p => p.UserId == fixedUserId && p.GuildId == fixedGuildId && p.LaunchId == nextLaunch.FlightNumber);
+                    .FirstOrDefault(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber);
 
                 if (userSubscription != null)
                 {
