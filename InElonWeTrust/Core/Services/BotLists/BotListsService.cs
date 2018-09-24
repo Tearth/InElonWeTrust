@@ -49,6 +49,7 @@ namespace InElonWeTrust.Core.Services.BotLists
             }
             catch (Exception ex)
             {
+                // TODO: do something with empty catches
                 //_logger.Error(ex, "Unable to update bot status.");
             }
 
@@ -59,7 +60,14 @@ namespace InElonWeTrust.Core.Services.BotLists
         {
             foreach (var botList in _botListDefinitions)
             {
-                await botList.UpdateStatus(Bot.Client.Guilds.Count);
+                try
+                {
+                    await botList.UpdateStatus(Bot.Client.Guilds.Count);
+                }
+                catch (Exception ex)
+                {
+                    // TODO: do something with empty catches
+                }
             }
         }
     }
