@@ -11,6 +11,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 {
     public class DiagnosticService
     {
+        private readonly StatsPanelService _statsPanelService;
         private readonly Timer _displayDiagnosticTimer;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -18,6 +19,8 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
         public DiagnosticService()
         {
+            _statsPanelService = new StatsPanelService();
+
             _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
             _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsed;
             _displayDiagnosticTimer.Start();
@@ -58,6 +61,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             try
             {
                 DisplayDiagnostic();
+                _statsPanelService.PostStats();
             }
             catch (Exception ex)
             {
@@ -75,25 +79,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             using (var databaseContext = new DatabaseContext())
             {
                 var guildsStats = databaseContext.GuildsStats.OrderByDescending(p => p.CommandExecutionsCount).ToList();
-                //var commandsStats = databaseContext.CommandsStats.OrderByDescending(p => p.ExecutionsCount).ToList();
-
-                /*_logger.Info("Commands per guild usage:");
-                foreach (var guild in guildsStats)
-                {
-                    var guildData = Bot.Client.Guilds.FirstOrDefault(p => p.Key == ulong.Parse(guild.GuildId)).Value;
-                    if (guildData != null)
-                    {
-                        _logger.Info($"    {guildData.Name}: {guild.CommandExecutionsCount}");
-                    }
-                }*/
                 _logger.Info($" ==== Total commands usage: {guildsStats.Sum(p => p.CommandExecutionsCount)} ==== ");
-
-                /*_logger.Info("Commands executions:");
-                foreach (var command in commandsStats)
-                {
-                    _logger.Info($"    {command.CommandName}: {command.ExecutionsCount}");
-                }
-                _logger.Info($" Total: {commandsStats.Sum(p => p.ExecutionsCount)}");*/
             }
         }
     }
