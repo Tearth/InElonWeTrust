@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
                 var botStats = new BotStats
                 {
-                    BotId = SettingsLoader.Data.BotId,
+                    BotId = SettingsLoader.Data.BotId.ToString(),
                     GuildsCount = Bot.Client.Guilds.Count,
                     MembersCount = Bot.Client.Guilds.Sum(p => p.Value.MemberCount),
                     ExecutedCommandsCount = GetExecutedCommandsCount()
