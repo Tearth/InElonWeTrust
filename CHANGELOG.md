@@ -1,3 +1,10 @@
+**v1.4 [10-10-2018]**
+ - add a lot of new command aliases
+ - add better integration with bot lists
+ - update Oddity version
+ - update DSharpPlus to 4.0.0 builds
+ - ...and other small changes
+
 **v1.3 [08-08-2018]**
  - add more information to Roadster command
  - fix bug with retrieving launches by alllaunches, upcoming and similar commands
