@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("RandomRedditTopic")]
-        [Aliases("RandomReddit", "RandomTopic", "rrt")]
+        [Aliases("RandomReddit", "RandomTopic", "Reddit", "rrt")]
         [Description("Get random Reddit topic from /r/spacex.")]
         public async Task RandomRedditTopic(CommandContext ctx)
         {

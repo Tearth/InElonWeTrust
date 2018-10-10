@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("RandomElonQuote")]
-        [Aliases("RandomQuote", "Quote", "q")]
+        [Aliases("RandomQuote", "ElonQuote", "Quote", "q")]
         [Description("Get random Elon quote.")]
         public async Task GetElonQuote(CommandContext ctx)
         {

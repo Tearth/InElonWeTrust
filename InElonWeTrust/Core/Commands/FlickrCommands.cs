@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("RandomFlickrPhoto")]
-        [Aliases("FlickrPhoto", "rfp")]
+        [Aliases("FlickrPhoto", "Flickr", "rfp")]
         [Description("Get random photo from SpaceX Flickr profile.")]
         public async Task RandomFlickrPhoto(CommandContext ctx)
         {
