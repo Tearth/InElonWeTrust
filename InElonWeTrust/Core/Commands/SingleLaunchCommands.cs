@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -29,6 +30,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _launchInfoEmbedGenerator = launchInfoEmbedGenerator;
 
+            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.Launches.GetLatest().ExecuteAsync());
         }
@@ -63,6 +65,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
+
             var embed = _launchInfoEmbedGenerator.Build(launchData, false);
             await ctx.RespondAsync("", false, embed);
         }
@@ -74,7 +77,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _oddity.Launches.GetAll().ExecuteAsync();
+            var launchData = await _cacheService.Get<List<LaunchInfo>>(CacheContentType.AllLaunches);
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
 
             var embed = _launchInfoEmbedGenerator.Build(randomLaunch, false);
