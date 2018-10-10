@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InElonWeTrust.Core.Services.Watchdog.Platforms;
+﻿using InElonWeTrust.Core.Services.Watchdog.Platforms;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Watchdog

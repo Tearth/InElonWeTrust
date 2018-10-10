@@ -11,7 +11,6 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Attributes;
-using InElonWeTrust.Core.Commands;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.BotLists;

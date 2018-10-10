@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using InElonWeTrust.Core.Services.Pagination;
 using Oddity.API.Models.DetailedCore;
 
 namespace InElonWeTrust.Core.TableGenerators

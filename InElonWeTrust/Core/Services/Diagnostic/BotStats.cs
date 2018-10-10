@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InElonWeTrust.Core.Services.Diagnostic
+﻿namespace InElonWeTrust.Core.Services.Diagnostic
 {
     public class BotStats
     {

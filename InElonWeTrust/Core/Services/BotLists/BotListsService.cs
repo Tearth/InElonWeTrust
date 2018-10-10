@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Net.Http;
-using System.Text;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Collections.Generic;
-using InElonWeTrust.Core.Services.BotLists.CommonBotLists;
 using InElonWeTrust.Core.Settings;
-using Newtonsoft.Json;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.BotLists

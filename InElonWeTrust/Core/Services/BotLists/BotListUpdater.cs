@@ -3,10 +3,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Settings;
-using Newtonsoft.Json;
 using NLog;
 
-namespace InElonWeTrust.Core.Services.BotLists.CommonBotLists
+namespace InElonWeTrust.Core.Services.BotLists
 {
     public class BotListUpdater
     {

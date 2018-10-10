@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Settings;
 using NLog;

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Timers;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Watchdog.Platforms

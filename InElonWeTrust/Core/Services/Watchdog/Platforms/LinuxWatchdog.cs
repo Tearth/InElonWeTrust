@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace InElonWeTrust.Core.Services.Watchdog.Platforms
