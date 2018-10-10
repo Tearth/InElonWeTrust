@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using DSharpPlus.Entities;
@@ -19,8 +20,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
+            var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value);
+
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
-            embed.AddField(":clock4: Launch date (UTC)", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
+            embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
             embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName, true);
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
@@ -169,6 +172,16 @@ namespace InElonWeTrust.Core.EmbedGenerators
             }
 
             return reusedPartsList.Count > 0 ? string.Join(", ", reusedPartsList) : "none";
+        }
+
+        private string GetLaunchDateString(DateTime dateTime)
+        {
+            if ((ulong)dateTime.TimeOfDay.TotalMilliseconds == 0)
+            {
+                return dateTime.ToString("D", CultureInfo.InvariantCulture);
+            }
+
+            return dateTime.ToString("F", CultureInfo.InvariantCulture);
         }
     }
 }

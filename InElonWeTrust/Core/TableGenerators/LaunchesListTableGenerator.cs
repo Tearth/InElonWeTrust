@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InElonWeTrust.Core.Helpers;
@@ -52,9 +53,11 @@ namespace InElonWeTrust.Core.TableGenerators
 
             foreach (var launch in launches)
             {
+                var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value);
+
                 launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(MissionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 5).PadRight(MissionNameLength));
-                launchesListBuilder.Append(launch.LaunchDateUtc.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(LaunchDateLength));
+                launchesListBuilder.Append(launchDateTime.PadRight(LaunchDateLength));
                 launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(SiteNameLength));
 
                 var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
@@ -70,6 +73,16 @@ namespace InElonWeTrust.Core.TableGenerators
             launchesListBuilder.Append("```");
 
             return launchesListBuilder.ToString();
+        }
+
+        private string GetLaunchDateString(DateTime dateTime)
+        {
+            if ((ulong)dateTime.TimeOfDay.TotalMilliseconds == 0)
+            {
+                return dateTime.ToString("dd-MM-yy");
+            }
+
+            return dateTime.ToString("dd-MM-yy HH:mm:ss");
         }
     }
 }
