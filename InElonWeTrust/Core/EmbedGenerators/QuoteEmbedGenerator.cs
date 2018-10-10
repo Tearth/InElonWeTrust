@@ -12,7 +12,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            embed.AddField("Elon Musk said:", $"*{quote}*\r\n");
+            embed.AddField("Elon Musk said", $"*{quote}*\r\n");
 
             return embed;
         }

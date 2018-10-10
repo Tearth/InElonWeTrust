@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("GetEvent")]
         [Aliases("Event", "e")]
-        [Description("Get information about event with specified id (which can be obtained by `e!CompanyHistory`).")]
+        [Description("Get information about event with the specified id (which can be obtained by `e!CompanyHistory`).")]
         public async Task GetEvent(CommandContext ctx, [Description("Event id which can be obtained by `e!CompanyHistory`")] int id)
         {
             await ctx.TriggerTypingAsync();

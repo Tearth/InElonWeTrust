@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Links")]
-        [Description("Get list of useful links.")]
+        [Description("Get the list of useful links.")]
         public async Task Uptime(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();

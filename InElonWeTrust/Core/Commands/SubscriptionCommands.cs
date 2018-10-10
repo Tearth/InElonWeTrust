@@ -114,7 +114,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("NotificationStatus")]
-        [Aliases("SubscriptionStatus", "SubStatus", "ns")]
+        [Aliases("NotificationsStatus", "SubscriptionStatus", "SubscriptionsStatus", "SubStatus", "ns")]
         [Description("Get information about subscriptions related with this channel.")]
         public async Task NotificationStatus(CommandContext ctx)
         {

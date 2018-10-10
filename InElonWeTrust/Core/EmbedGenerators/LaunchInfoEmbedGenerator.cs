@@ -20,16 +20,16 @@ namespace InElonWeTrust.Core.EmbedGenerators
             };
 
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
-            embed.AddField(":clock4: Launch date (UTC):", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
-            embed.AddField(":stadium: Launchpad:", launch.LaunchSite.SiteName, true);
-            embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count}):", GetCoresData(launch.Rocket.FirstStage.Cores));
-            embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count}):", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
-            embed.AddField(":recycle: Reused parts:", GetReusedPartsData(launch.Reuse));
+            embed.AddField(":clock4: Launch date (UTC)", launch.LaunchDateUtc.Value.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture), true);
+            embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName, true);
+            embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
+            embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
+            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
 
             var linksData = GetLinksData(launch);
             if (linksData.Length > 0)
             {
-                embed.AddField(":newspaper: Links:", linksData);
+                embed.AddField(":newspaper: Links", linksData);
             }
 
             if (informAboutSubscription)
