@@ -86,6 +86,7 @@ There is a few methods to call bot command (space between prefix and command is 
 | e!EnableAllNotifications  | enable all notifications at the specified channel | Manage Messages |
 | e!DisableAllNotifications  | disable all notifications at the specified channel | Manage Messages |
 | e!NotificationsStatus  | get information about subscriptions at the current channel | None |
+| e!ToggleLaunches  | toggle launches subscription (when enabled, bot will post information about next launch) | Manage Messages |
 | e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the specified channel) | Manage Messages |
 | e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the specified channel) | Manage Messages |
 | e!ToggleElonTwitter  | toggle Elon Musk Twitter subscription (when enabled, all newest tweets from Elon Musk profile will be posted at the specified channel) | Manage Messages |
