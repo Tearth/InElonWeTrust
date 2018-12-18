@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private bool _notified;
+        private bool _notified = true;
 
         private const int UpdateNotificationsIntervalMinutes = 1;
         private const int MinutesToLaunchToNotify = 10;
