@@ -113,7 +113,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                 _notified = false;
             }
 
-            if (!_notified && minutesToLaunch <= MinutesToLaunchToNotify)
+            if (!_notified && minutesToLaunch >= 0 && minutesToLaunch <= MinutesToLaunchToNotify)
             {
                 using (var databaseContext = new DatabaseContext())
                 {
