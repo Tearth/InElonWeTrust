@@ -1,3 +1,6 @@
+**v1.5 [19-12-2018]**
+ - fix invalid notifications about the next launch (especially during scrubs)
+
 **v1.4 [10-10-2018]**
  - add a lot of new command aliases
  - add better integration with bot lists
