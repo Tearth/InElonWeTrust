@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value);
+            var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value);
 
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
             embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
@@ -174,14 +174,17 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return reusedPartsList.Count > 0 ? string.Join(", ", reusedPartsList) : "none";
         }
 
-        private string GetLaunchDateString(DateTime dateTime)
+        private string GetLaunchDateString(DateTime dateTime, TentativeMaxPrecision precision)
         {
-            if ((ulong)dateTime.TimeOfDay.TotalMilliseconds == 0)
+            var format = (ulong)dateTime.TimeOfDay.TotalMilliseconds == 0 ? "D" : "F";
+            var output = dateTime.ToString(format, CultureInfo.InvariantCulture);
+
+            if (precision != TentativeMaxPrecision.Hour)
             {
-                return dateTime.ToString("D", CultureInfo.InvariantCulture);
+                output += $" ({precision} precision)";
             }
 
-            return dateTime.ToString("F", CultureInfo.InvariantCulture);
+            return output;
         }
     }
 }
