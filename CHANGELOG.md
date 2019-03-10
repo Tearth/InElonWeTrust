@@ -1,3 +1,7 @@
+**v1.6 [10-03-2019]**
+ - add information about launch time precision
+ - update Oddity and DSharpPlus versions
+
 **v1.5 [19-12-2018]**
  - fix invalid notifications about the next launch (especially during scrubs)
 
