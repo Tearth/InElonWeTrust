@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace InElonWeTrust.Core.Services.Changelog
@@ -15,7 +17,11 @@ namespace InElonWeTrust.Core.Services.Changelog
 
         public async Task<string> GetChangelog()
         {
-            return await _httpClient.GetStringAsync(ReadmeUrl);
+            var changelog = await _httpClient.GetStringAsync(ReadmeUrl);
+            var latestContent = changelog.Substring(0, 1000);
+            var latestRecord = latestContent.LastIndexOf("**v", StringComparison.InvariantCulture);
+
+            return new string(latestContent.Take(latestRecord).ToArray());
         }
     }
 }
