@@ -94,14 +94,14 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunches(ctx, CacheContentType.FailedStarts);
         }
 
-        [Command("FailedLandings")]
+        /*[Command("FailedLandings")]
         [Aliases("fl")]
         [Description("Get information about all failed launches.")]
         public async Task FailedLandings(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await DisplayLaunches(ctx, CacheContentType.FailedLandings);
-        }
+        }*/
 
         [Command("LaunchesWithOrbit")]
         [Aliases("Orbit", "o")]
