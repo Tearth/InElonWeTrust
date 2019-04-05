@@ -41,7 +41,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
                         var descriptionBuilder = new StringBuilder();
                         descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from " +
                                                   $"**{oldLaunchState.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC** to " +
-                                                  $"**{launch.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC**.");
+                                                  $"**{launch.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC**" +
+                                                  $"{(launch.TentativeMaxPrecision.HasValue ? $" ({launch.TentativeMaxPrecision.Value.ToString().ToLower()} precision)" : string.Empty)}.");
 
                         descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
 
