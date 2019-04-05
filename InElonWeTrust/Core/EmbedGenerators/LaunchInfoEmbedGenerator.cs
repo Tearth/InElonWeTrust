@@ -181,7 +181,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             if (precision != TentativeMaxPrecision.Hour)
             {
-                output += $" ({precision} precision)";
+                output += $" ({precision.ToString().ToLower()} precision)";
             }
 
             return output;
