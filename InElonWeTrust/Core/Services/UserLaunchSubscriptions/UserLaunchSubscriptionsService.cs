@@ -115,6 +115,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
             if (!_notified && minutesToLaunch >= 0 && minutesToLaunch <= MinutesToLaunchToNotify)
             {
+                _notified = true;
+
                 using (var databaseContext = new DatabaseContext())
                 {
                     var usersToNotify = databaseContext.UserLaunchSubscriptions.Where(p => p.LaunchId == nextLaunch.FlightNumber).ToList();
@@ -144,8 +146,6 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
                     _logger.Info($"{minutesToLaunch} to launch! {usersToNotify.Count} sent");
                 }
-
-                _notified = true;
             }
         }
 
