@@ -14,10 +14,10 @@ namespace InElonWeTrust.Core.Services.Pagination
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private const string FirstEmojiName = ":track_previous:";
+        private const string FirstEmojiName = ":previous_track:";
         private const string LeftEmojiName = ":arrow_left:";
         private const string RightEmojiName = ":arrow_right:";
-        private const string LastEmojiName = ":track_next:";
+        private const string LastEmojiName = ":next_track:";
         public const int ItemsPerPage = 15;
 
         public async Task InitPagination(DiscordMessage message, CacheContentType contentType, string parameter)
