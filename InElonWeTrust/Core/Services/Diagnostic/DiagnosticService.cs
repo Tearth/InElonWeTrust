@@ -30,10 +30,10 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         {
             using (var databaseContext = new DatabaseContext())
             {
-                var commandData = databaseContext.CommandsStats.FirstOrDefault(p => p.CommandName == command.Name);
+                var commandData = databaseContext.CommandsStats.FirstOrDefault(p => p.CommandName == command.Name.ToLower());
                 if (commandData == null)
                 {
-                    databaseContext.CommandsStats.Add(new CommandStats(command.Name, 1));
+                    databaseContext.CommandsStats.Add(new CommandStats(command.Name.ToLower(), 1));
                 }
                 else
                 {
