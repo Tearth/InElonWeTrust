@@ -21,6 +21,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         private readonly List<int> _notificationTimes;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private bool _updating = false;
 
         private const int UpdateNotificationsIntervalMinutes = 1;
 
@@ -51,40 +52,50 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private async Task UpdateNotifications()
         {
-            if (_nextLaunchState == null)
-            {
-                _nextLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
-            }
-            else
-            {
-                var newLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            if (_updating) return;
+            _updating = true;
 
-                if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value)
+            try
+            {
+                if (_nextLaunchState == null)
                 {
-                    if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
-                    {
-                        OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
-                        _logger.Info("Scrub notification sent");
-                    }
-                    else
-                    {
-                        var previousStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.AddMinutes(-UpdateNotificationsIntervalMinutes).ToUniversalTime()).Value.TotalMinutes;
-                        var newStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
-
-                        if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
-                        {
-                            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
-                            _logger.Info("Reminder notification sent");
-                        }
-                    }
+                    _nextLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
                 }
                 else
                 {
-                    OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
-                    _logger.Info("New target notification sent");
-                }
+                    var newLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
-                _nextLaunchState = newLaunchState;
+                    if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value)
+                    {
+                        if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
+                        {
+                            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
+                            _logger.Info("Scrub notification sent");
+                        }
+                        else
+                        {
+                            var previousStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.AddMinutes(-UpdateNotificationsIntervalMinutes).ToUniversalTime()).Value.TotalMinutes;
+                            var newStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
+
+                            if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
+                            {
+                                OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
+                                _logger.Info("Reminder notification sent");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
+                        _logger.Info("New target notification sent");
+                    }
+
+                    _nextLaunchState = newLaunchState;
+                }
+            }
+            finally
+            {
+                _updating = false;
             }
         }
     }
