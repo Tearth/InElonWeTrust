@@ -24,6 +24,7 @@ using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.Services.Quotes;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
+using InElonWeTrust.Core.Services.TimeZone;
 using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
@@ -149,6 +150,7 @@ namespace InElonWeTrust.Core
                 .AddScoped<RedditService>()
                 .AddScoped<SubscriptionsService>()
                 .AddScoped<TwitterService>()
+                .AddScoped<TimeZoneService>()
                 .BuildServiceProvider();
         }
 
