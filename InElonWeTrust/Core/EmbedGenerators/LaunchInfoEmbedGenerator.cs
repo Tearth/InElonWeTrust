@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Services.TimeZone;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
 using Oddity.API.Models.Launch.Rocket.SecondStage;
@@ -12,7 +13,14 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchInfoEmbedGenerator
     {
-        public DiscordEmbed Build(LaunchInfo launch, bool informAboutSubscription)
+        private TimeZoneService _timeZoneService;
+
+        public LaunchInfoEmbedGenerator(TimeZoneService timeZoneService)
+        {
+            _timeZoneService = timeZoneService;
+        }
+
+        public DiscordEmbed Build(LaunchInfo launch, ulong? guildId, bool informAboutSubscription)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -25,6 +33,18 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
             embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
             embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName, true);
+
+            if (guildId != null)
+            {
+                var localLaunchDateTime = GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value);
+                var timeZoneName = _timeZoneService.GetTimeZoneForGuild(guildId.Value);
+
+                if (localLaunchDateTime != null)
+                {
+                    embed.AddField($":clock230: Launch date ({timeZoneName})", GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value), true);
+                }
+            }
+
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
             embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
@@ -41,6 +61,18 @@ namespace InElonWeTrust.Core.EmbedGenerators
             }
 
             return embed;
+        }
+
+        private string GetLocalLaunchDateTime(ulong guildId, DateTime utc)
+        {
+            var convertedToLocal = _timeZoneService.ConvertUTCToLocalTime(guildId, utc);
+            if (convertedToLocal == null)
+            {
+                return null;
+            }
+
+            var format = (ulong)convertedToLocal.Value.TimeOfDay.TotalMilliseconds == 0 ? "D" : "F";
+            return convertedToLocal.Value.ToString(format, CultureInfo.InvariantCulture);
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)

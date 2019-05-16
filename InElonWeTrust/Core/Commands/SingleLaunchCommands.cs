@@ -43,7 +43,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
-            var embed = _launchInfoEmbedGenerator.Build(launchData, true);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, true);
 
             var sentMessage = await ctx.RespondAsync("", false, embed);
 
@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core.Commands
 
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
 
-            var embed = _launchInfoEmbedGenerator.Build(launchData, false);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -80,7 +80,7 @@ namespace InElonWeTrust.Core.Commands
             var launchData = await _cacheService.Get<List<LaunchInfo>>(CacheContentType.AllLaunches);
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
 
-            var embed = _launchInfoEmbedGenerator.Build(randomLaunch, false);
+            var embed = _launchInfoEmbedGenerator.Build(randomLaunch, ctx.Guild.Id, false);
             await ctx.RespondAsync("", false, embed);
         }
 
@@ -104,7 +104,7 @@ namespace InElonWeTrust.Core.Commands
             }
             else
             {
-                var embed = _launchInfoEmbedGenerator.Build(launchData.First(), false);
+                var embed = _launchInfoEmbedGenerator.Build(launchData.First(), ctx.Guild.Id, false);
                 await ctx.RespondAsync("", false, embed);
             }
         }

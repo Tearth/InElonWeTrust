@@ -137,7 +137,7 @@ namespace InElonWeTrust.Core
 
                 // Singleton services
                 .AddSingleton(new DescriptionService(_cacheService, _oddity))
-                .AddSingleton(new UserLaunchSubscriptionsService(_cacheService, new LaunchInfoEmbedGenerator()))
+                .AddSingleton(new UserLaunchSubscriptionsService(_cacheService, new LaunchInfoEmbedGenerator(new TimeZoneService())))
                 .AddSingleton(new BotListsService())
 
                 // Normal services
