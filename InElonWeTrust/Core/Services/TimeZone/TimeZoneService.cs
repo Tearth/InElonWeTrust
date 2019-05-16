@@ -31,5 +31,20 @@ namespace InElonWeTrust.Core.Services.TimeZone
                 await databaseContext.SaveChangesAsync();
             }
         }
+
+        public async Task ResetTimeZoneAsync(ulong guildId)
+        {
+            var fixedGuildId = guildId.ToString();
+            using (var databaseContext = new DatabaseContext())
+            {
+                var existingConfig = databaseContext.TimeZoneSettings.FirstOrDefault(p => p.GuildId == fixedGuildId);
+                if (existingConfig != null)
+                {
+                    databaseContext.TimeZoneSettings.Remove(existingConfig);
+                }
+
+                await databaseContext.SaveChangesAsync();
+            }
+        }
     }
 }
