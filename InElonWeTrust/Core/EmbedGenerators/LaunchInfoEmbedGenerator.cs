@@ -107,12 +107,19 @@ namespace InElonWeTrust.Core.EmbedGenerators
         private string GetCoresData(List<CoreInfo> cores)
         {
             var coresDataBuilder = new StringBuilder();
+            var numerals = new[] {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"};
+
             foreach (var core in cores)
             {
                 coresDataBuilder.Append($"{core.CoreSerial ?? "Unknown"}");
                 if (core.Block != null)
                 {
                     coresDataBuilder.Append($" (block {core.Block})");
+                }
+
+                if (core.Flight != null && core.Flight > 0)
+                {
+                    coresDataBuilder.Append($", {numerals[core.Flight.Value - 1]} flight");
                 }
 
                 if (core.LandingType != null && core.LandingType != LandingType.Ocean)
