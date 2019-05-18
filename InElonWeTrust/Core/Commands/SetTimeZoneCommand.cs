@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("SetTimeZone")]
         [Aliases("TimeZone")]
-        [Description("Set local timezone.")]
+        [Description("Set local timezone. Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List.")]
         public async Task SetTimeZone(CommandContext ctx, string timeZoneName)
         {
             await ctx.TriggerTypingAsync();
