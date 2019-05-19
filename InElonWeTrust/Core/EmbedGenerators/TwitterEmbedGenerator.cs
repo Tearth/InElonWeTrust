@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using System.Web;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database.Models;
@@ -22,7 +23,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
 
-            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {tweet.CreatedAt.ToUniversalTime():F} UTC", contentBuilder.ToString());
+            var date = tweet.CreatedAt.ToString("F", CultureInfo.InvariantCulture);
+            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {date} UTC", contentBuilder.ToString());
 
             return embed;
         }

@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using System.Globalization;
+using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
 
@@ -8,10 +9,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbedBuilder Build(CachedFlickrPhoto photo)
         {
+            var date = photo.UploadDate.ToString("F", CultureInfo.InvariantCulture);
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                Title = $"Flickr: {photo.Title} ({photo.UploadDate:F})",
+                Title = $"Flickr: {photo.Title} ({date})",
                 Url = $"https://www.flickr.com/photos/spacex/{photo.Id}",
                 ImageUrl = photo.Source
             };
