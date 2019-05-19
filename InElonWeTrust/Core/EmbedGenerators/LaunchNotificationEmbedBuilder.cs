@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                         descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
                         descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
 
-                        embed.AddField(":rocket: Launch is upcoming!", descriptionBuilder.ToString());
+                        embed.AddField(":rocket: Launch is coming!", descriptionBuilder.ToString());
                         break;
                     }
 
