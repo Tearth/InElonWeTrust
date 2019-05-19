@@ -51,7 +51,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             tableBuilder.Append("```");
             tableBuilder.Append($"Diameter: {rocket.Diameter.Meters.Value}m".PadRight(FieldLength));
             tableBuilder.Append($"Launch cost: ${rocket.CostPerLaunch.Value / 1_000_000}kk\r\n");
-            tableBuilder.Append($"First flight: {rocket.FirstFlight:MM-dd-yyyy}".PadRight(FieldLength));
+            tableBuilder.Append($"First flight: {rocket.FirstFlight:dd-MM-yyyy}".PadRight(FieldLength));
             tableBuilder.Append($"Success rate: {rocket.SuccessRate.Value}%\r\n");
             tableBuilder.Append($"Mass: {(int)(rocket.Mass.Kilograms.Value / 1000)}t".PadRight(FieldLength));
             tableBuilder.Append($"Height: {rocket.Height.Meters.Value}m\r\n");

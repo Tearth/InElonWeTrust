@@ -215,8 +215,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         private string GetLaunchDateString(DateTime dateTime, TentativeMaxPrecision precision)
         {
-            var format = (ulong)dateTime.TimeOfDay.TotalMilliseconds == 0 ? "D" : "F";
-            var output = dateTime.ToString(format, CultureInfo.InvariantCulture);
+            var output = DateFormatter.GetStringWithPrecision(dateTime, precision);
 
             if (precision != TentativeMaxPrecision.Hour)
             {
