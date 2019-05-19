@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.Services.Description
 
         private const int DescriptionUpdateIntervalMinutes = 1;
         private const int HoursMinutesEdge = 99;
-        private const string DescriptionPattern = "e!help";
+        private const string DescriptionPattern = "e!help | no launch date";
         private const string DescriptionPatternExtended = "e!help | {0} to launch";
 
         public DescriptionService(CacheService cacheService, OddityCore oddity)

@@ -6,7 +6,7 @@ namespace InElonWeTrust.Core.Helpers
 {
     public static class DateFormatter
     {
-        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision)
+        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC)
         {
             var format = string.Empty;
             switch (precision)
@@ -30,7 +30,18 @@ namespace InElonWeTrust.Core.Helpers
                     break;
             }
 
-            return date.ToString(format, CultureInfo.InvariantCulture);
+            var output = date.ToString(format, CultureInfo.InvariantCulture);
+            if (includeUTC && precision == TentativeMaxPrecision.Hour)
+            {
+                output += " UTC";
+            }
+
+            if (precision != TentativeMaxPrecision.Hour)
+            {
+                output += $" ({precision.ToString().ToLower(CultureInfo.InvariantCulture)} precision)";
+            }
+
+            return output;
         }
     }
 }

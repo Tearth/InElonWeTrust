@@ -40,9 +40,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     {
                         var descriptionBuilder = new StringBuilder();
                         descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from " +
-                                                  $"**{oldLaunchState.LaunchDateUtc.Value.ToString("F", CultureInfo.InvariantCulture)} UTC** to " +
-                                                  $"** {DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value)} UTC**" +
-                                                  $"{(launch.TentativeMaxPrecision.HasValue ? $" ({launch.TentativeMaxPrecision.Value.ToString().ToLower()} precision)" : string.Empty)}. ");
+                                                  $"**{DateFormatter.GetStringWithPrecision(oldLaunchState.LaunchDateUtc.Value, oldLaunchState.TentativeMaxPrecision.Value, true)}** to " +
+                                                  $"**{DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, true)}**.");
 
                         descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
 
@@ -54,7 +53,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     {
                         var descriptionBuilder = new StringBuilder();
                         descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
-                        descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** at {DateFormatter.GetStringWithPrecision(launchNotification.NewLaunchState.LaunchDateUtc.Value, launchNotification.NewLaunchState.TentativeMaxPrecision.Value)} UTC. ");
+                        descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** at **{DateFormatter.GetStringWithPrecision(launchNotification.NewLaunchState.LaunchDateUtc.Value, launchNotification.NewLaunchState.TentativeMaxPrecision.Value, true)}**. ");
                         descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
 
                         embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());

@@ -28,19 +28,19 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value);
+            var launchDateTime = DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, true);
 
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
             embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
 
             if (guildId != null)
             {
-                var localLaunchDateTime = GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value);
+                var localLaunchDateTime = GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value);
                 var timeZoneName = _timeZoneService.GetTimeZoneForGuild(guildId.Value);
 
                 if (localLaunchDateTime != null)
                 {
-                    embed.AddField($":clock230: Launch date ({timeZoneName})", GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value), true);
+                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime, true);
                 }
             }
 
@@ -63,7 +63,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        private string GetLocalLaunchDateTime(ulong guildId, DateTime utc)
+        private string GetLocalLaunchDateTime(ulong guildId, DateTime utc, TentativeMaxPrecision precision)
         {
             var convertedToLocal = _timeZoneService.ConvertUTCToLocalTime(guildId, utc);
             if (convertedToLocal == null)
@@ -71,8 +71,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 return null;
             }
 
-            var format = (ulong)convertedToLocal.Value.TimeOfDay.TotalMilliseconds == 0 ? "D" : "F";
-            return convertedToLocal.Value.ToString(format, CultureInfo.InvariantCulture);
+            return DateFormatter.GetStringWithPrecision(convertedToLocal.Value, precision, true);
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)
@@ -211,18 +210,6 @@ namespace InElonWeTrust.Core.EmbedGenerators
             }
 
             return reusedPartsList.Count > 0 ? string.Join(", ", reusedPartsList) : "none";
-        }
-
-        private string GetLaunchDateString(DateTime dateTime, TentativeMaxPrecision precision)
-        {
-            var output = DateFormatter.GetStringWithPrecision(dateTime, precision);
-
-            if (precision != TentativeMaxPrecision.Hour)
-            {
-                output += $" ({precision.ToString().ToLower()} precision)";
-            }
-
-            return output;
         }
     }
 }
