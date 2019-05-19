@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core
         private OddityCore _oddity;
         private CacheService _cacheService;
         private DiagnosticService _diagnosticService;
-        private WatchdogService _watchdog;
+        //private WatchdogService _watchdog;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -56,7 +56,7 @@ namespace InElonWeTrust.Core
             _oddity = new OddityCore();
             _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
-            _watchdog = new WatchdogService();
+            //_watchdog = new WatchdogService();
 
             _oddity.OnRequestSend += Oddity_OnRequestSend;
             _oddity.OnResponseReceive += Oddity_OnResponseReceive;
@@ -79,7 +79,7 @@ namespace InElonWeTrust.Core
 
             RegisterCommands();
 
-            _watchdog.Start();
+            //_watchdog.Start();
             await Client.ConnectAsync();
         }
 
@@ -91,7 +91,7 @@ namespace InElonWeTrust.Core
                 TokenType = TokenType.Bot,
                 WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
 
-                AutoReconnect = false,
+                AutoReconnect = true,
                 UseInternalLogHandler = false
             };
         }
@@ -190,7 +190,7 @@ namespace InElonWeTrust.Core
         private Task Client_Ready(ReadyEventArgs e)
         {
             _logger.Info("In Elon We Trust, In Thrust We Trust.");
-            _watchdog.Stop();
+            //_watchdog.Stop();
 
             return Task.CompletedTask;
         }
@@ -299,7 +299,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_SocketClosed(SocketCloseEventArgs e)
         {
-            _watchdog.ResetApp();
+            //_watchdog.ResetApp();
             return Task.CompletedTask;
         }
 
