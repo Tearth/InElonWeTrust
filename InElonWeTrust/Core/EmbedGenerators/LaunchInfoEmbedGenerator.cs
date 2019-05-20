@@ -71,7 +71,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 return null;
             }
 
-            return DateFormatter.GetStringWithPrecision(convertedToLocal.Value, precision, true);
+            return DateFormatter.GetStringWithPrecision(convertedToLocal.Value, precision, false);
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)
