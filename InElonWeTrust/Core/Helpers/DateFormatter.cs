@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Helpers
                     break;
 
                 case TentativeMaxPrecision.Hour:
-                    format = "dddd, dd MMMM yyyy, HH:mm";
+                    format = "dddd, dd MMMM yyyy HH:mm";
                     break;
             }
 

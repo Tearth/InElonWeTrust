@@ -11,7 +11,7 @@
         [GroupTypeDescription(":warning:", "Launch notifications", "subscribe to get all newest content")]
         Notifications,
 
-        [GroupTypeDescription(":clock4:", "Time zone", "set your local timezone to see more precise times")]
+        [GroupTypeDescription(":clock4:", "Time zone", "set local timezone to see more precise times in launch information")]
         TimeZone,
 
         [GroupTypeDescription(":question:", "Miscellaneous", "other strange commands")]
