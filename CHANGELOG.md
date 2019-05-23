@@ -1,3 +1,7 @@
+**v1.7 [24-05-2019]**
+ - add SetTimeZone and ResetTimeZone commands
+ - improve displaying of launch dates (information about precision)
+
 **v1.6 [10-03-2019]**
  - add information about launch time precision
  - update Oddity and DSharpPlus versions
