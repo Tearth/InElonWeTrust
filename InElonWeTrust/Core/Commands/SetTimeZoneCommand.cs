@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Attributes;
@@ -21,7 +22,8 @@ namespace InElonWeTrust.Core.Commands
         [Command("SetTimeZone")]
         [Aliases("TimeZone")]
         [Description("Set local timezone. Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List.")]
-        public async Task SetTimeZone(CommandContext ctx, string timeZoneName)
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task SetTimeZone(CommandContext ctx, [Description("Name of the timezone")] string timeZoneName)
         {
             await ctx.TriggerTypingAsync();
 

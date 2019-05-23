@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Attributes;
@@ -19,6 +20,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ResetTimeZone")]
         [Description("Reset local timezone.")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ResetTimeZone(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
