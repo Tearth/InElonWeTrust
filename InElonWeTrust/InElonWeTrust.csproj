@@ -14,17 +14,47 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00600" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00600" />
-    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00600" />
+    <PackageReference Include="Autofac" Version="4.6.2" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00586" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00586" />
+    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00586" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NLog" Version="4.6.3" />
-    <PackageReference Include="NLog.Config" Version="4.6.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Nito.AsyncEx.Context" Version="1.1.0" />
+    <PackageReference Include="NLog" Version="4.6.2" />
+    <PackageReference Include="NLog.Config" Version="4.6.2" />
     <PackageReference Include="Oddity" Version="1.0.10.3" />
-    <PackageReference Include="TimeZoneConverter" Version="3.1.0" />
-    <PackageReference Include="TweetinviAPI" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Tweetinvi">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Controllers">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Controllers.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Core">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Credentials">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Credentials.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Factories">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Factories.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Logic">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Security">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.Streams">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="Tweetinvi.WebLogic">
+      <HintPath>..\..\!! FORKED\tweetinvi\Examplinvi.NETStandard\bin\Release\netcoreapp1.1\Tweetinvi.WebLogic.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
