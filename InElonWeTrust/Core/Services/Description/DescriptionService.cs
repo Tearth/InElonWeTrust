@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core.Services.Description
             else
             {
                 var timeToLaunch = nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow;
-                if (timeToLaunch.Minutes <= 0)
+                if (timeToLaunch.TotalMinutes <= 0)
                 {
                     description = DescriptionPattern;
                 }
