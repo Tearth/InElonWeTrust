@@ -40,7 +40,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 if (localLaunchDateTime != null)
                 {
-                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime, true);
+                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime, false);
                 }
             }
 
