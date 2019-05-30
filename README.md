@@ -94,7 +94,9 @@ There is a few methods to call bot command (space between prefix and command is 
 
 # Examples
 <p align="center">
-<img src="https://i.imgur.com/Z7qzpfn.jpg" alt="Example1">
-<img src="https://i.imgur.com/sbZIzQr.jpg" alt="Example2">
-<img src="https://i.imgur.com/LdchUF9.jpg" alt="Example3">
+<img src="https://i.imgur.com/WnTuvV8.png" alt="Example1">
+<img src="https://i.imgur.com/NnOKjEa.png" alt="Example2">
+<img src="https://i.imgur.com/o3oU66w.png" alt="Example3">
+<img src="https://i.imgur.com/UMHKOjK.png" alt="Example4">
+<img src="https://i.imgur.com/N0UGeTU.png" alt="Example5">
 </p>
