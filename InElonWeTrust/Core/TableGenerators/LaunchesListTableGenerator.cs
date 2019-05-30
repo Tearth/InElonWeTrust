@@ -36,6 +36,8 @@ namespace InElonWeTrust.Core.TableGenerators
 
         public string Build(List<LaunchInfo> launches, CacheContentType contentType, int currentPage, string paginationFooter)
         {
+            launches = launches.OrderBy(p => p.FlightNumber.Value).ToList();
+
             var launchesListBuilder = new StringBuilder();
             launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");
             launchesListBuilder.Append("\r\n");
@@ -53,7 +55,7 @@ namespace InElonWeTrust.Core.TableGenerators
 
             foreach (var launch in launches)
             {
-                var launchDateTime = GetLaunchDateString(launch.LaunchDateUtc.Value);
+                var launchDateTime = DateFormatter.GetShortStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, false, false);
 
                 launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(MissionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 5).PadRight(MissionNameLength));
@@ -73,16 +75,6 @@ namespace InElonWeTrust.Core.TableGenerators
             launchesListBuilder.Append("```");
 
             return launchesListBuilder.ToString();
-        }
-
-        private string GetLaunchDateString(DateTime dateTime)
-        {
-            if ((ulong)dateTime.TimeOfDay.TotalMilliseconds == 0)
-            {
-                return dateTime.ToString("dd-MM-yy");
-            }
-
-            return dateTime.ToString("dd-MM-yy HH:mm:ss");
         }
     }
 }

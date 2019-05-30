@@ -6,7 +6,8 @@ namespace InElonWeTrust.Core.Helpers
 {
     public static class DateFormatter
     {
-        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC)
+        // TODO: fix this crap
+        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC, bool displayPrecision)
         {
             var format = string.Empty;
             switch (precision)
@@ -36,7 +37,45 @@ namespace InElonWeTrust.Core.Helpers
                 output += " UTC";
             }
 
-            if (precision != TentativeMaxPrecision.Hour)
+            if (displayPrecision && precision != TentativeMaxPrecision.Hour)
+            {
+                output += $" ({precision.ToString().ToLower(CultureInfo.InvariantCulture)} precision)";
+            }
+
+            return output;
+        }
+
+        public static string GetShortStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC, bool displayPrecision)
+        {
+            var format = string.Empty;
+            switch (precision)
+            {
+                case TentativeMaxPrecision.Year:
+                case TentativeMaxPrecision.Half:
+                case TentativeMaxPrecision.Quarter:
+                    format = "yyyy";
+                    break;
+
+                case TentativeMaxPrecision.Month:
+                    format = "MM-yyyy";
+                    break;
+
+                case TentativeMaxPrecision.Day:
+                    format = "dd-MM-yyyy";
+                    break;
+
+                case TentativeMaxPrecision.Hour:
+                    format = "dd-MM-yyyy HH:mm";
+                    break;
+            }
+
+            var output = date.ToString(format, CultureInfo.InvariantCulture);
+            if (includeUTC && precision == TentativeMaxPrecision.Hour)
+            {
+                output += " UTC";
+            }
+
+            if (displayPrecision && precision != TentativeMaxPrecision.Hour)
             {
                 output += $" ({precision.ToString().ToLower(CultureInfo.InvariantCulture)} precision)";
             }
