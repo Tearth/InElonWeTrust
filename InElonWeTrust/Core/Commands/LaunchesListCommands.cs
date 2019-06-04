@@ -59,7 +59,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("UpcomingLaunches")]
-        [Aliases("Upcoming", "ul")]
+        [Aliases("Upcoming", "ul", "NextLaunches")]
         [Description("Get information about upcoming launches.")]
         public async Task UpcomingLaunches(CommandContext ctx)
         {
