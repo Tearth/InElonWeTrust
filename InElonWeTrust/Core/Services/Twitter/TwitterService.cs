@@ -103,7 +103,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                                 break;
                             }
 
-                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)).Reverse())
+                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)).OrderBy(p => p.CreatedAt))
                             {
                                 await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
                                 newTweets++;
