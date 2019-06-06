@@ -1,9 +1,11 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Web;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Helpers;
+using TimeZoneConverter;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -22,8 +24,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
             contentBuilder.Append(HttpUtility.HtmlDecode(tweet.FullText));
             contentBuilder.Append("\r\n\r\n");
             contentBuilder.Append(tweet.Url);
+            
+            var polandTimeZone = TZConvert.GetTimeZoneInfo("Europe/Warsaw");
+            var createdAtWithKind = DateTime.SpecifyKind(tweet.CreatedAt, DateTimeKind.Unspecified);
+            var createdAtUtc = TimeZoneInfo.ConvertTimeToUtc(createdAtWithKind, polandTimeZone);
 
-            var date = tweet.CreatedAt.ToString("F", CultureInfo.InvariantCulture);
+            var date = createdAtUtc.ToString("F", CultureInfo.InvariantCulture);
             embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {date} UTC", contentBuilder.ToString());
 
             return embed;
