@@ -116,7 +116,7 @@ namespace InElonWeTrust.Core.Helpers
             helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)**\r\n");
             helpBuilder.Append(":wrench: **[GitHub](https://github.com/Tearth/InElonWeTrust)** - absolutely uninteresting stuff\r\n\u200b\r\n");
             helpBuilder.Append(":computer: Profile on **[discordbots.org](https://discordbots.org/bot/462742130016780337)** and **[bots.discord.pw](https://bots.discord.pw/bots/462742130016780337)**\r\n");
-            helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/api/oauth2/authorize?client_id=462742130016780337&permissions=26688&scope=bot) to your server**");
+            helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot) to your server**");
 
             embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
             helpBuilder.Clear();
