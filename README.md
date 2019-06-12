@@ -27,7 +27,7 @@ You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130
   * other fun stuff: Elon's quotes, company data and history, random videos, launchpads, rockets and more
 
 <h1 align="center" style="font-weight: bold">
-	<a href="https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=26688&scope=bot">Invitation link</a>
+	<a href="https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot">Invitation link</a>
 </h1>
 
 <p align="center" style="font-style: italic">
