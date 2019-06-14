@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 {
                     var newLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
 
-                    if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value)
+                    if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value || newLaunchState.MissionName == _nextLaunchState.MissionName)
                     {
                         if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
                         {
