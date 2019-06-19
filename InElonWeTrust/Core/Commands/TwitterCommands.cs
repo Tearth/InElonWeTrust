@@ -59,6 +59,19 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
+        [Command("RandomSpaceXFleetTweet")]
+        [Aliases("SpaceXFleetTweet", "rsft")]
+        [Description("Get random SpaceX Fleet's tweet.")]
+        public async Task RandomSpaceXFleetTweet(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceXFleet);
+            var embed = _twitterEmbedGenerator.Build(tweet);
+
+            await ctx.RespondAsync(embed: embed);
+        }
+
         [HiddenCommand]
         [Command("ReloadTwitterCache")]
         [Description("Reload cached tweets in database.")]

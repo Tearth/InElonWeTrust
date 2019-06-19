@@ -47,6 +47,16 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotifications(ctx, SubscriptionType.SpaceXTwitter);
         }
 
+        [Command("ToggleSpaceXFleetTwitter")]
+        [Aliases("TogSpaceXFleetTwitter", "SubscribeSpaceXFleetTwitter", "SubSpaceXFleetTwitter", "tsft")]
+        [Description("Subscribe SpaceX Twitter profile (bot will post all new tweets).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task ToggleSpaceXFleetTwitterNotifications(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+            await ToggleNotifications(ctx, SubscriptionType.SpaceXFleetTwitter);
+        }
+
         [Command("ToggleFlickr")]
         [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
         [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX profile).")]

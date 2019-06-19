@@ -129,9 +129,11 @@ namespace InElonWeTrust.Core.Helpers
                 helpBuilder.Append( "\r\n\r\n");
                 helpBuilder.Append($"{groupDescription.Icon} **{groupDescription.Group}** *({groupDescription.Description}):*\r\n");
                 helpBuilder.Append($"{string.Join(", ", group.Value)}");
+
+                embed.AddField("\u200b", helpBuilder.ToString());
+                helpBuilder.Clear();
             }
 
-            embed.AddField("\u200b", helpBuilder.ToString());
             embed.AddField("\u200b", "*Happy landings!*");
             return new CommandHelpMessage(string.Empty, embed);
         }
