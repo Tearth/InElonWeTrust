@@ -32,13 +32,15 @@ namespace InElonWeTrust.Core.Services.Twitter
             _users = new Dictionary<TwitterUserType, string>
             {
                 {TwitterUserType.ElonMusk, "elonmusk"},
-                {TwitterUserType.SpaceX, "SpaceX"}
+                {TwitterUserType.SpaceX, "SpaceX"},
+                {TwitterUserType.SpaceXFleet, "SpaceXFleet"}
             };
 
             _userSubscriptionMap = new Dictionary<TwitterUserType, SubscriptionType>
             {
                 {TwitterUserType.ElonMusk, SubscriptionType.ElonTwitter},
-                {TwitterUserType.SpaceX, SubscriptionType.SpaceXTwitter}
+                {TwitterUserType.SpaceX, SubscriptionType.SpaceXTwitter},
+                {TwitterUserType.SpaceXFleet, SubscriptionType.SpaceXFleetTwitter}
             };
 
             var consumerKey = SettingsLoader.Data.TwitterConsumerKey;

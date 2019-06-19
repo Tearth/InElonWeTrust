@@ -3,6 +3,7 @@
     public enum TwitterUserType
     {
         ElonMusk,
-        SpaceX
+        SpaceX,
+        SpaceXFleet
     }
 }

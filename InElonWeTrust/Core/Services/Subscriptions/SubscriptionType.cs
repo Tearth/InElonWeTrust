@@ -6,6 +6,7 @@
         SpaceXTwitter,
         Flickr,
         NextLaunch,
-        Reddit
+        Reddit,
+        SpaceXFleetTwitter
     }
 }

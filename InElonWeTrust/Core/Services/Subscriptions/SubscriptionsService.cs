@@ -118,6 +118,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
             {
                 ElonTwitter = await IsChannelSubscribed(channelId, SubscriptionType.ElonTwitter),
                 SpaceXTwitter = await IsChannelSubscribed(channelId, SubscriptionType.SpaceXTwitter),
+                SpaceXFleetTwitter = await IsChannelSubscribed(channelId, SubscriptionType.SpaceXFleetTwitter),
                 Flickr = await IsChannelSubscribed(channelId, SubscriptionType.Flickr),
                 Launches = await IsChannelSubscribed(channelId, SubscriptionType.NextLaunch),
                 Reddit = await IsChannelSubscribed(channelId, SubscriptionType.Reddit)
