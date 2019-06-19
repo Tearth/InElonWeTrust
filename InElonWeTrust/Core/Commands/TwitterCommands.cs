@@ -61,7 +61,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomSpaceXFleetTweet")]
         [Aliases("SpaceXFleetTweet", "rsft")]
-        [Description("Get random SpaceX Fleet's tweet.")]
+        [Description("Get random SpaceXFleet's tweet.")]
         public async Task RandomSpaceXFleetTweet(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
