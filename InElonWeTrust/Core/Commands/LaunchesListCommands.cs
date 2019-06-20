@@ -133,7 +133,7 @@ namespace InElonWeTrust.Core.Commands
                 var embed = new DiscordEmbedBuilder {Color = new DiscordColor(Constants.EmbedErrorColor)};
                 embed.AddField("Error", $"Invalid parameter, type `e!help {ctx.Command.Name}` to get more information.");
 
-                await ctx.RespondAsync("", false, embed);
+                await ctx.RespondAsync(string.Empty, false, embed);
                 return;
             }
 

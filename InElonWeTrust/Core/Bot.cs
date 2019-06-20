@@ -293,7 +293,7 @@ namespace InElonWeTrust.Core
 
             if (sendErrorMessageOnChannel)
             {
-                await e.Context.RespondAsync("", false, errorEmbedBuilder);
+                await e.Context.RespondAsync(string.Empty, false, errorEmbedBuilder);
             }
         }
 

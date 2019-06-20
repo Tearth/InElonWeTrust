@@ -13,23 +13,21 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CoreInfoCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly CoreInfoEmbedGenerator _coreInfoEmbedGenerator;
 
         public CoreInfoCommand(OddityCore oddity, CacheService cacheService, CoreInfoEmbedGenerator coreInfoEmbedGenerator)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _coreInfoEmbedGenerator = coreInfoEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await _oddity.DetailedCores.GetAbout(p).ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await oddity.DetailedCores.GetAbout(p).ExecuteAsync());
         }
 
         [Command("CoreInfo")]
         [Aliases("Core", "GetCore")]
         [Description("Get information about the specified core.")]
-        public async Task CoreInfo(CommandContext ctx, [Description("Core serial number (type `e!Cores` to catch them all).")] string coreSerial)
+        public async Task CoreInfo(CommandContext ctx, [Description("Core serial number (type `e!Cores` to list them all).")] string coreSerial)
         {
             await ctx.TriggerTypingAsync();
 
@@ -38,12 +36,12 @@ namespace InElonWeTrust.Core.Commands
             if (coreInfo != null)
             {
                 var embed = _coreInfoEmbedGenerator.Build(coreInfo);
-                await ctx.RespondAsync("", false, embed);
+                await ctx.RespondAsync(string.Empty, false, embed);
             }
             else
             {
                 var errorEmbed = _coreInfoEmbedGenerator.BuildError();
-                await ctx.RespondAsync("", false, errorEmbed);
+                await ctx.RespondAsync(string.Empty, false, errorEmbed);
             }
         }
     }

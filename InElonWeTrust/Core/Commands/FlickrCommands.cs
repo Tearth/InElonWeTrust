@@ -42,7 +42,7 @@ namespace InElonWeTrust.Core.Commands
             var photo = await _flickrService.GetRandomPhotoAsync();
             var embed = _flickrEmbedGenerator.Build(photo);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
 
         [HiddenCommand]
@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.Commands
                     var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
                     var embed = _flickrEmbedGenerator.Build(e);
 
-                    await channel.SendMessageAsync("", false, embed);
+                    await channel.SendMessageAsync(string.Empty, false, embed);
                 }
                 catch (UnauthorizedException)
                 {

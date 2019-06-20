@@ -102,7 +102,7 @@ namespace InElonWeTrust.Core.Commands
             };
 
             embed.AddField(":rocket: Success!", "All notifications has been subscribed.");
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
 
         [Command("DisableAllNotifications")]
@@ -120,7 +120,7 @@ namespace InElonWeTrust.Core.Commands
             };
 
             embed.AddField(":rocket: Success!", "All subscriptions has been removed.");
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
 
         [Command("NotificationStatus")]

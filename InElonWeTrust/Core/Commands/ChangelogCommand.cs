@@ -12,17 +12,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class ChangelogCommand : BaseCommandModule
     {
-        private readonly ChangelogService _changelogService;
         private readonly CacheService _cacheService;
         private readonly ChangelogEmbedGenerator _changelogEmbedGenerator;
 
         public ChangelogCommand(ChangelogService changelogService, CacheService cacheService, ChangelogEmbedGenerator changelogEmbedGenerator)
         {
-            _changelogService = changelogService;
             _cacheService = cacheService;
             _changelogEmbedGenerator = changelogEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Changelog, async p => await _changelogService.GetChangelog());
+            _cacheService.RegisterDataProvider(CacheContentType.Changelog, async p => await changelogService.GetChangelog());
         }
 
         [Command("Changelog")]
@@ -34,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
             var changelog = await _cacheService.Get<string>(CacheContentType.Changelog);
             var embed = _changelogEmbedGenerator.Build(changelog);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
     }
 }

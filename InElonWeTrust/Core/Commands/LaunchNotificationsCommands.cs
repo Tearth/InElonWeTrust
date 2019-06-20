@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.Commands
                 try
                 {
                     var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var sentMessage = await channel.SendMessageAsync("", false, embed);
+                    var sentMessage = await channel.SendMessageAsync(string.Empty, false, embed);
 
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
                     using (var databaseContext = new DatabaseContext())

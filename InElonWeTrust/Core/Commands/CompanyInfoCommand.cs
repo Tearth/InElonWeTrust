@@ -13,22 +13,20 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CompanyInfoCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly CompanyInfoEmbedGenerator _companyInfoEmbedGenerator;
 
         public CompanyInfoCommand(OddityCore oddity, CacheService cacheService, CompanyInfoEmbedGenerator companyInfoEmbedGenerator)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _companyInfoEmbedGenerator = companyInfoEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfo, async p => await _oddity.Company.GetInfo().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyInfo, async p => await oddity.Company.GetInfo().ExecuteAsync());
         }
 
         [Command("CompanyInfo")]
         [Aliases("Company", "ci", "info")]
-        [Description("Get information about SpaceX.")]
+        [Description("Get the most important information about SpaceX.")]
         public async Task CompanyInfo(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -36,7 +34,7 @@ namespace InElonWeTrust.Core.Commands
             var companyInfo = await _cacheService.Get<CompanyInfo>(CacheContentType.CompanyInfo);
             var embed = _companyInfoEmbedGenerator.Build(companyInfo);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
     }
 }

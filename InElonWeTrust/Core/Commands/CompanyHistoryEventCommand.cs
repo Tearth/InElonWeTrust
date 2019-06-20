@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -15,17 +16,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CompanyHistoryEventCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly CompanyHistoryEventEmbedGenerator _companyHistoryEventEmbedGenerator;
 
         public CompanyHistoryEventCommand(OddityCore oddity, CacheService cacheService, CompanyHistoryEventEmbedGenerator companyHistoryEventEmbedGenerator)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _companyHistoryEventEmbedGenerator = companyHistoryEventEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await oddity.Company.GetHistory().ExecuteAsync());
         }
 
         [Command("GetEvent")]
@@ -36,17 +35,17 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var history = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
-            var sortedHistory = history.OrderBy(p => p.EventDate.Value).ToList();
+            var sortedHistory = history.OrderBy(p => p.EventDate ?? DateTime.MinValue).ToList();
 
             if (id <= 0 || id > sortedHistory.Count)
             {
                 var errorEmbed = _companyHistoryEventEmbedGenerator.BuildError();
-                await ctx.RespondAsync("", false, errorEmbed);
+                await ctx.RespondAsync(string.Empty, false, errorEmbed);
             }
             else
             {
                 var embed = _companyHistoryEventEmbedGenerator.Build(sortedHistory[id - 1]);
-                await ctx.RespondAsync("", false, embed);
+                await ctx.RespondAsync(string.Empty, false, embed);
             }
         }
     }

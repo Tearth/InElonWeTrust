@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Avatar")]
-        [Description("Get Elon's Twitter avatar.")]
+        [Description("Get Elon's Twitter avatar. Only for people with strong nerves.")]
         public async Task Avatar(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.Commands
             var avatar = _twitterService.GetAvatar(TwitterUserType.ElonMusk);
             var embed = _avatarEmbedGenerator.Build("Elon Musk's", avatar);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
     }
 }

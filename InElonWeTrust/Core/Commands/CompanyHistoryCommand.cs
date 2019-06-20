@@ -20,7 +20,6 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CompanyHistoryCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly PaginationService _paginationService;
         private readonly CacheService _cacheService;
         private readonly CompanyHistoryTableGenerator _companyHistoryTableGenerator;
@@ -30,7 +29,6 @@ namespace InElonWeTrust.Core.Commands
 
         public CompanyHistoryCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService, CompanyHistoryTableGenerator companyHistoryTableGenerator)
         {
-            _oddity = oddity;
             _paginationService = paginationService;
             _cacheService = cacheService;
             _companyHistoryTableGenerator = companyHistoryTableGenerator;
@@ -39,14 +37,14 @@ namespace InElonWeTrust.Core.Commands
             {
                 CacheContentType.CompanyHistory
             };
-            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await _oddity.Company.GetHistory().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await oddity.Company.GetHistory().ExecuteAsync());
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
         }
 
         [Command("CompanyHistory")]
         [Aliases("History", "ch")]
-        [Description("Get information about SpaceX.")]
+        [Description("Get list of most important events related with SpaceX.")]
         public async Task CompanyHistory(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -55,13 +53,13 @@ namespace InElonWeTrust.Core.Commands
             var tableWithPagination = BuildTableWithPagination(companyHistory, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
-            await _paginationService.InitPagination(message, CacheContentType.CompanyHistory, "");
+            await _paginationService.InitPagination(message, CacheContentType.CompanyHistory, string.Empty);
         }
 
         private string BuildTableWithPagination(List<HistoryEvent> history, int currentPage)
         {
             var itemsToDisplay = _paginationService.GetItemsToDisplay(history, currentPage);
-            itemsToDisplay = itemsToDisplay.OrderBy(p => p.EventDate.Value).ToList();
+            itemsToDisplay = itemsToDisplay.OrderBy(p => p.EventDate ?? DateTime.MinValue).ToList();
 
             var maxPagesCount = _paginationService.GetPagesCount(history.Count);
             var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
@@ -96,16 +94,17 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (UnauthorizedException)
                 {
-                    var oldMessageContent = editedMessage.Content ?? (await e.Channel.GetMessageAsync(e.Message.Id)).Content;
+                    var messageContent = editedMessage.Content ?? (await e.Channel.GetMessageAsync(e.Message.Id)).Content;
 
-                    if (oldMessageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
+                    if (messageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        oldMessageContent += "\r\n";
-                        oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
-                                             "bot/channel permissions and be sure that I have ability to manage messages.*";
+                        messageContent += "\r\n";
+                        messageContent += "*It seems that I have not enough permissions to do pagination properly. Please check " +
+                                          "bot/channel permissions and be sure that I have ability to manage messages.*";
                     }
+
                     _logger.Warn("Can't do pagination due to permissions.");
-                    await editedMessage.ModifyAsync(oldMessageContent);
+                    await editedMessage.ModifyAsync(messageContent);
                 }
             }
         }

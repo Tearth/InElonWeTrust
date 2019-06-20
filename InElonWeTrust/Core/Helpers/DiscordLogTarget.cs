@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Helpers
                     var supportGuild = await Bot.Client.GetGuildAsync(SettingsLoader.Data.SupportServerId);
                     var ownerMember = await supportGuild.GetMemberAsync(SettingsLoader.Data.OwnerId);
 
-                    await ownerMember.SendMessageAsync("", false, embed);
+                    await ownerMember.SendMessageAsync(string.Empty, false, embed);
                 }
             }
             catch (Exception e)

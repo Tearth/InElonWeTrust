@@ -45,7 +45,7 @@ namespace InElonWeTrust.Core.Commands
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
             var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, true);
 
-            var sentMessage = await ctx.RespondAsync("", false, embed);
+            var sentMessage = await ctx.RespondAsync(string.Empty, false, embed);
 
             await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
             using (var databaseContext = new DatabaseContext())
@@ -67,7 +67,7 @@ namespace InElonWeTrust.Core.Commands
             var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
 
             var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, false);
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
 
         [Command("RandomLaunch")]
@@ -81,7 +81,7 @@ namespace InElonWeTrust.Core.Commands
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
 
             var embed = _launchInfoEmbedGenerator.Build(randomLaunch, ctx.Guild.Id, false);
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
 
         [Command("GetLaunch")]
@@ -100,12 +100,12 @@ namespace InElonWeTrust.Core.Commands
                 };
 
                 errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist, type `e!alllaunches` to list them.");
-                await ctx.RespondAsync("", false, errorEmbedBuilder);
+                await ctx.RespondAsync(string.Empty, false, errorEmbedBuilder);
             }
             else
             {
                 var embed = _launchInfoEmbedGenerator.Build(launchData.First(), ctx.Guild.Id, false);
-                await ctx.RespondAsync("", false, embed);
+                await ctx.RespondAsync(string.Empty, false, embed);
             }
         }
     }

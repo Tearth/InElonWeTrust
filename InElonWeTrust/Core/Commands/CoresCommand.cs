@@ -20,7 +20,6 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class CoresCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly PaginationService _paginationService;
         private readonly CacheService _cacheService;
         private readonly CoresListTableGenerator _coresListTableGenerator;
@@ -30,7 +29,6 @@ namespace InElonWeTrust.Core.Commands
 
         public CoresCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService, CoresListTableGenerator coresListTableGenerator)
         {
-            _oddity = oddity;
             _paginationService = paginationService;
             _cacheService = cacheService;
             _coresListTableGenerator = coresListTableGenerator;
@@ -39,7 +37,7 @@ namespace InElonWeTrust.Core.Commands
             {
                 CacheContentType.Cores
             };
-            _cacheService.RegisterDataProvider(CacheContentType.Cores, async p => await _oddity.DetailedCores.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Cores, async p => await oddity.DetailedCores.GetAll().ExecuteAsync());
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
         }
@@ -55,11 +53,12 @@ namespace InElonWeTrust.Core.Commands
             var tableWithPagination = BuildTableWithPagination(cores, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
-            await _paginationService.InitPagination(message, CacheContentType.Cores, "");
+            await _paginationService.InitPagination(message, CacheContentType.Cores, string.Empty);
         }
 
         private string BuildTableWithPagination(List<DetailedCoreInfo> cores, int currentPage)
         {
+            // Move cores without original launch date to the top of list (API returns on begin)
             var itemsWithoutOriginalLaunch = cores.Where(p => !p.OriginalLaunch.HasValue).ToList();
             foreach (var itemToRemove in itemsWithoutOriginalLaunch)
             {
@@ -107,7 +106,7 @@ namespace InElonWeTrust.Core.Commands
                     if (oldMessageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
                     {
                         oldMessageContent += "\r\n";
-                        oldMessageContent += "*It seems that I have no enough permissions to do pagination properly. Please check " +
+                        oldMessageContent += "*It seems that I have not enough permissions to do pagination properly. Please check " +
                                              "bot/channel permissions and be sure that I have ability to manage messages.*";
                     }
                     _logger.Warn("Can't do pagination due to permissions.");

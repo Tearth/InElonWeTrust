@@ -37,7 +37,7 @@ namespace InElonWeTrust.Core.Commands
             var launchpads = await _cacheService.Get<List<LaunchpadInfo>>(CacheContentType.Launchpads);
             var embed = _launchpadsEmbedGenerator.Build(launchpads);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
     }
 }

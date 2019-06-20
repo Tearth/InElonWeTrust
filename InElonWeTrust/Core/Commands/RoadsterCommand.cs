@@ -36,7 +36,7 @@ namespace InElonWeTrust.Core.Commands
             var roadsterInfo = await _cacheService.Get<RoadsterInfo>(CacheContentType.Roadster);
             var embed = _roadsterEmbedBuilder.Build(roadsterInfo);
 
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync(string.Empty, false, embed);
         }
     }
 }
