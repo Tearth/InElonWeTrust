@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task Ping(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync($"Ping: {ctx.Client.Ping} ms");
+            await ctx.RespondAsync($"Pong - {ctx.Client.Ping} ms");
         }
     }
 }

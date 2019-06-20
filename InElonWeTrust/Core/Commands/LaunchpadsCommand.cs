@@ -14,17 +14,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class LaunchpadsCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly LaunchpadsEmbedGenerator _launchpadsEmbedGenerator;
 
         public LaunchpadsCommand(OddityCore oddity, CacheService cacheService, LaunchpadsEmbedGenerator launchpadsEmbedGenerator)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _launchpadsEmbedGenerator = launchpadsEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await _oddity.Launchpads.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await oddity.Launchpads.GetAll().ExecuteAsync());
         }
 
         [Command("Launchpads")]

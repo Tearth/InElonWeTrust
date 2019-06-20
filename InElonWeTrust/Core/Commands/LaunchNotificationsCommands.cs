@@ -18,6 +18,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Notifications)]
     public class LaunchNotificationsCommands : BaseCommandModule
     {
+        private readonly LaunchNotificationsService _launchNotificationsService;
         private readonly SubscriptionsService _subscriptionsService;
         private readonly LaunchNotificationEmbedBuilder _launchNotificationEmbedBuilder;
 
@@ -25,17 +26,21 @@ namespace InElonWeTrust.Core.Commands
 
         public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService, LaunchNotificationEmbedBuilder launchNotificationEmbedBuilder)
         {
+            _launchNotificationsService = launchNotificationsService;
             _subscriptionsService = subscriptionsService;
             _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
             launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
         }
 
-        [Command("FooBar")]
+        [Command("__LaunchNotificationsCommands__Hidden")]
         [HiddenCommand]
-        public async Task FooBar(CommandContext ctx)
+        // ReSharper disable once UnusedMember.Global
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task HiddenCommand(CommandContext ctx)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            // TODO: think about it and create issue
+            // Fake command necessary for DSharpPlus (without it, constructor won't be called).
         }
 
         private async void LaunchNotificationsOnLaunchNotification(object sender, LaunchNotification launchNotification)
@@ -43,8 +48,13 @@ namespace InElonWeTrust.Core.Commands
             var embed = _launchNotificationEmbedBuilder.Build(launchNotification);
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
 
-            var timeLeft = (launchNotification.NewLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
+            var launchTime = launchNotification.NewLaunchState.LaunchDateUtc ?? DateTime.MinValue;
+            if (launchTime == DateTime.MinValue)
+            {
+                return;
+            }
 
+            var timeLeft = (launchTime - DateTime.Now.ToUniversalTime()).TotalMinutes;
             foreach (var channelData in channels)
             {
                 try
@@ -53,13 +63,7 @@ namespace InElonWeTrust.Core.Commands
                     var sentMessage = await channel.SendMessageAsync(string.Empty, false, embed);
 
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
-                    using (var databaseContext = new DatabaseContext())
-                    {
-                        var messageToSubscribe = new MessageToSubscribe(channel.GuildId.ToString(), sentMessage.Id.ToString());
-
-                        databaseContext.MessagesToSubscribe.Add(messageToSubscribe);
-                        databaseContext.SaveChanges();
-                    }
+                    _launchNotificationsService.AddMessageToSubscribe(channel, sentMessage);
 
                     if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launchNotification.NewLaunchState.Links.VideoLink != null)
                     {

@@ -13,17 +13,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class RoadsterCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly RoadsterEmbedBuilder _roadsterEmbedBuilder;
 
         public RoadsterCommand(OddityCore oddity, CacheService cacheService, RoadsterEmbedBuilder roadsterEmbedBuilder)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _roadsterEmbedBuilder = roadsterEmbedBuilder;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Roadster, async p => await _oddity.Roadster.Get().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Roadster, async p => await oddity.Roadster.Get().ExecuteAsync());
         }
 
         [Command("Roadster")]

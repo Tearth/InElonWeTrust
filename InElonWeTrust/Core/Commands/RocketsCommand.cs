@@ -14,17 +14,15 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class RocketsCommand : BaseCommandModule
     {
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly RocketsEmbedGenerator _rocketsEmbedGenerator;
 
         public RocketsCommand(OddityCore oddity, CacheService cacheService, RocketsEmbedGenerator rocketsEmbedGenerator)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _rocketsEmbedGenerator = rocketsEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Rockets, async p => await _oddity.Rockets.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Rockets, async p => await oddity.Rockets.GetAll().ExecuteAsync());
         }
 
         [Command("Rockets")]

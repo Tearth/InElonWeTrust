@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus.Entities;
+using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Services.Cache;
 using NLog;
 using Oddity;
@@ -36,6 +39,17 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             _notificationsUpdateTimer.Start();
 
             _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
+        }
+
+        public void AddMessageToSubscribe(DiscordChannel channel, DiscordMessage message)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                var messageToSubscribe = new MessageToSubscribe(channel.GuildId.ToString(), message.Id.ToString());
+
+                databaseContext.MessagesToSubscribe.Add(messageToSubscribe);
+                databaseContext.SaveChanges();
+            }
         }
 
         private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)

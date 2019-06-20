@@ -7,11 +7,10 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
-using InElonWeTrust.Core.Database;
-using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
+using InElonWeTrust.Core.Services.LaunchNotifications;
 using Oddity;
 using Oddity.API.Models.Launch;
 
@@ -22,12 +21,14 @@ namespace InElonWeTrust.Core.Commands
     {
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
+        private readonly LaunchNotificationsService _launchNotificationsService;
         private readonly LaunchInfoEmbedGenerator _launchInfoEmbedGenerator;
 
-        public SingleLaunchCommands(OddityCore oddity, CacheService cacheService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
+        public SingleLaunchCommands(OddityCore oddity, CacheService cacheService, LaunchNotificationsService launchNotificationsService, LaunchInfoEmbedGenerator launchInfoEmbedGenerator)
         {
             _oddity = oddity;
             _cacheService = cacheService;
+            _launchNotificationsService = launchNotificationsService;
             _launchInfoEmbedGenerator = launchInfoEmbedGenerator;
 
             _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
@@ -48,13 +49,7 @@ namespace InElonWeTrust.Core.Commands
             var sentMessage = await ctx.RespondAsync(string.Empty, false, embed);
 
             await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
-            using (var databaseContext = new DatabaseContext())
-            {
-                var messageToSubscribe = new MessageToSubscribe(ctx.Guild.Id.ToString(), sentMessage.Id.ToString());
-
-                databaseContext.MessagesToSubscribe.Add(messageToSubscribe);
-                databaseContext.SaveChanges();
-            }
+            _launchNotificationsService.AddMessageToSubscribe(ctx.Channel, sentMessage);
         }
 
         [Command("LatestLaunch")]
