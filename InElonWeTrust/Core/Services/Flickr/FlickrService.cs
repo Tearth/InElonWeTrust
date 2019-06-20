@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private readonly System.Timers.Timer _notificationsUpdateTimer;
-        private object _updatingMonitor = new object();
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
         private readonly HttpClient _httpClient;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -53,10 +53,12 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync()
         {
-            if (!Monitor.TryEnter(_updatingMonitor))
+            if (_updateSemaphore.CurrentCount == 0)
             {
                 return;
             }
+
+            await _updateSemaphore.WaitAsync();
 
             try
             {
@@ -112,7 +114,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
             finally
             {
-                Monitor.Exit(_updatingMonitor);
+                _updateSemaphore.Release();
             }
         }
 

@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly System.Timers.Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
-        private readonly object _updatingMonitor = new object();
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const int UpdateNotificationsIntervalMinutes = 5;
@@ -78,10 +78,12 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async Task ReloadCachedTweetsAsync(bool checkOnlyLastTweets)
         {
-            if (!Monitor.TryEnter(_updatingMonitor))
+            if (_updateSemaphore.CurrentCount == 0)
             {
                 return;
             }
+
+            await _updateSemaphore.WaitAsync();
 
             try
             {
@@ -141,7 +143,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
             finally
             {
-                Monitor.Exit(_updatingMonitor);
+                _updateSemaphore.Release();
             }
         }
 

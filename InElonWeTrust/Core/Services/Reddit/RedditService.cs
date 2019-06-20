@@ -16,7 +16,7 @@ namespace InElonWeTrust.Core.Services.Reddit
     {
         public event EventHandler<RedditChildData> OnNewHotTopic;
         private readonly HttpClient _httpClient;
-        private readonly object _updatingMonitor = new object();
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -43,10 +43,12 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         public async Task ReloadCachedTopicsAsync()
         {
-            if (!Monitor.TryEnter(_updatingMonitor))
+            if (_updateSemaphore.CurrentCount == 0)
             {
                 return;
             }
+
+            await _updateSemaphore.WaitAsync();
 
             try
             {
@@ -82,7 +84,7 @@ namespace InElonWeTrust.Core.Services.Reddit
             }
             finally
             {
-                Monitor.Exit(_updatingMonitor);
+                _updateSemaphore.Release();
             }
         }
 

@@ -25,7 +25,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         private readonly List<int> _notificationTimes;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly object _updatingMonitor = new object();
+        private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private const int UpdateNotificationsIntervalMinutes = 1;
 
@@ -67,10 +67,12 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private async Task UpdateNotifications()
         {
-            if (!Monitor.TryEnter(_updatingMonitor))
+            if (_updateSemaphore.CurrentCount == 0)
             {
                 return;
             }
+
+            await _updateSemaphore.WaitAsync();
 
             try
             {
@@ -112,7 +114,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             }
             finally
             {
-                Monitor.Exit(_updatingMonitor);
+                _updateSemaphore.Release();
             }
         }
     }
