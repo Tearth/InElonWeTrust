@@ -9,10 +9,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor)
+                Color = new DiscordColor(Constants.EmbedColor),
+                ImageUrl = avatar
             };
 
-            embed.ImageUrl = avatar;
             return embed;
         }
     }

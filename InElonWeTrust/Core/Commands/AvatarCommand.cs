@@ -4,8 +4,6 @@ using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
-using InElonWeTrust.Core.Services.Cache;
-using InElonWeTrust.Core.Services.Changelog;
 using InElonWeTrust.Core.Services.Twitter;
 
 namespace InElonWeTrust.Core.Commands

@@ -28,7 +28,6 @@ using InElonWeTrust.Core.Services.TimeZone;
 using InElonWeTrust.Core.Services.Twitter;
 using InElonWeTrust.Core.Services.UsefulLinks;
 using InElonWeTrust.Core.Services.UserLaunchSubscriptions;
-using InElonWeTrust.Core.Services.Watchdog;
 using InElonWeTrust.Core.Settings;
 using InElonWeTrust.Core.TableGenerators;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -12,7 +11,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.TimeZone)]
     public class SetTimeZoneCommand : BaseCommandModule
     {
-        public TimeZoneService _timeZoneService;
+        private readonly TimeZoneService _timeZoneService;
 
         public SetTimeZoneCommand(TimeZoneService timeZoneService)
         {

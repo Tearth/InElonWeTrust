@@ -5,9 +5,9 @@ namespace InElonWeTrust.Core.Services.Watchdog
 {
     public class WatchdogService
     {
-        private BaseWatchdog _watchdog;
-        protected readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        protected readonly Logger _watchdogLogger = LogManager.GetLogger("WatchdogLogger");
+        private readonly BaseWatchdog _watchdog;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _watchdogLogger = LogManager.GetLogger("WatchdogLogger");
 
         public WatchdogService()
         {

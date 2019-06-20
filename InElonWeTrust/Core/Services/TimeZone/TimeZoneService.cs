@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core.Services.TimeZone
             }
         }
 
-        public DateTime? ConvertUTCToLocalTime(ulong guildId, DateTime utc)
+        public DateTime? ConvertUtcToLocalTime(ulong guildId, DateTime utc)
         {
             var fixedGuildId = guildId.ToString();
             using (var databaseContext = new DatabaseContext())

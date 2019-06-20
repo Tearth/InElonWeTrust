@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
@@ -13,7 +12,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchInfoEmbedGenerator
     {
-        private TimeZoneService _timeZoneService;
+        private readonly TimeZoneService _timeZoneService;
 
         public LaunchInfoEmbedGenerator(TimeZoneService timeZoneService)
         {
@@ -40,11 +39,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 if (localLaunchDateTime != null)
                 {
-                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime, false);
+                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime);
                 }
             }
 
-            embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName, false);
+            embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName);
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
             embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
@@ -65,7 +64,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         private string GetLocalLaunchDateTime(ulong guildId, DateTime utc, TentativeMaxPrecision precision)
         {
-            var convertedToLocal = _timeZoneService.ConvertUTCToLocalTime(guildId, utc);
+            var convertedToLocal = _timeZoneService.ConvertUtcToLocalTime(guildId, utc);
             if (convertedToLocal == null)
             {
                 return null;

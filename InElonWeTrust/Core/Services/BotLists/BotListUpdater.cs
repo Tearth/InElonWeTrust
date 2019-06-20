@@ -22,9 +22,11 @@ namespace InElonWeTrust.Core.Services.BotLists
             CountFieldName = countFieldName;
             Token = token;
 
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri(Link);
-            _httpClient.Timeout = new TimeSpan(0, 0, 0, 5);
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(Link),
+                Timeout = new TimeSpan(0, 0, 0, 5)
+            };
             _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", Token);
         }
 

@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.TimeZone)]
     public class ResetTimeZoneCommand : BaseCommandModule
     {
-        public TimeZoneService _timeZoneService;
+        private readonly TimeZoneService _timeZoneService;
 
         public ResetTimeZoneCommand(TimeZoneService timeZoneService)
         {
@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             await _timeZoneService.ResetTimeZoneAsync(ctx.Guild.Id);
-            await ctx.RespondAsync($"Time zone has been reset.");
+            await ctx.RespondAsync("Time zone has been reset.");
         }
     }
 }

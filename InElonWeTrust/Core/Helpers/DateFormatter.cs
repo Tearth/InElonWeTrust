@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.Helpers
     public static class DateFormatter
     {
         // TODO: fix this crap
-        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC, bool displayPrecision)
+        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision)
         {
             var format = string.Empty;
             switch (precision)
@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Helpers
             }
 
             var output = date.ToString(format, CultureInfo.InvariantCulture);
-            if (includeUTC && precision == TentativeMaxPrecision.Hour)
+            if (includeUtc && precision == TentativeMaxPrecision.Hour)
             {
                 output += " UTC";
             }

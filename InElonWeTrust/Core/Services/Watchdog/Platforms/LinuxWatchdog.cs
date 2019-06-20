@@ -55,7 +55,7 @@ namespace InElonWeTrust.Core.Services.Watchdog.Platforms
         {
             var command = GetCommandToRunElon();
             StartProcessWithoutOutputRedirect("tmux", "new-window");
-            StartProcessWithoutOutputRedirect("tmux", $"send-keys \"dotnet InElonWeTrust.dll\" ENTER");
+            StartProcessWithoutOutputRedirect("tmux", "send-keys \"dotnet InElonWeTrust.dll\" ENTER");
         }
 
         private void CloseCurrentApp()
