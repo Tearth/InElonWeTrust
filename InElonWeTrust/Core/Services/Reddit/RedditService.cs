@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
@@ -15,6 +16,7 @@ namespace InElonWeTrust.Core.Services.Reddit
     {
         public event EventHandler<RedditChildData> OnNewHotTopic;
         private readonly HttpClient _httpClient;
+        private readonly object _updatingMonitor = new object();
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -41,34 +43,46 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         public async Task ReloadCachedTopicsAsync()
         {
-            using (var databaseContext = new DatabaseContext())
+            if (!Monitor.TryEnter(_updatingMonitor))
             {
-                _logger.Info("Reddit topics check starts");
+                return;
+            }
 
-                var sendNotifies = databaseContext.CachedRedditTopics.Any();
-                var response = await _httpClient.GetStringAsync(HotTopicsUrl);
-
-                var names = JsonConvert.DeserializeObject<RedditResponse>(response);
-                var newTopics = 0;
-
-                foreach (var topic in names.Data.Children.Select(p => p.Data))
+            try
+            {
+                using (var databaseContext = new DatabaseContext())
                 {
-                    if (!databaseContext.CachedRedditTopics.Any(p => p.Name == topic.Name))
+                    _logger.Info("Reddit topics check starts");
+
+                    var sendNotifies = databaseContext.CachedRedditTopics.Any();
+                    var response = await _httpClient.GetStringAsync(HotTopicsUrl);
+
+                    var names = JsonConvert.DeserializeObject<RedditResponse>(response);
+                    var newTopics = 0;
+
+                    foreach (var topic in names.Data.Children.Select(p => p.Data))
                     {
-                        if (sendNotifies)
+                        if (!databaseContext.CachedRedditTopics.Any(p => p.Name == topic.Name))
                         {
-                            OnNewHotTopic?.Invoke(this, topic);
+                            if (sendNotifies)
+                            {
+                                OnNewHotTopic?.Invoke(this, topic);
+                            }
+
+                            newTopics++;
+                            databaseContext.CachedRedditTopics.Add(new CachedRedditTopic(topic.Name));
                         }
-
-                        newTopics++;
-                        databaseContext.CachedRedditTopics.Add(new CachedRedditTopic(topic.Name));
                     }
+
+                    await databaseContext.SaveChangesAsync();
+
+                    var topicsCount = databaseContext.CachedRedditTopics.Count();
+                    _logger.Info($"Reddit update finished ({newTopics} sent, {topicsCount} topics in database)");
                 }
-
-                await databaseContext.SaveChangesAsync();
-
-                var topicsCount = databaseContext.CachedRedditTopics.Count();
-                _logger.Info($"Reddit update finished ({newTopics} sent, {topicsCount} topics in database)");
+            }
+            finally
+            {
+                Monitor.Exit(_updatingMonitor);
             }
         }
 

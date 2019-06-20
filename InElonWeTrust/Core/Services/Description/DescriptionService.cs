@@ -13,7 +13,6 @@ namespace InElonWeTrust.Core.Services.Description
     {
         private readonly Timer _descriptionRefreshTimer;
         private readonly CacheService _cacheService;
-        private readonly OddityCore _oddity;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -29,9 +28,8 @@ namespace InElonWeTrust.Core.Services.Description
             _descriptionRefreshTimer.Start();
 
             _cacheService = cacheService;
-            _oddity = oddity;
 
-            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
         }
 
         private async void DescriptionRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)

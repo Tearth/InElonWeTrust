@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
@@ -22,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
-        private bool _reloadingCacheState;
+        private object _updatingMonitor = new object();
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const int UpdateNotificationsIntervalMinutes = 5;
@@ -77,12 +78,11 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async Task ReloadCachedTweetsAsync(bool checkOnlyLastTweets)
         {
-            if (_reloadingCacheState)
+            if (!Monitor.TryEnter(_updatingMonitor))
             {
                 return;
             }
 
-            _reloadingCacheState = true;
             try
             {
                 using (var databaseContext = new DatabaseContext())
@@ -103,7 +103,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                             {
                                 MaxId = firstRequest ? -1 : minTweetId - 1,
                                 MaximumNumberOfTweetsToRetrieve = 200
-                            });
+                            })?.ToList();
 
                             if (messages == null || !messages.Any())
                             {
@@ -141,7 +141,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
             finally
             {
-                _reloadingCacheState = false;
+                Monitor.Exit(_updatingMonitor);
             }
         }
 

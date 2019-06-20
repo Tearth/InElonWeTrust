@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
@@ -21,7 +22,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
         private readonly Timer _notificationsUpdateTimer;
-        private bool _reloadingCacheState;
+        private object _updatingMonitor = new object();
         private readonly HttpClient _httpClient;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -52,12 +53,11 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync()
         {
-            if (_reloadingCacheState)
+            if (!Monitor.TryEnter(_updatingMonitor))
             {
                 return;
             }
 
-            _reloadingCacheState = true;
             try
             {
                 using (var databaseContext = new DatabaseContext())
@@ -112,7 +112,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
             finally
             {
-                _reloadingCacheState = false;
+                Monitor.Exit(_updatingMonitor);
             }
         }
 

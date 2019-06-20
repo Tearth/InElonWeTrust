@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus.Entities;
@@ -17,14 +18,14 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
     {
         public event EventHandler<LaunchNotification> OnLaunchNotification;
 
-        private readonly Timer _notificationsUpdateTimer;
+        private readonly System.Timers.Timer _notificationsUpdateTimer;
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private LaunchInfo _nextLaunchState;
         private readonly List<int> _notificationTimes;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private bool _updating = false;
+        private readonly object _updatingMonitor = new object();
 
         private const int UpdateNotificationsIntervalMinutes = 1;
 
@@ -34,7 +35,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             _cacheService = cacheService;
             _notificationTimes = new List<int> { 10, 60, 60 * 24, 60 * 24 * 7 };
 
-            _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            _notificationsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
 
@@ -66,8 +67,10 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private async Task UpdateNotifications()
         {
-            if (_updating) return;
-            _updating = true;
+            if (!Monitor.TryEnter(_updatingMonitor))
+            {
+                return;
+            }
 
             try
             {
@@ -109,7 +112,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             }
             finally
             {
-                _updating = false;
+                Monitor.Exit(_updatingMonitor);
             }
         }
     }

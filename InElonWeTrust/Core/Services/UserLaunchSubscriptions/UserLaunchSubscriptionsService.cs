@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             using (var databaseContext = new DatabaseContext())
             {
                 var userSubscription = databaseContext.UserLaunchSubscriptions
-                    .FirstOrDefault(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber);
+                    .FirstOrDefault(p => p.UserId == fixedUserId && p.GuildId == fixedGuildId && p.LaunchId == nextLaunch.FlightNumber);
 
                 if (userSubscription != null)
                 {

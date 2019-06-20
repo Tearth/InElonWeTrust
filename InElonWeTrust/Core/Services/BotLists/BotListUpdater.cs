@@ -40,7 +40,7 @@ namespace InElonWeTrust.Core.Services.BotLists
             var result = await _httpClient.PostAsync(link, requestContent);
             if (!result.IsSuccessStatusCode)
             {
-                //_logger.Error("Can't update bot list: " + link);
+                _logger.Warn($"Bad status code when updating {Link} list");
             }
         }
     }

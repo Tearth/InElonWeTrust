@@ -42,21 +42,6 @@ namespace InElonWeTrust.Core.Services.BotLists
 
         private async void StatusRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                await UpdateStatus();
-            }
-            catch (Exception ex)
-            {
-                // TODO: do something with empty catches
-                //_logger.Error(ex, "Unable to update bot status.");
-            }
-
-            _logger.Log(LogLevel.Info, "Common status updated.");
-        }
-
-        private async Task UpdateStatus()
-        {
             foreach (var botList in _botListDefinitions)
             {
                 try
@@ -65,9 +50,11 @@ namespace InElonWeTrust.Core.Services.BotLists
                 }
                 catch (Exception ex)
                 {
-                    // TODO: do something with empty catches
+                    _logger.Log(LogLevel.Warn, $"Can't update {botList.Link} list");
                 }
             }
+
+            _logger.Log(LogLevel.Info, "Common status updated.");
         }
     }
 }

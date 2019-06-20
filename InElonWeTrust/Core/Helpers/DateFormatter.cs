@@ -45,9 +45,9 @@ namespace InElonWeTrust.Core.Helpers
             return output;
         }
 
-        public static string GetShortStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUTC, bool displayPrecision)
+        public static string GetShortStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision)
         {
-            var format = string.Empty;
+            string format;
             switch (precision)
             {
                 case TentativeMaxPrecision.Year:
@@ -67,10 +67,14 @@ namespace InElonWeTrust.Core.Helpers
                 case TentativeMaxPrecision.Hour:
                     format = "dd-MM-yyyy HH:mm";
                     break;
+
+                default:
+                    format = "dd-MM-yyyy HH:mm";
+                    break;
             }
 
             var output = date.ToString(format, CultureInfo.InvariantCulture);
-            if (includeUTC && precision == TentativeMaxPrecision.Hour)
+            if (includeUtc && precision == TentativeMaxPrecision.Hour)
             {
                 output += " UTC";
             }
