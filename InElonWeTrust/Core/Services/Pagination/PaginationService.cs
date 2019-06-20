@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Services.Cache;
@@ -89,6 +90,32 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
 
             return false;
+        }
+
+        public async Task<bool> DeleteReaction(DiscordMessage message, DiscordUser reactionUser, DiscordEmoji emoji)
+        {
+            try
+            {
+                await message.DeleteReactionAsync(emoji, reactionUser);
+            }
+            catch (UnauthorizedException)
+            {
+                var messageContent = message.Content ?? (await message.Channel.GetMessageAsync(message.Id)).Content;
+
+                if (messageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    messageContent += "\r\n";
+                    messageContent += "*It seems that I have not enough permissions to do pagination properly. Please check " +
+                                      "bot/channel permissions and be sure that I have ability to manage messages.*";
+                }
+
+                _logger.Warn("Can't do pagination due to permissions.");
+                await message.ModifyAsync(messageContent);
+
+                return false;
+            }
+
+            return true;
         }
 
         private bool GoToNextPage(DiscordMessage message, int totalItemsCount)

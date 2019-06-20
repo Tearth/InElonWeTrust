@@ -95,23 +95,7 @@ namespace InElonWeTrust.Core.Commands
                     editedMessage = await e.Message.ModifyAsync(tableWithPagination);
                 }
 
-                try
-                {
-                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                }
-                catch (UnauthorizedException)
-                {
-                    var oldMessageContent = editedMessage.Content ?? (await e.Channel.GetMessageAsync(e.Message.Id)).Content;
-
-                    if (oldMessageContent.EndsWith("```", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        oldMessageContent += "\r\n";
-                        oldMessageContent += "*It seems that I have not enough permissions to do pagination properly. Please check " +
-                                             "bot/channel permissions and be sure that I have ability to manage messages.*";
-                    }
-                    _logger.Warn("Can't do pagination due to permissions.");
-                    await editedMessage.ModifyAsync(oldMessageContent);
-                }
+                await _paginationService.DeleteReaction(editedMessage, e.User, e.Emoji);
             }
         }
     }
