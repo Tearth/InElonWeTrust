@@ -70,6 +70,11 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
         }
 
+        public string GetAvatar(TwitterUserType userType)
+        {
+            return User.GetUserFromScreenName(_users[userType]).ProfileImageUrlFullSize;
+        }
+
         public async Task ReloadCachedTweetsAsync(bool checkOnlyLastTweets)
         {
             if (_reloadingCacheState)
