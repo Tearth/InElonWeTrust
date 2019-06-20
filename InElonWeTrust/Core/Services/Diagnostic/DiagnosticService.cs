@@ -22,8 +22,11 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             _statsPanelService = new StatsPanelService();
 
             _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
+
+#if !DEBUG
             _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsed;
             _displayDiagnosticTimer.Start();
+#endif
         }
 
         public void AddExecutedCommand(Command command, DiscordGuild guild)

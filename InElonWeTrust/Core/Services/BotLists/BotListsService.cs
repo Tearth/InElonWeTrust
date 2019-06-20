@@ -33,8 +33,11 @@ namespace InElonWeTrust.Core.Services.BotLists
             };
 
             _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 1000 * 60);
+
+#if !DEBUG
             _statusRefreshTimer.Elapsed += StatusRefreshTimer_Elapsed;
             _statusRefreshTimer.Start();
+#endif
         }
 
         private async void StatusRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
