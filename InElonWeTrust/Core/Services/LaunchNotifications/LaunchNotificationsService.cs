@@ -19,7 +19,6 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         public event EventHandler<LaunchNotification> OnLaunchNotification;
 
         private readonly System.Timers.Timer _notificationsUpdateTimer;
-        private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private LaunchInfo _nextLaunchState;
         private readonly List<int> _notificationTimes;
@@ -31,7 +30,6 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         public LaunchNotificationsService(OddityCore oddity, CacheService cacheService)
         {
-            _oddity = oddity;
             _cacheService = cacheService;
             _notificationTimes = new List<int> { 10, 60, 60 * 24, 60 * 24 * 7 };
 
@@ -39,7 +37,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
 
-            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
         }
 
         public void AddMessageToSubscribe(DiscordChannel channel, DiscordMessage message)

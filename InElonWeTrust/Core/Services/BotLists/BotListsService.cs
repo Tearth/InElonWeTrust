@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core.Services.BotLists
                 {
                     await botList.UpdateStatus(Bot.Client.Guilds.Count);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     _logger.Log(LogLevel.Warn, $"Can't update {botList.Link} list");
                 }

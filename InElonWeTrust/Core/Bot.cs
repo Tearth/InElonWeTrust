@@ -64,11 +64,11 @@ namespace InElonWeTrust.Core
             Client = new DiscordClient(GetClientConfiguration());
 
             Client.Ready += Client_Ready;
-            Client.Heartbeated += Client_Heartbeated;
+            Client.Heartbeated += Client_Heartbeat;
             Client.GuildCreated += Client_GuildCreated;
             Client.GuildDeleted += Client_GuildDeleted;
             Client.ClientErrored += Client_ClientError;
-            Client.SocketErrored += Client_SocketErrored;
+            Client.SocketErrored += Client_SocketError;
             Client.SocketClosed += Client_SocketClosed;
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
@@ -179,10 +179,10 @@ namespace InElonWeTrust.Core
                 var attributes = type.GetCustomAttributes();
                 if (attributes.Any(p => p.GetType() == typeof(CommandsAttribute)))
                 {
-                    var genericRegisterCommandMethod = registerCommandsMethod.MakeGenericMethod(type);
-                    genericRegisterCommandMethod.Invoke(_commands, null);
+                    var genericRegisterCommandMethod = registerCommandsMethod?.MakeGenericMethod(type);
+                    genericRegisterCommandMethod?.Invoke(_commands, null);
 
-                    _logger.Info($"{type.Name} registered");
+                    _logger.Info(genericRegisterCommandMethod != null ? $"{type.Name} registered" : $"Can't register {type.Name}");
                 }
             }
         }
@@ -195,7 +195,7 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Client_Heartbeated(HeartbeatEventArgs e)
+        private Task Client_Heartbeat(HeartbeatEventArgs e)
         {
             _logger.Info($"Heartbeat - ping: {e.Ping} ms");
             return Task.CompletedTask;
@@ -222,7 +222,7 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Client_SocketErrored(SocketErrorEventArgs e)
+        private Task Client_SocketError(SocketErrorEventArgs e)
         {
             _logger.Warn(e.Exception);
             return Task.CompletedTask;

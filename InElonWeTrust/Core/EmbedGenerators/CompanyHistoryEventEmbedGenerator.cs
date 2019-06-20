@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             };
 
             eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1021));
-            eventEmbedBuilder.AddField("Date", historyEvent.EventDate.Value.ToString("F"), true);
+            eventEmbedBuilder.AddField("Date", historyEvent.EventDate?.ToString("F"), true);
             eventEmbedBuilder.AddField("Links", GetLinksData(historyEvent), true);
 
             return eventEmbedBuilder;
