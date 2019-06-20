@@ -75,7 +75,7 @@ namespace InElonWeTrust.Core.Commands
                     var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
-                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}");
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
@@ -85,7 +85,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (NotFoundException)
                 {
-                    _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                    _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions");
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
                 }
                 catch (Exception ex)

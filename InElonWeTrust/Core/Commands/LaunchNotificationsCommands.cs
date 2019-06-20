@@ -19,7 +19,6 @@ namespace InElonWeTrust.Core.Commands
     public class LaunchNotificationsCommands : BaseCommandModule
     {
         private readonly SubscriptionsService _subscriptionsService;
-        private readonly LaunchNotificationsService _launchNotificationsService;
         private readonly LaunchNotificationEmbedBuilder _launchNotificationEmbedBuilder;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -27,10 +26,9 @@ namespace InElonWeTrust.Core.Commands
         public LaunchNotificationsCommands(SubscriptionsService subscriptionsService, LaunchNotificationsService launchNotificationsService, LaunchNotificationEmbedBuilder launchNotificationEmbedBuilder)
         {
             _subscriptionsService = subscriptionsService;
-            _launchNotificationsService = launchNotificationsService;
             _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
-            _launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
+            launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
         }
 
         [Command("FooBar")]

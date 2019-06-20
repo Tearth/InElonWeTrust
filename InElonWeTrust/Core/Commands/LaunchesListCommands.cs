@@ -29,7 +29,6 @@ namespace InElonWeTrust.Core.Commands
         private readonly LaunchesListTableGenerator _launchesListTableGenerator;
 
         private readonly List<CacheContentType> _allowedPaginationTypes;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LaunchesListCommands(OddityCore oddity, PaginationService paginationService, CacheService cacheService, LaunchesListTableGenerator launchesListTableGenerator)
         {
@@ -60,7 +59,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("UpcomingLaunches")]
         [Aliases("Upcoming", "ul", "NextLaunches")]
-        [Description("Get information about upcoming launches.")]
+        [Description("Get list of upcoming launches.")]
         public async Task UpcomingLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -69,7 +68,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("PastLaunches")]
         [Aliases("Past", "pl")]
-        [Description("Get information about past launches.")]
+        [Description("Get list of past launches.")]
         public async Task PastLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -78,7 +77,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("AllLaunches")]
         [Aliases("All", "Launches", "GetLaunches", "al")]
-        [Description("Get information about all launches.")]
+        [Description("Get list of all launches.")]
         public async Task AllLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -87,7 +86,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("FailedLaunches")]
         [Aliases("FailedStarts", "fs")]
-        [Description("Get information about all failed launches.")]
+        [Description("Get list of all failed launches.")]
         public async Task FailedLaunches(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -105,8 +104,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("LaunchesWithOrbit")]
         [Aliases("Orbit", "o")]
-        [Description("Get information about all launches with the specified orbit.")]
-        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: PO, LEO, ISS, GTO, SSO, HCO, HEO, MEO, SO, ES-L1")] string orbitType)
+        [Description("Get list of all launches with the specified orbit.")]
+        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
         {
             await ctx.TriggerTypingAsync();
             await DisplayLaunches(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
@@ -115,7 +114,7 @@ namespace InElonWeTrust.Core.Commands
         private string BuildTableWithPagination(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
         {
             var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);
-            itemsToDisplay = itemsToDisplay.OrderBy(p => p.LaunchDateUtc.Value).ToList();
+            itemsToDisplay = itemsToDisplay.OrderBy(p => p.LaunchDateUtc ?? DateTime.MinValue).ToList();
 
             var maxPagesCount = _paginationService.GetPagesCount(launches.Count);
             var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
@@ -176,8 +175,8 @@ namespace InElonWeTrust.Core.Commands
                     if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
                     {
                         var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
-                        var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType,
-                            updatedPaginationData.CurrentPage);
+                        var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
+
                         editedMessage = await e.Message.ModifyAsync(launchesList);
                     }
 
