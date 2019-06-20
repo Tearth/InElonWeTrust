@@ -53,12 +53,10 @@ namespace InElonWeTrust.Core.Services.Flickr
 
         public async Task ReloadCachedPhotosAsync()
         {
-            if (_updateSemaphore.CurrentCount == 0)
+            if (!await _updateSemaphore.WaitAsync(0))
             {
                 return;
             }
-
-            await _updateSemaphore.WaitAsync();
 
             try
             {

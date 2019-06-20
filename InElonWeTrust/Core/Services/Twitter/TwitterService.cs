@@ -78,12 +78,10 @@ namespace InElonWeTrust.Core.Services.Twitter
 
         public async Task ReloadCachedTweetsAsync(bool checkOnlyLastTweets)
         {
-            if (_updateSemaphore.CurrentCount == 0)
+            if (!await _updateSemaphore.WaitAsync(0))
             {
                 return;
             }
-
-            await _updateSemaphore.WaitAsync();
 
             try
             {

@@ -43,12 +43,10 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         public async Task ReloadCachedTopicsAsync()
         {
-            if (_updateSemaphore.CurrentCount == 0)
+            if (!await _updateSemaphore.WaitAsync(0))
             {
                 return;
             }
-
-            await _updateSemaphore.WaitAsync();
 
             try
             {
