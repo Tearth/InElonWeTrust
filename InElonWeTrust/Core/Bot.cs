@@ -116,6 +116,7 @@ namespace InElonWeTrust.Core
                 .AddSingleton(_cacheService)
 
                 // Embed generators
+                .AddScoped<AvatarEmbedGenerator>()
                 .AddScoped<LaunchInfoEmbedGenerator>()
                 .AddScoped<ChangelogEmbedGenerator>()
                 .AddScoped<CompanyInfoEmbedGenerator>()
