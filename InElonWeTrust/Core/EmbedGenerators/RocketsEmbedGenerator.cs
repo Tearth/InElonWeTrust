@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 }
 
                 var title = rocket.Name;
-                if (rocket.Active.Value)
+                if (rocket.Active.HasValue && rocket.Active.Value)
                 {
                     title += " (active)";
                 }
@@ -49,23 +49,23 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var tableBuilder = new StringBuilder();
 
             tableBuilder.Append("```");
-            tableBuilder.Append($"Diameter: {rocket.Diameter.Meters.Value}m".PadRight(FieldLength));
-            tableBuilder.Append($"Launch cost: ${rocket.CostPerLaunch.Value / 1_000_000}kk\r\n");
+            tableBuilder.Append($"Diameter: {rocket.Diameter.Meters ?? 0}m".PadRight(FieldLength));
+            tableBuilder.Append($"Launch cost: ${rocket.CostPerLaunch ?? 0 / 1_000_000}kk\r\n");
             tableBuilder.Append($"First flight: {rocket.FirstFlight:dd-MM-yyyy}".PadRight(FieldLength));
-            tableBuilder.Append($"Success rate: {rocket.SuccessRate.Value}%\r\n");
-            tableBuilder.Append($"Mass: {(int)(rocket.Mass.Kilograms.Value / 1000)}t".PadRight(FieldLength));
-            tableBuilder.Append($"Height: {rocket.Height.Meters.Value}m\r\n");
+            tableBuilder.Append($"Success rate: {rocket.SuccessRate ?? 0}%\r\n");
+            tableBuilder.Append($"Mass: {(int)(rocket.Mass.Kilograms ?? 0f / 1000)}t".PadRight(FieldLength));
+            tableBuilder.Append($"Height: {rocket.Height.Meters ?? 0}m\r\n");
 
             if (rocket.Engines.ThrustSeaLevel != null && rocket.Engines.ThrustToWeight.HasValue)
             {
-                tableBuilder.Append($"Thrust: {(int)(rocket.Engines.ThrustSeaLevel.Kilonewtons.Value * rocket.Engines.Number.Value)}kn".PadRight(FieldLength));
+                tableBuilder.Append($"Thrust: {(int)(rocket.Engines.ThrustSeaLevel.Kilonewtons ?? 0 * rocket.Engines.Number ?? 1)}kn".PadRight(FieldLength));
                 tableBuilder.Append($"TWR: {(int)rocket.Engines.ThrustToWeight.Value}\r\n");
             }
 
             var lastPayload = rocket.PayloadWeights.Last();
             foreach (var payload in rocket.PayloadWeights)
             {
-                tableBuilder.Append($"{(int)(payload.Kilograms / 1000)}t to {payload.Type}");
+                tableBuilder.Append($"{(int)(payload.Kilograms ?? 0 / 1000)}t to {payload.Type}");
 
                 if (payload != lastPayload)
                 {

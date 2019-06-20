@@ -3,6 +3,7 @@ using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.LaunchNotifications;
+using Oddity.API.Models.Launch;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -19,7 +20,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            var timeLeft = (launch.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
+            var launchTme = launch.LaunchDateUtc ?? DateTime.MinValue;
+            var now = DateTime.Now.ToUniversalTime();
+            var timeLeft = (launchTme - now).TotalMinutes;
 
             switch (launchNotification.Type)
             {
@@ -29,7 +32,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                         var descriptionBuilder = new StringBuilder();
                         descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
-                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
+                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
 
                         embed.AddField(":rocket: Launch is coming!", descriptionBuilder.ToString());
                         break;
@@ -37,12 +40,15 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 case LaunchNotificationType.Scrub:
                     {
-                        var descriptionBuilder = new StringBuilder();
-                        descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from " +
-                                                  $"**{DateFormatter.GetStringWithPrecision(oldLaunchState.LaunchDateUtc.Value, oldLaunchState.TentativeMaxPrecision.Value, true, true)}** to " +
-                                                  $"**{DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, true, true)}**.");
+                        var oldLaunchDate = DateFormatter.GetStringWithPrecision(oldLaunchState.LaunchDateUtc ?? DateTime.MinValue, oldLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year, true, true);
+                        var newLaunchDate = DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc ?? DateTime.MinValue, launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year, true, true);
 
-                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
+                        var descriptionBuilder = new StringBuilder();
+                        descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from ");
+                        descriptionBuilder.Append($"**{oldLaunchDate}** to ");
+                        descriptionBuilder.Append($"**{newLaunchDate}**.");
+
+                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
 
                         embed.AddField(":warning: Scrub!", descriptionBuilder.ToString());
                         break;
@@ -53,7 +59,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                         var descriptionBuilder = new StringBuilder();
                         descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
                         descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** at **{DateFormatter.GetStringWithPrecision(launchNotification.NewLaunchState.LaunchDateUtc.Value, launchNotification.NewLaunchState.TentativeMaxPrecision.Value, true, true)}**. ");
-                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber.Value}` to get more information.");
+                        descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
 
                         embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());
                         break;

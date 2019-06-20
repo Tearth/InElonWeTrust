@@ -27,14 +27,14 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            var launchDateTime = DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, true, true);
+            var launchDateTime = DateFormatter.GetStringWithPrecision(launch.LaunchDateUtc ?? DateTime.MinValue, launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year, true, true);
 
             embed.AddField($"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})", launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
             embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
 
             if (guildId != null)
             {
-                var localLaunchDateTime = GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value);
+                var localLaunchDateTime = GetLocalLaunchDateTime(guildId.Value, launch.LaunchDateUtc ?? DateTime.MinValue, launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year);
                 var timeZoneName = _timeZoneService.GetTimeZoneForGuild(guildId.Value);
 
                 if (localLaunchDateTime != null)

@@ -18,14 +18,14 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            var sortedLaunchpads = launchpads.OrderBy(p => p.FullName);
+            var sortedLaunchpads = launchpads.OrderBy(p => p.FullName).ToList();
             var lastLaunchpad = sortedLaunchpads.Last();
 
             foreach (var launchpad in sortedLaunchpads)
             {
                 var responseBuilder = new StringBuilder();
-                var latitude = launchpad.Location.Latitude.Value.ToString(CultureInfo.InvariantCulture);
-                var longitude = launchpad.Location.Longitude.Value.ToString(CultureInfo.InvariantCulture);
+                var latitude = launchpad.Location.Latitude?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+                var longitude = launchpad.Location.Longitude?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
 
                 responseBuilder.Append($"**[GOOGLE MAPS](https://maps.google.com/maps?q={latitude}+{longitude}&t=k)**. ");
                 responseBuilder.Append(launchpad.Details);

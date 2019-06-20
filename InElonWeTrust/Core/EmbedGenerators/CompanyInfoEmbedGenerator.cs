@@ -18,9 +18,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField("CEO", $"[{companyInfo.Ceo}](https://en.wikipedia.org/wiki/Elon_Musk)", true);
             embed.AddField("COO", $"[{companyInfo.Coo}](https://en.wikipedia.org/wiki/Gwynne_Shotwell)", true);
             embed.AddField("CTO", $"[{companyInfo.Cto}](https://en.wikipedia.org/wiki/Elon_Musk)", true);
-            embed.AddField("CTO Propolusion", $"[{companyInfo.CtoPropulsion}](https://en.wikipedia.org/wiki/Tom_Mueller)", true);
+            embed.AddField("CTO Propulsion", $"[{companyInfo.CtoPropulsion}](https://en.wikipedia.org/wiki/Tom_Mueller)", true);
 
-            embed.AddField("Founded year", companyInfo.FoundedYear.Value.ToString(), true);
+            embed.AddField("Founded year", companyInfo.FoundedYear?.ToString() ?? string.Empty, true);
             embed.AddField("Employees", companyInfo.Employees.ToString(), true);
             embed.AddField("Launch sites", companyInfo.LaunchSites.ToString(), true);
             embed.AddField("Vehicles", companyInfo.Vehicles.ToString(), true);

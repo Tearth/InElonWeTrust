@@ -63,17 +63,17 @@ namespace InElonWeTrust.Core.Helpers
 
             foreach (var type in assemblyTypes)
             {
-                var attributes = type.GetCustomAttributes();
+                var attributes = type.GetCustomAttributes().ToList();
                 var commandGroupAttribute = attributes.FirstOrDefault(p => p is CommandsAttribute);
 
                 if (commandGroupAttribute != null)
                 {
                     var groupAttribute = (CommandsAttribute)attributes.First(p => p is CommandsAttribute);
-                    var commandHandlers = type.GetMethods();
+                    var commandHandlers = type.GetMethods().ToList();
 
                     foreach (var method in commandHandlers)
                     {
-                        var methodAttributes = method.GetCustomAttributes();
+                        var methodAttributes = method.GetCustomAttributes().ToList();
                         var commandAttribute = (CommandAttribute)methodAttributes.FirstOrDefault(p => p is CommandAttribute);
 
                         if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
