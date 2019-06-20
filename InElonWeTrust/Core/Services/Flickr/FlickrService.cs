@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Services.Flickr
     {
         public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
 
-        private readonly Timer _notificationsUpdateTimer;
+        private readonly System.Timers.Timer _notificationsUpdateTimer;
         private object _updatingMonitor = new object();
         private readonly HttpClient _httpClient;
 
@@ -38,7 +38,7 @@ namespace InElonWeTrust.Core.Services.Flickr
         {
             _httpClient = new HttpClient {BaseAddress = new Uri("https://www.flickr.com/services/rest")};
 
-            _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            _notificationsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
         }

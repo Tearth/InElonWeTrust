@@ -28,7 +28,7 @@ namespace InElonWeTrust.Core.Services.Reddit
         {
             _httpClient = new HttpClient {BaseAddress = new Uri("https://www.reddit.com/r/spacex/")};
 
-            var notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            var notificationsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
             notificationsUpdateTimer.Start();
         }

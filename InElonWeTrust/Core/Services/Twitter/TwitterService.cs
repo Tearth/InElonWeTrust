@@ -20,10 +20,10 @@ namespace InElonWeTrust.Core.Services.Twitter
     {
         public event EventHandler<ITweet> OnNewTweet;
 
-        private readonly Timer _tweetsUpdateTimer;
+        private readonly System.Timers.Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
         private readonly Dictionary<TwitterUserType, SubscriptionType> _userSubscriptionMap;
-        private object _updatingMonitor = new object();
+        private readonly object _updatingMonitor = new object();
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const int UpdateNotificationsIntervalMinutes = 5;
@@ -51,7 +51,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
-            _tweetsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
+            _tweetsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
             _tweetsUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
             _tweetsUpdateTimer.Start();
         }
