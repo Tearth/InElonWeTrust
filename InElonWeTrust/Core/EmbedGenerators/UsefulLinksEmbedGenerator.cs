@@ -22,15 +22,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var firstColumn = links.GetRange(0, links.Count / 2);
             var secondColumn = links.GetRange(links.Count / 2, links.Count - links.Count / 2);
 
-            foreach (var link in firstColumn)
-            {
-                firstColumnContentBuilder.Append($"[{link.Name}]({link.Link})\r\n");
-            }
-
-            foreach (var link in secondColumn)
-            {
-                secondColumnContentBuilder.Append($"[{link.Name}]({link.Link})\r\n");
-            }
+            firstColumn.ForEach(p => firstColumnContentBuilder.Append($"[{p.Name}]({p.Link})\r\n"));
+            secondColumn.ForEach(p => secondColumnContentBuilder.Append($"[{p.Name}]({p.Link})\r\n"));
 
             embedBuilder.AddField("\u200b", firstColumnContentBuilder.ToString(), true);
             embedBuilder.AddField("\u200b", secondColumnContentBuilder.ToString(), true);

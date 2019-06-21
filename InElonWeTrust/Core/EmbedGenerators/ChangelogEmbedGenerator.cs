@@ -9,10 +9,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor)
+                Color = new DiscordColor(Constants.EmbedColor),
+                Title = "Changelog",
+                Description = changelog
             };
 
-            embed.AddField("Changelog", changelog);
             return embed;
         }
     }

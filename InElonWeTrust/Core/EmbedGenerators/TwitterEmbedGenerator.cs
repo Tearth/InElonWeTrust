@@ -42,7 +42,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
 
-            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has no enough permissions to post tweet. Check it and subscribe Reddit again.");
+            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has not enough permissions to post tweet. Check it and subscribe Twitter again.");
 
             return embed;
         }
