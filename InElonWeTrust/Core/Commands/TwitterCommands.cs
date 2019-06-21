@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -30,7 +31,7 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _twitterEmbedGenerator = twitterEmbedGenerator;
 
-            _twitterService.OnNewTweet += Twitter_OnNewTweetAsync;
+            _twitterService.OnNewTweets += TwitterOnNewTweetsAsync;
         }
 
         [Command("RandomElonTweet")]
@@ -85,45 +86,48 @@ namespace InElonWeTrust.Core.Commands
             await _twitterService.ReloadCachedTweetsAsync(false);
         }
 
-        private async void Twitter_OnNewTweetAsync(object sender, ITweet tweet)
+        private async void TwitterOnNewTweetsAsync(object sender, List<ITweet> tweets)
         {
-            var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedBy.ScreenName);
-            var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
-
-            foreach (var channelData in channels)
+            foreach (var tweet in tweets)
             {
-                try
-                {
-                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _twitterEmbedGenerator.Build(new CachedTweet(tweet));
+                var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedBy.ScreenName);
+                var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
 
-                    await channel.SendMessageAsync(embed: embed);
-                }
-                catch (UnauthorizedException)
+                foreach (var channelData in channels)
                 {
-                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
-                    var guildOwner = guild.Owner;
+                    try
+                    {
+                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                        var embed = _twitterEmbedGenerator.Build(new CachedTweet(tweet));
 
-                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                        await channel.SendMessageAsync(embed: embed);
+                    }
+                    catch (UnauthorizedException)
+                    {
+                        var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                        var guildOwner = guild.Owner;
 
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+                        _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
 
-                    var ownerDm = await guildOwner.CreateDmChannelAsync();
-                    var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
-                    await ownerDm.SendMessageAsync(embed: errorEmbed);
+                        await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+
+                        var ownerDm = await guildOwner.CreateDmChannelAsync();
+                        var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
+                        await ownerDm.SendMessageAsync(embed: errorEmbed);
+                    }
+                    catch (NotFoundException)
+                    {
+                        _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                        await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, $"Can't send tweet on the channel with id {channelData.ChannelId}");
+                    }
                 }
-                catch (NotFoundException)
-                {
-                    _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions.");
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex, $"Can't send tweet on the channel with id {channelData.ChannelId}");
-                }
+
+                _logger.Info($"Twitter notifications sent to {channels.Count} channels");
             }
-
-            _logger.Info($"Twitter notifications sent to {channels.Count} channels");
         }
     }
 }

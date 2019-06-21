@@ -18,7 +18,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 {
     public class TwitterService
     {
-        public event EventHandler<ITweet> OnNewTweet;
+        public event EventHandler<List<ITweet>> OnNewTweets;
 
         private readonly System.Timers.Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private const int UpdateNotificationsIntervalMinutes = 5;
+        private const int UpdateNotificationsIntervalMinutes = 1;
 
         public TwitterService()
         {
@@ -110,15 +110,17 @@ namespace InElonWeTrust.Core.Services.Twitter
                                 break;
                             }
 
-                            foreach (var msg in messages.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id)).OrderBy(p => p.CreatedAt))
-                            {
-                                await databaseContext.CachedTweets.AddAsync(new CachedTweet(msg));
-                                newTweets++;
+                            var messagesToSend = messages.Where(msg =>
+                                !databaseContext.CachedTweets
+                                    .Any(p => p.Id == msg.Id))
+                                    .OrderBy(p => p.CreatedAt)
+                                    .ToList();
+                            await databaseContext.CachedTweets.AddRangeAsync(messagesToSend.Select(msg => new CachedTweet(msg)));
+                            newTweets += messagesToSend.Count;
 
-                                if (sendNotifyWhenNewTweet)
-                                {
-                                    OnNewTweet?.Invoke(msg.CreatedBy, msg);
-                                }
+                            if (sendNotifyWhenNewTweet)
+                            {
+                                OnNewTweets?.Invoke(account, messagesToSend);
                             }
 
                             if (checkOnlyLastTweets)
