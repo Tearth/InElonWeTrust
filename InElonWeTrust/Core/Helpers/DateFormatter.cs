@@ -6,46 +6,7 @@ namespace InElonWeTrust.Core.Helpers
 {
     public static class DateFormatter
     {
-        // TODO: fix this crap
-        public static string GetStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision)
-        {
-            var format = string.Empty;
-            switch (precision)
-            {
-                case TentativeMaxPrecision.Year:
-                case TentativeMaxPrecision.Half:
-                case TentativeMaxPrecision.Quarter:
-                    format = "yyyy";
-                    break;
-
-                case TentativeMaxPrecision.Month:
-                    format = "MMMM yyyy";
-                    break;
-
-                case TentativeMaxPrecision.Day:
-                    format = "dddd, dd MMMM yyyy";
-                    break;
-
-                case TentativeMaxPrecision.Hour:
-                    format = "dddd, dd MMMM yyyy HH:mm";
-                    break;
-            }
-
-            var output = date.ToString(format, CultureInfo.InvariantCulture);
-            if (includeUtc && precision == TentativeMaxPrecision.Hour)
-            {
-                output += " UTC";
-            }
-
-            if (displayPrecision && precision != TentativeMaxPrecision.Hour)
-            {
-                output += $" ({precision.ToString().ToLower(CultureInfo.InvariantCulture)} precision)";
-            }
-
-            return output;
-        }
-
-        public static string GetShortStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision)
+        public static string GetDateStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision, bool longDate)
         {
             string format;
             switch (precision)
@@ -57,19 +18,19 @@ namespace InElonWeTrust.Core.Helpers
                     break;
 
                 case TentativeMaxPrecision.Month:
-                    format = "MM-yyyy";
+                    format = longDate ? "MMMM yyyy" : "MM-yyyy";
                     break;
 
                 case TentativeMaxPrecision.Day:
-                    format = "dd-MM-yyyy";
+                    format = longDate ? "dddd, dd MMMM yyyy" : "dd-MM-yyyy";
                     break;
 
                 case TentativeMaxPrecision.Hour:
-                    format = "dd-MM-yyyy HH:mm";
+                    format = longDate ? "dddd, dd MMMM yyyy HH:mm" : "dd-MM-yyyy HH:mm";
                     break;
 
                 default:
-                    format = "dd-MM-yyyy HH:mm";
+                    format = longDate ? "dddd, dd MMMM yyyy HH:mm" : "dd-MM-yyyy HH:mm";
                     break;
             }
 

@@ -40,15 +40,15 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 case LaunchNotificationType.Scrub:
                 {
-                    var oldLaunchDate = DateFormatter.GetStringWithPrecision(
+                    var oldLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         oldLaunchState.LaunchDateUtc ?? DateTime.MinValue,
                         oldLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
-                        true, true);
+                        true, true, true);
 
-                    var newLaunchDate = DateFormatter.GetStringWithPrecision(
+                    var newLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         launch.LaunchDateUtc ?? DateTime.MinValue,
                         launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
-                        true, true);
+                        true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from ");
@@ -63,9 +63,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 case LaunchNotificationType.NewTarget:
                 {
-                    var nextLaunchDate = DateFormatter.GetStringWithPrecision(
+                    var nextLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         launchNotification.NewLaunchState.LaunchDateUtc ?? DateTime.MinValue,
-                        launchNotification.NewLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year, true, true);
+                        launchNotification.NewLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                        true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");

@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.TableGenerators
 
             foreach (var launch in launches)
             {
-                var launchDateTime = DateFormatter.GetShortStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, false, false);
+                var launchDateTime = DateFormatter.GetDateStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, false, false, false);
 
                 launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(MissionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 5).PadRight(MissionNameLength));

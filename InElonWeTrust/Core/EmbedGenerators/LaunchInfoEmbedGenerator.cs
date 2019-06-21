@@ -27,10 +27,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
 
-            var launchDateTime = DateFormatter.GetStringWithPrecision(
+            var launchDateTime = DateFormatter.GetDateStringWithPrecision(
                 launch.LaunchDateUtc ?? DateTime.MinValue,
                 launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
-                true, true);
+                true, true, true);
 
             embed.AddField(
                 $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
@@ -80,7 +80,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 return null;
             }
 
-            return DateFormatter.GetStringWithPrecision(convertedToLocal.Value, precision, false, true);
+            return DateFormatter.GetDateStringWithPrecision(convertedToLocal.Value, precision, false, true, true);
         }
 
         private string GetPayloadsData(List<PayloadInfo> payloads)
