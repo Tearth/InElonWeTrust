@@ -27,7 +27,6 @@ namespace InElonWeTrust.Core.Services.BotLists
                 new BotListUpdater("https://discordbots.group/api/bot/{0}", "count", SettingsLoader.Data.DiscordBotsGroupToken),
                 new BotListUpdater("https://discordbotlist.com/api/bots/{0}/stats", "guilds", "Bot " + SettingsLoader.Data.DiscordBotListToken),
                 new BotListUpdater("https://bots.ondiscord.xyz/bot-api/bots/{0}/guilds", "guildCount", SettingsLoader.Data.BotsOnDiscordToken),
-                new BotListUpdater("https://bots.discordlist.app/api/bot/{0}/stats", "server_count", SettingsLoader.Data.BotsDiscordListToken),
                 new BotListUpdater("https://divinediscordbots.com/bot/{0}/stats", "server_count", SettingsLoader.Data.DivineDiscordBotsToken),
             };
 
