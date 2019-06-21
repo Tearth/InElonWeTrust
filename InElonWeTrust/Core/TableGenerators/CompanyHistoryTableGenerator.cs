@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.TableGenerators
             foreach (var historyEvent in history)
             {
                 historyBuilder.Append($"{i}.".PadRight(IdLength));
-                historyBuilder.Append(historyEvent.EventDate.Value.ToString("dd-MM-yy HH:mm:ss").PadRight(DateLength));
+                historyBuilder.Append((historyEvent.EventDate?.ToString("dd-MM-yy HH:mm:ss") ?? string.Empty).PadRight(DateLength));
                 historyBuilder.Append(historyEvent.Title.PadRight(TitleLength));
                 historyBuilder.Append("\r\n");
 

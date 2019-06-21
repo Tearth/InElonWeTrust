@@ -33,12 +33,12 @@ namespace InElonWeTrust.Core.TableGenerators
                 historyBuilder.Append((core.Block?.ToString() ?? "none").PadRight(BlockLength));
                 historyBuilder.Append((core.OriginalLaunch?.ToString("D") ?? "none").PadRight(OriginalLaunchLength));
                 historyBuilder.Append(core.Missions.Count.ToString().PadRight(MissionsCountLength));
-                historyBuilder.Append(core.Status.Value.ToString().PadRight(StatusLength));
+                historyBuilder.Append(core.Status.ToString().PadRight(StatusLength));
                 historyBuilder.Append("\r\n");
             }
 
             historyBuilder.Append("\r\n");
-            historyBuilder.Append("Type e!core <number> to get more information.");
+            historyBuilder.Append("Type `e!core <number>` to get more information.");
 
             historyBuilder.Append("\r\n");
             historyBuilder.Append(paginationFooter);

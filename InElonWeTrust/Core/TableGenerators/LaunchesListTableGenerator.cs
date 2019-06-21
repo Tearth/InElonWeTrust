@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InElonWeTrust.Core.Helpers;
@@ -35,7 +36,7 @@ namespace InElonWeTrust.Core.TableGenerators
 
         public string Build(List<LaunchInfo> launches, CacheContentType contentType, int currentPage, string paginationFooter)
         {
-            launches = launches.OrderBy(p => p.FlightNumber.Value).ToList();
+            launches = launches.OrderBy(p => p.FlightNumber ?? 0).ToList();
 
             var launchesListBuilder = new StringBuilder();
             launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");
@@ -54,9 +55,12 @@ namespace InElonWeTrust.Core.TableGenerators
 
             foreach (var launch in launches)
             {
-                var launchDateTime = DateFormatter.GetDateStringWithPrecision(launch.LaunchDateUtc.Value, launch.TentativeMaxPrecision.Value, false, false, false);
+                var launchDateTime = DateFormatter.GetDateStringWithPrecision(
+                    launch.LaunchDateUtc ?? DateTime.MinValue,
+                    launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                    false, false, false);
 
-                launchesListBuilder.Append($"{launch.FlightNumber.Value}.".PadRight(MissionNumberLength));
+                launchesListBuilder.Append($"{launch.FlightNumber ?? 0}.".PadRight(MissionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 5).PadRight(MissionNameLength));
                 launchesListBuilder.Append(launchDateTime.PadRight(LaunchDateLength));
                 launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(SiteNameLength));
