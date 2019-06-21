@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var rockets = await _cacheService.Get<List<RocketInfo>>(CacheContentType.Rockets);
+            var rockets = await _cacheService.GetAsync<List<RocketInfo>>(CacheContentType.Rockets);
             var embed = _rocketsEmbedGenerator.Build(rockets);
 
             await ctx.RespondAsync(embed: embed);

@@ -43,7 +43,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var launchData = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, true);
 
             var sentMessage = await ctx.RespondAsync(string.Empty, false, embed);
@@ -59,7 +59,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _cacheService.Get<LaunchInfo>(CacheContentType.LatestLaunch);
+            var launchData = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.LatestLaunch);
 
             var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, false);
             await ctx.RespondAsync(string.Empty, false, embed);
@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _cacheService.Get<List<LaunchInfo>>(CacheContentType.AllLaunches);
+            var launchData = await _cacheService.GetAsync<List<LaunchInfo>>(CacheContentType.AllLaunches);
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
 
             var embed = _launchInfoEmbedGenerator.Build(randomLaunch, ctx.Guild.Id, false);

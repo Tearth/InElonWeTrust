@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _changelogEmbedGenerator = changelogEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Changelog, async p => await changelogService.GetChangelog());
+            _cacheService.RegisterDataProvider(CacheContentType.Changelog, async p => await changelogService.GetChangelogAsync());
         }
 
         [Command("Changelog")]
@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var changelog = await _cacheService.Get<string>(CacheContentType.Changelog);
+            var changelog = await _cacheService.GetAsync<string>(CacheContentType.Changelog);
             var embed = _changelogEmbedGenerator.Build(changelog);
 
             await ctx.RespondAsync(string.Empty, false, embed);

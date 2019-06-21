@@ -24,7 +24,7 @@ namespace InElonWeTrust.Core.Services.Description
         public DescriptionService(CacheService cacheService, OddityCore oddity)
         {
             _descriptionRefreshTimer = new Timer(DescriptionUpdateIntervalMinutes * 60 * 1000);
-            _descriptionRefreshTimer.Elapsed += DescriptionRefreshTimer_Elapsed;
+            _descriptionRefreshTimer.Elapsed += DescriptionRefreshTimer_ElapsedAsync;
             _descriptionRefreshTimer.Start();
 
             _cacheService = cacheService;
@@ -32,11 +32,11 @@ namespace InElonWeTrust.Core.Services.Description
             _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
         }
 
-        private async void DescriptionRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void DescriptionRefreshTimer_ElapsedAsync(object sender, ElapsedEventArgs e)
         {
             try
             {
-                await UpdateDescription();
+                await UpdateDescriptionAsync();
             }
             catch (Exception ex)
             {
@@ -44,9 +44,9 @@ namespace InElonWeTrust.Core.Services.Description
             }
         }
 
-        private async Task UpdateDescription()
+        private async Task UpdateDescriptionAsync()
         {
-            var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             string description;
 
             if (nextLaunch.LaunchDateUtc == null)

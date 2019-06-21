@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.Services.Changelog
             _httpClient = new HttpClient();
         }
 
-        public async Task<string> GetChangelog()
+        public async Task<string> GetChangelogAsync()
         {
             var changelog = await _httpClient.GetStringAsync(ReadmeUrl);
             var latestContent = changelog.Substring(0, 1000);

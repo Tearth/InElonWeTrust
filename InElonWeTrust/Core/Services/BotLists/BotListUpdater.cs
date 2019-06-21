@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.Services.BotLists
             _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", Token);
         }
 
-        public async Task UpdateStatus(int guildsCount)
+        public async Task UpdateStatusAsync(int guildsCount)
         {
             var json = $"{{ \"{CountFieldName}\": {guildsCount} }}";
 

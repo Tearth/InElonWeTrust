@@ -31,7 +31,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var coreInfo = await _cacheService.Get<DetailedCoreInfo>(CacheContentType.CoreInfo, coreSerial);
+            var coreInfo = await _cacheService.GetAsync<DetailedCoreInfo>(CacheContentType.CoreInfo, coreSerial);
 
             if (coreInfo != null)
             {

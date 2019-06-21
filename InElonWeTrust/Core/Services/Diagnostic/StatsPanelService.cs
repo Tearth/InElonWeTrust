@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Settings;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NLog;
 
@@ -11,7 +13,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public void PostStats()
+        public async Task PostStatsAsync()
         {
             using (var webClient = new WebClient())
             {
@@ -21,7 +23,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                     BotId = SettingsLoader.Data.BotId.ToString(),
                     GuildsCount = Bot.Client.Guilds.Count,
                     MembersCount = Bot.Client.Guilds.Sum(p => p.Value.MemberCount),
-                    ExecutedCommandsCount = GetExecutedCommandsCount()
+                    ExecutedCommandsCount = await GetExecutedCommandsCountAsync()
                 };
 
                 var json = JsonConvert.SerializeObject(botStats);
@@ -34,13 +36,13 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             }
         }
 
-        private int GetExecutedCommandsCount()
+        private async Task<int> GetExecutedCommandsCountAsync()
         {
             using (var databaseContext = new DatabaseContext())
             {
-                return databaseContext.GuildsStats
+                return await databaseContext.GuildsStats
                     .OrderByDescending(p => p.CommandExecutionsCount)
-                    .Sum(p => p.CommandExecutionsCount);
+                    .SumAsync(p => p.CommandExecutionsCount);
             }
         }
     }

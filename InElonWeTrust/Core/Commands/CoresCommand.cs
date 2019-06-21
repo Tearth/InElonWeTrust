@@ -44,7 +44,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var cores = await _cacheService.Get<List<DetailedCoreInfo>>(CacheContentType.Cores);
+            var cores = await _cacheService.GetAsync<List<DetailedCoreInfo>>(CacheContentType.Cores);
             var tableWithPagination = BuildTableWithPagination(cores, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core.Commands
             var paginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
-                var items = await _cacheService.Get<List<DetailedCoreInfo>>(CacheContentType.Cores);
+                var items = await _cacheService.GetAsync<List<DetailedCoreInfo>>(CacheContentType.Cores);
                 var editedMessage = e.Message;
 
                 if (await _paginationService.DoAction(editedMessage, e.Emoji, items.Count))

@@ -9,8 +9,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
         public CacheItem(object data)
         {
-            UpdateTime = DateTime.Now;
-            Data = data;
+            Update(data);
         }
 
         public void Update(object data)

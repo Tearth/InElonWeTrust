@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Diagnostic
@@ -30,11 +31,11 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 #endif
         }
 
-        public async Task AddExecutedCommand(Command command, DiscordGuild guild)
+        public async Task AddExecutedCommandAsync(Command command, DiscordGuild guild)
         {
             using (var databaseContext = new DatabaseContext())
             {
-                var commandData = databaseContext.CommandsStats.FirstOrDefault(p => p.CommandName == command.Name.ToLower());
+                var commandData = await databaseContext.CommandsStats.FirstOrDefaultAsync(p => p.CommandName == command.Name.ToLower());
                 if (commandData == null)
                 {
                     databaseContext.CommandsStats.Add(new CommandStats(command.Name.ToLower(), 1));
@@ -45,7 +46,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 }
 
                 var fixedGuildId = guild.Id.ToString();
-                var guildData = databaseContext.GuildsStats.FirstOrDefault(p => p.GuildId == fixedGuildId);
+                var guildData = await databaseContext.GuildsStats.FirstOrDefaultAsync(p => p.GuildId == fixedGuildId);
 
                 if (guildData == null)
                 {
@@ -65,7 +66,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             try
             {
                 DisplayDiagnostic();
-                _statsPanelService.PostStats();
+                _statsPanelService.PostStatsAsync();
             }
             catch (Exception ex)
             {

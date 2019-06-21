@@ -31,7 +31,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var companyInfo = await _cacheService.Get<CompanyInfo>(CacheContentType.CompanyInfo);
+            var companyInfo = await _cacheService.GetAsync<CompanyInfo>(CacheContentType.CompanyInfo);
             var embed = _companyInfoEmbedGenerator.Build(companyInfo);
 
             await ctx.RespondAsync(string.Empty, false, embed);

@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchpads = await _cacheService.Get<List<LaunchpadInfo>>(CacheContentType.Launchpads);
+            var launchpads = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
             var embed = _launchpadsEmbedGenerator.Build(launchpads);
 
             await ctx.RespondAsync(string.Empty, false, embed);

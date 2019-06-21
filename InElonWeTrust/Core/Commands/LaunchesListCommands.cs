@@ -142,7 +142,7 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task<List<LaunchInfo>> GetLaunchesAsync(CacheContentType contentType, string parameter = null)
         {
-            return await _cacheService.Get<List<LaunchInfo>>(contentType, parameter);
+            return await _cacheService.GetAsync<List<LaunchInfo>>(contentType, parameter);
         }
 
         private async Task<object> GetLaunchesWithOrbitDataProviderAsync(string parameter)

@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             _httpClient = new HttpClient {BaseAddress = new Uri("https://www.flickr.com/services/rest")};
 
             _notificationsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
-            _notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
+            _notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsedAsync;
             _notificationsUpdateTimer.Start();
         }
 
@@ -116,7 +116,7 @@ namespace InElonWeTrust.Core.Services.Flickr
             }
         }
 
-        private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs e)
+        private async void NotificationsUpdateTimerOnElapsedAsync(object sender, ElapsedEventArgs e)
         {
             try
             {

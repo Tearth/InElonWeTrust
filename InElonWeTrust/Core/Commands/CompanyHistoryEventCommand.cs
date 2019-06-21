@@ -34,7 +34,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var history = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
+            var history = await _cacheService.GetAsync<List<HistoryEvent>>(CacheContentType.CompanyHistory);
 
             if (id > 0 && id <= history.Count)
             {

@@ -33,18 +33,18 @@ namespace InElonWeTrust.Core.Services.BotLists
             _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 1000 * 60);
 
 #if !DEBUG
-            _statusRefreshTimer.Elapsed += StatusRefreshTimer_Elapsed;
+            _statusRefreshTimer.Elapsed += StatusRefreshTimer_ElapsedAsync;
             _statusRefreshTimer.Start();
 #endif
         }
 
-        private async void StatusRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void StatusRefreshTimer_ElapsedAsync(object sender, ElapsedEventArgs e)
         {
             foreach (var botList in _botListDefinitions)
             {
                 try
                 {
-                    await botList.UpdateStatus(Bot.Client.Guilds.Count);
+                    await botList.UpdateStatusAsync(Bot.Client.Guilds.Count);
                 }
                 catch (Exception)
                 {

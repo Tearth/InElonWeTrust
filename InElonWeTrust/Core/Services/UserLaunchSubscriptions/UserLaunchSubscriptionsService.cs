@@ -45,7 +45,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             var fixedUserId = userId.ToString();
             var fixedGuildId = guildId.ToString();
 
-            var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
@@ -62,7 +62,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             var fixedUserId = userId.ToString();
             var fixedGuildId = guildId.ToString();
 
-            var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
 
             using (var databaseContext = new DatabaseContext())
             {
@@ -106,7 +106,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task UpdateLaunchNotifications()
         {
-            var nextLaunch = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+            var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             var minutesToLaunch = (nextLaunch.LaunchDateUtc.Value - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
             if (_notified && minutesToLaunch > MinutesToLaunchToNotify)

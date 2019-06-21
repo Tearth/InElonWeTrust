@@ -40,7 +40,7 @@ namespace InElonWeTrust.Core.Services.Cache
             _dataProviders.TryAdd(type, dataProviderDelegate);
         }
 
-        public async Task<TData> Get<TData>(CacheContentType type, string parameter = null)
+        public async Task<TData> GetAsync<TData>(CacheContentType type, string parameter = null)
         {
             await _cacheLock.WaitAsync();
 
@@ -84,7 +84,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            _logger.Info($"Cache stats: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHit} hitted");
+            _logger.Info($"Cache stats: {_cacheItemsAdded} added, {_cacheItemsUpdated} updated, {_cacheItemsHit} hit");
         }
     }
 }

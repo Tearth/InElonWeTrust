@@ -74,11 +74,11 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             {
                 if (_nextLaunchState == null)
                 {
-                    _nextLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+                    _nextLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
                 }
                 else
                 {
-                    var newLaunchState = await _cacheService.Get<LaunchInfo>(CacheContentType.NextLaunch);
+                    var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
 
                     if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value || newLaunchState.MissionName == _nextLaunchState.MissionName)
                     {

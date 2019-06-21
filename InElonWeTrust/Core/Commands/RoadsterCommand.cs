@@ -31,7 +31,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var roadsterInfo = await _cacheService.Get<RoadsterInfo>(CacheContentType.Roadster);
+            var roadsterInfo = await _cacheService.GetAsync<RoadsterInfo>(CacheContentType.Roadster);
             var embed = _roadsterEmbedBuilder.Build(roadsterInfo);
 
             await ctx.RespondAsync(string.Empty, false, embed);

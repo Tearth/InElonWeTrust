@@ -231,7 +231,7 @@ namespace InElonWeTrust.Core
         private async Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
             _logger.Info(GetCommandInfo(e.Context));
-            await _diagnosticService.AddExecutedCommand(e.Command, e.Context.Guild);
+            await _diagnosticService.AddExecutedCommandAsync(e.Command, e.Context.Guild);
         }
 
         private async Task Commands_CommandError(CommandErrorEventArgs e)
