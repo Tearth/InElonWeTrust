@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                 {
                     _logger.Info("Twitter reload cached tweets starts");
 
-                    var sendNotifyWhenNewTweet = databaseContext.CachedTweets.Any();
+                    var sendNotifyWhenNewTweet = await databaseContext.CachedTweets.AnyAsync();
                     var newTweets = 0;
 
                     foreach (var account in _users)

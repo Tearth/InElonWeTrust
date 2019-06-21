@@ -49,7 +49,7 @@ namespace InElonWeTrust.Core.Commands
             var sentMessage = await ctx.RespondAsync(string.Empty, false, embed);
 
             await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
-            _launchNotificationsService.AddMessageToSubscribe(ctx.Channel, sentMessage);
+            await _launchNotificationsService.AddMessageToSubscribe(ctx.Channel, sentMessage);
         }
 
         [Command("LatestLaunch")]

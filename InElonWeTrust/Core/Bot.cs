@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
-            _commands.CommandErrored += Commands_CommandErrored;
+            _commands.CommandErrored += Commands_CommandError;
             _commands.SetHelpFormatter<CustomHelpFormatter>();
 
             RegisterCommands();
@@ -228,15 +228,13 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
+        private async Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
             _logger.Info(GetCommandInfo(e.Context));
-            _diagnosticService.AddExecutedCommand(e.Command, e.Context.Guild);
-
-            return Task.CompletedTask;
+            await _diagnosticService.AddExecutedCommand(e.Command, e.Context.Guild);
         }
 
-        private async Task Commands_CommandErrored(CommandErrorEventArgs e)
+        private async Task Commands_CommandError(CommandErrorEventArgs e)
         {
             var errorEmbedBuilder = new DiscordEmbedBuilder
             {

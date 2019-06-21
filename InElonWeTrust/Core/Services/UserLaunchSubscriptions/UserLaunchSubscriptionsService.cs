@@ -7,6 +7,7 @@ using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using Oddity.API.Models.Launch;
 
@@ -48,10 +49,10 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
             using (var databaseContext = new DatabaseContext())
             {
-                if (!databaseContext.UserLaunchSubscriptions.Any(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber))
+                if (!await databaseContext.UserLaunchSubscriptions.AnyAsync(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber))
                 {
-                    databaseContext.UserLaunchSubscriptions.Add(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedGuildId, fixedUserId));
-                    databaseContext.SaveChanges();
+                    await databaseContext.UserLaunchSubscriptions.AddAsync(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedGuildId, fixedUserId));
+                    await databaseContext.SaveChangesAsync();
                 }
             }
         }
@@ -65,29 +66,29 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
             using (var databaseContext = new DatabaseContext())
             {
-                var userSubscription = databaseContext.UserLaunchSubscriptions
-                    .FirstOrDefault(p => p.UserId == fixedUserId && p.GuildId == fixedGuildId && p.LaunchId == nextLaunch.FlightNumber);
+                var userSubscription = await databaseContext.UserLaunchSubscriptions
+                    .FirstOrDefaultAsync(p => p.UserId == fixedUserId && p.GuildId == fixedGuildId && p.LaunchId == nextLaunch.FlightNumber);
 
                 if (userSubscription != null)
                 {
                     databaseContext.UserLaunchSubscriptions.Remove(userSubscription);
-                    databaseContext.SaveChanges();
+                    await databaseContext.SaveChangesAsync();
                 }
             }
         }
 
-        private bool IsMessageSubscribable(ulong messageId)
+        private async Task<bool> IsMessageSubscribable(ulong messageId)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var fixedMessageId = messageId.ToString();
-                return databaseContext.MessagesToSubscribe.Any(p => p.MessageId == fixedMessageId);
+                return await databaseContext.MessagesToSubscribe.AnyAsync(p => p.MessageId == fixedMessageId);
             }
         }
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await AddUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
@@ -96,7 +97,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task ClientOnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && IsMessageSubscribable(e.Message.Id))
+            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await RemoveUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed from the launch subscription list.");

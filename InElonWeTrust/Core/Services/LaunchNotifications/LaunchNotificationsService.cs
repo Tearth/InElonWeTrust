@@ -40,14 +40,14 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
         }
 
-        public void AddMessageToSubscribe(DiscordChannel channel, DiscordMessage message)
+        public async Task AddMessageToSubscribe(DiscordChannel channel, DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageToSubscribe = new MessageToSubscribe(channel.GuildId.ToString(), message.Id.ToString());
 
-                databaseContext.MessagesToSubscribe.Add(messageToSubscribe);
-                databaseContext.SaveChanges();
+                await databaseContext.MessagesToSubscribe.AddAsync(messageToSubscribe);
+                await databaseContext.SaveChangesAsync();
             }
         }
 

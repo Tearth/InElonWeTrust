@@ -7,6 +7,7 @@ using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.Services.Cache;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace InElonWeTrust.Core.Services.Pagination
@@ -46,12 +47,12 @@ namespace InElonWeTrust.Core.Services.Pagination
             _logger.Info($"New pagination for {contentType} added");
         }
 
-        public bool IsPaginationSet(DiscordMessage message)
+        public async Task<bool> IsPaginationSet(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                return databaseContext.PaginatedMessages.Any(p => p.MessageId == messageIdString);
+                return await databaseContext.PaginatedMessages.AnyAsync(p => p.MessageId == messageIdString);
             }
         }
 
@@ -65,12 +66,12 @@ namespace InElonWeTrust.Core.Services.Pagination
             return (int)Math.Ceiling((double)totalItemsCount / ItemsPerPage);
         }
 
-        public PaginatedMessage GetPaginationDataForMessage(DiscordMessage message)
+        public async Task<PaginatedMessage> GetPaginationDataForMessage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                return databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
+                return await databaseContext.PaginatedMessages.FirstAsync(p => p.MessageId == messageIdString);
             }
         }
 
@@ -79,14 +80,14 @@ namespace InElonWeTrust.Core.Services.Pagination
             return $"page {currentPage} from {maxPagesCount}";
         }
 
-        public bool DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
+        public async Task<bool> DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
         {
             switch (clickedEmoji.GetDiscordName())
             {
-                case RightEmojiName: return GoToNextPage(message, totalItemsCount);
-                case LeftEmojiName: return GoToPreviousPage(message);
-                case FirstEmojiName: return GoToFirstPage(message);
-                case LastEmojiName: return GoToLastPage(message, totalItemsCount);
+                case RightEmojiName: return await GoToNextPage(message, totalItemsCount);
+                case LeftEmojiName: return await GoToPreviousPage(message);
+                case FirstEmojiName: return await GoToFirstPage(message);
+                case LastEmojiName: return await GoToLastPage(message, totalItemsCount);
             }
 
             return false;
@@ -118,17 +119,17 @@ namespace InElonWeTrust.Core.Services.Pagination
             return true;
         }
 
-        private bool GoToNextPage(DiscordMessage message, int totalItemsCount)
+        private async Task<bool> GoToNextPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
+                var pagination = await databaseContext.PaginatedMessages.FirstAsync(p => p.MessageId == messageIdString);
 
                 if (pagination.CurrentPage < GetPagesCount(totalItemsCount))
                 {
                     pagination.CurrentPage++;
-                    databaseContext.SaveChanges();
+                    await databaseContext.SaveChangesAsync();
 
                     return true;
                 }
@@ -137,17 +138,17 @@ namespace InElonWeTrust.Core.Services.Pagination
             return false;
         }
 
-        private bool GoToPreviousPage(DiscordMessage message)
+        private async Task<bool> GoToPreviousPage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
+                var pagination = await databaseContext.PaginatedMessages.FirstAsync(p => p.MessageId == messageIdString);
 
                 if (pagination.CurrentPage > 1)
                 {
                     pagination.CurrentPage--;
-                    databaseContext.SaveChanges();
+                    await databaseContext.SaveChangesAsync();
 
                     return true;
                 }
@@ -156,29 +157,29 @@ namespace InElonWeTrust.Core.Services.Pagination
             return false;
         }
 
-        private bool GoToFirstPage(DiscordMessage message)
+        private async Task<bool> GoToFirstPage(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
+                var pagination = await databaseContext.PaginatedMessages.FirstAsync(p => p.MessageId == messageIdString);
 
                 pagination.CurrentPage = 1;
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
 
                 return true;
             }
         }
 
-        private bool GoToLastPage(DiscordMessage message, int totalItemsCount)
+        private async Task<bool> GoToLastPage(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var messageIdString = message.Id.ToString();
-                var pagination = databaseContext.PaginatedMessages.First(p => p.MessageId == messageIdString);
+                var pagination = await databaseContext.PaginatedMessages.FirstAsync(p => p.MessageId == messageIdString);
 
                 pagination.CurrentPage = GetPagesCount(totalItemsCount);
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
 
                 return true;
             }

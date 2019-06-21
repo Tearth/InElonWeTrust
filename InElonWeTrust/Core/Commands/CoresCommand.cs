@@ -74,20 +74,20 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (e.User.IsBot || !_paginationService.IsPaginationSet(e.Message))
+            if (e.User.IsBot || !await _paginationService.IsPaginationSet(e.Message))
             {
                 return;
             }
 
-            var paginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+            var paginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
                 var items = await _cacheService.Get<List<DetailedCoreInfo>>(CacheContentType.Cores);
                 var editedMessage = e.Message;
 
-                if (_paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                if (await _paginationService.DoAction(e.Message, e.Emoji, items.Count))
                 {
-                    var updatedPaginationData = _paginationService.GetPaginationDataForMessage(e.Message);
+                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
                     var tableWithPagination = BuildTableWithPagination(items, updatedPaginationData.CurrentPage);
 
                     editedMessage = await e.Message.ModifyAsync(tableWithPagination);

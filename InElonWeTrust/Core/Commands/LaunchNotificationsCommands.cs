@@ -61,7 +61,7 @@ namespace InElonWeTrust.Core.Commands
                     var sentMessage = await channel.SendMessageAsync(string.Empty, false, embed);
 
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
-                    _launchNotificationsService.AddMessageToSubscribe(channel, sentMessage);
+                    await _launchNotificationsService.AddMessageToSubscribe(channel, sentMessage);
 
                     if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launchNotification.NewLaunchState.Links.VideoLink != null)
                     {

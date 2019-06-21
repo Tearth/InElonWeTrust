@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -29,7 +30,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 #endif
         }
 
-        public void AddExecutedCommand(Command command, DiscordGuild guild)
+        public async Task AddExecutedCommand(Command command, DiscordGuild guild)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -48,14 +49,14 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
                 if (guildData == null)
                 {
-                    databaseContext.GuildsStats.Add(new GuildStats(fixedGuildId, 1));
+                    await databaseContext.GuildsStats.AddAsync(new GuildStats(fixedGuildId, 1));
                 }
                 else
                 {
                     guildData.CommandExecutionsCount++;
                 }
 
-                databaseContext.SaveChanges();
+                await databaseContext.SaveChangesAsync();
             }
         }
 

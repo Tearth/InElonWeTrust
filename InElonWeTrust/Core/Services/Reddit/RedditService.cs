@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NLog;
 
@@ -54,7 +55,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                 {
                     _logger.Info("Reddit topics check starts");
 
-                    var sendNotifies = databaseContext.CachedRedditTopics.Any();
+                    var sendNotifies = await databaseContext.CachedRedditTopics.AnyAsync();
                     var response = await _httpClient.GetStringAsync(HotTopicsUrl);
 
                     var names = JsonConvert.DeserializeObject<RedditResponse>(response);
@@ -62,7 +63,7 @@ namespace InElonWeTrust.Core.Services.Reddit
 
                     foreach (var topic in names.Data.Children.Select(p => p.Data))
                     {
-                        if (!databaseContext.CachedRedditTopics.Any(p => p.Name == topic.Name))
+                        if (!await databaseContext.CachedRedditTopics.AnyAsync(p => p.Name == topic.Name))
                         {
                             if (sendNotifies)
                             {
@@ -70,7 +71,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                             }
 
                             newTopics++;
-                            databaseContext.CachedRedditTopics.Add(new CachedRedditTopic(topic.Name));
+                            await databaseContext.CachedRedditTopics.AddAsync(new CachedRedditTopic(topic.Name));
                         }
                     }
 

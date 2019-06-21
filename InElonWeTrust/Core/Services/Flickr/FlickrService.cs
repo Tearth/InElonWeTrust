@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 
                     var currentPage = 1;
 
-                    var sendNotifyWhenNewPhoto = databaseContext.CachedFlickrPhotos.Any();
+                    var sendNotifyWhenNewPhoto = await databaseContext.CachedFlickrPhotos.AnyAsync();
                     var newPhotos = 0;
 
                     while (true)
