@@ -20,20 +20,20 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("SetTimeZone")]
         [Aliases("TimeZone")]
-        [Description("Set local timezone. Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List (column TZ database name, e.g `e!SetTimeZone Europe/Warsaw`).")]
+        [Description("Set a local timezone. Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List (column \"TZ database name\", e.g `e!SetTimeZone Europe/Warsaw`).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task SetTimeZone(CommandContext ctx, [Description("Name of the timezone")] string timeZoneName)
+        public async Task SetTimeZoneAsync(CommandContext ctx, [Description("Name of the timezone")] string timeZoneName)
         {
             await ctx.TriggerTypingAsync();
 
             if (_timeZoneService.TimeZoneExists(ctx.RawArgumentString))
             {
                 await _timeZoneService.SetTimeZoneAsync(ctx.Guild.Id, timeZoneName);
-                await ctx.RespondAsync($"Time zone has been set to {ctx.RawArgumentString}.");
+                await ctx.RespondAsync($"Time zone has been set to {ctx.RawArgumentString}. You can reset it in the future by `e!ResetTimeZone`.");
             }
             else
             {
-                await ctx.RespondAsync("Invalid name of time zone.");
+                await ctx.RespondAsync("Invalid name of the time zone. Please type `e!help SetTimeZone` to get more information about time zone format.");
             }
         }
     }

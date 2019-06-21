@@ -30,13 +30,13 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _twitterEmbedGenerator = twitterEmbedGenerator;
 
-            _twitterService.OnNewTweet += Twitter_OnNewTweet;
+            _twitterService.OnNewTweet += Twitter_OnNewTweetAsync;
         }
 
         [Command("RandomElonTweet")]
         [Aliases("ElonTweet", "ret")]
         [Description("Get random Elon's tweet.")]
-        public async Task RandomElonTweet(CommandContext ctx)
+        public async Task RandomElonTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -49,7 +49,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("RandomSpaceXTweet")]
         [Aliases("SpaceXTweet", "rst")]
         [Description("Get random SpaceX's tweet.")]
-        public async Task RandomSpaceXTweet(CommandContext ctx)
+        public async Task RandomSpaceXTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -62,7 +62,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("RandomSpaceXFleetTweet")]
         [Aliases("SpaceXFleetTweet", "rsft")]
         [Description("Get random SpaceXFleet's tweet.")]
-        public async Task RandomSpaceXFleetTweet(CommandContext ctx)
+        public async Task RandomSpaceXFleetTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -75,7 +75,7 @@ namespace InElonWeTrust.Core.Commands
         [HiddenCommand]
         [Command("ReloadTwitterCache")]
         [Description("Reload cached tweets in database.")]
-        public async Task ReloadTwitterCache(CommandContext ctx)
+        public async Task ReloadTwitterCacheAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
             {
@@ -85,7 +85,7 @@ namespace InElonWeTrust.Core.Commands
             await _twitterService.ReloadCachedTweetsAsync(false);
         }
 
-        private async void Twitter_OnNewTweet(object sender, ITweet tweet)
+        private async void Twitter_OnNewTweetAsync(object sender, ITweet tweet)
         {
             var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedBy.ScreenName);
             var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
@@ -105,11 +105,11 @@ namespace InElonWeTrust.Core.Commands
                     var guildOwner = guild.Owner;
 
                     _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
                     var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
-
                     await ownerDm.SendMessageAsync(embed: errorEmbed);
                 }
                 catch (NotFoundException)

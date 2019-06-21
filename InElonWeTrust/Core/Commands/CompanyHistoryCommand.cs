@@ -10,7 +10,6 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
-using NLog;
 using Oddity;
 using Oddity.API.Models.Company;
 
@@ -24,7 +23,6 @@ namespace InElonWeTrust.Core.Commands
         private readonly CompanyHistoryTableGenerator _companyHistoryTableGenerator;
 
         private readonly List<CacheContentType> _allowedPaginationTypes;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CompanyHistoryCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService, CompanyHistoryTableGenerator companyHistoryTableGenerator)
         {
@@ -38,13 +36,13 @@ namespace InElonWeTrust.Core.Commands
             };
             _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await oddity.Company.GetHistory().ExecuteAsync());
 
-            Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
+            Bot.Client.MessageReactionAdded += ClientOnMessageReactionAddedAsync;
         }
 
         [Command("CompanyHistory")]
         [Aliases("History", "ch")]
-        [Description("Get list of most important events related with SpaceX.")]
-        public async Task CompanyHistory(CommandContext ctx)
+        [Description("Get a list of the most important events related with SpaceX.")]
+        public async Task CompanyHistoryAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -66,7 +64,7 @@ namespace InElonWeTrust.Core.Commands
             return _companyHistoryTableGenerator.Build(itemsToDisplay, currentPage, paginationFooter);
         }
 
-        private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
+        private async Task ClientOnMessageReactionAddedAsync(MessageReactionAddEventArgs e)
         {
             if (e.User.IsBot || !await _paginationService.IsPaginationSet(e.Message))
             {
@@ -79,12 +77,12 @@ namespace InElonWeTrust.Core.Commands
                 var items = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
                 var editedMessage = e.Message;
 
-                if (await _paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                if (await _paginationService.DoAction(editedMessage, e.Emoji, items.Count))
                 {
-                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
+                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(editedMessage);
                     var tableWithPagination = BuildTableWithPagination(items, updatedPaginationData.CurrentPage);
 
-                    editedMessage = await e.Message.ModifyAsync(tableWithPagination);
+                    editedMessage = await editedMessage.ModifyAsync(tableWithPagination);
                 }
 
                 await _paginationService.DeleteReaction(editedMessage, e.User, e.Emoji);

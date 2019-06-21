@@ -26,8 +26,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("CoreInfo")]
         [Aliases("Core", "GetCore")]
-        [Description("Get information about the specified core.")]
-        public async Task CoreInfo(CommandContext ctx, [Description("Core serial number (type `e!Cores` to list them all).")] string coreSerial)
+        [Description("Get an information about the specified core.")]
+        public async Task CoreInfoAsync(CommandContext ctx, [Description("Core serial number (type `e!Cores` to list them all).")] string coreSerial)
         {
             await ctx.TriggerTypingAsync();
 

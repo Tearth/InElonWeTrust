@@ -29,13 +29,13 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _flickrEmbedGenerator = flickrEmbedGenerator;
 
-            _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhoto;
+            _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhotoAsync;
         }
 
         [Command("RandomFlickrPhoto")]
         [Aliases("FlickrPhoto", "Flickr", "rfp")]
-        [Description("Get random photo from SpaceX Flickr profile.")]
-        public async Task RandomFlickrPhoto(CommandContext ctx)
+        [Description("Get a random photo from the SpaceX Flickr profile.")]
+        public async Task RandomFlickrPhotoAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -48,7 +48,7 @@ namespace InElonWeTrust.Core.Commands
         [HiddenCommand]
         [Command("ReloadFlickrCache")]
         [Description("Reload cached Flickr photos in database.")]
-        public async Task ReloadFlickrCache(CommandContext ctx)
+        public async Task ReloadFlickrCacheAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
             {
@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core.Commands
             await _flickrService.ReloadCachedPhotosAsync();
         }
 
-        private async void FlickrServiceOnNewFlickrServicePhoto(object sender, CachedFlickrPhoto e)
+        private async void FlickrServiceOnNewFlickrServicePhotoAsync(object sender, CachedFlickrPhoto e)
         {
             var subscribedChannels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
             foreach (var channelData in subscribedChannels)
@@ -75,12 +75,12 @@ namespace InElonWeTrust.Core.Commands
                     var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
-                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}");
+                    _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}");
+
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
                     var errorEmbed = _flickrEmbedGenerator.BuildUnauthorizedError();
-
                     await ownerDm.SendMessageAsync(embed: errorEmbed);
                 }
                 catch (NotFoundException)
@@ -90,7 +90,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send Flickr photo on the channel with id {channelData.ChannelId}");
+                    _logger.Error(ex, $"Can't send Flickr photo to the channel with id {channelData.ChannelId}");
                 }
             }
 

@@ -23,75 +23,75 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _subscriptionEmbedGenerator = subscriptionEmbedGenerator;
 
-            Bot.Client.GuildDeleted += Client_GuildDeleted;
-            Bot.Client.ChannelDeleted += Client_ChannelDeleted;
+            Bot.Client.GuildDeleted += Client_GuildDeletedAsync;
+            Bot.Client.ChannelDeleted += Client_ChannelDeletedAsync;
         }
 
         [Command("ToggleElonTwitter")]
         [Aliases("TogElonTwitter", "SubscribeElonTwitter", "SubElonTwitter", "tet")]
-        [Description("Subscribe Elon Musk Twitter profile (bot will post all new tweets).")]
+        [Description("Subscribe Elon Musk Twitter profile (bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleElonTwitterNotifications(CommandContext ctx)
+        public async Task ToggleElonTwitterNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.ElonTwitter);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.ElonTwitter);
         }
 
         [Command("ToggleSpaceXTwitter")]
         [Aliases("TogSpaceXTwitter", "SubscribeSpaceXTwitter", "SubSpaceXTwitter", "tst")]
         [Description("Subscribe SpaceX Twitter profile (bot will post all new tweets).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleSpaceXTwitterNotifications(CommandContext ctx)
+        public async Task ToggleSpaceXTwitterNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.SpaceXTwitter);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.SpaceXTwitter);
         }
 
         [Command("ToggleSpaceXFleetTwitter")]
         [Aliases("TogSpaceXFleetTwitter", "SubscribeSpaceXFleetTwitter", "SubSpaceXFleetTwitter", "tsft")]
-        [Description("Subscribe SpaceX Twitter profile (bot will post all new tweets).")]
+        [Description("Subscribe SpaceX Twitter profile (bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleSpaceXFleetTwitterNotifications(CommandContext ctx)
+        public async Task ToggleSpaceXFleetTwitterNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.SpaceXFleetTwitter);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.SpaceXFleetTwitter);
         }
 
         [Command("ToggleFlickr")]
         [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
-        [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX profile).")]
+        [Description("Subscribe Flickr profile (bot will post all new photos from SpaceX profile on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleFlickrNotifications(CommandContext ctx)
+        public async Task ToggleFlickrNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.Flickr);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.Flickr);
         }
 
         [Command("ToggleLaunches")]
         [Aliases("TogLaunches", "SubscribeLaunches", "SubLaunches", "tl")]
-        [Description("Subscribe launch notifications (when next launch is incoming).")]
+        [Description("Subscribe launch notifications (bot will post notification on this channel when the next launch will be coming).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleLaunchNotifications(CommandContext ctx)
+        public async Task ToggleLaunchNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.NextLaunch);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.NextLaunch);
         }
 
         [Command("ToggleReddit")]
         [Aliases("SubscribeReddit", "SubReddit", "tr")]
-        [Description("Subscribe Reddit notifications (bot will post all hottest Reddit topics).")]
+        [Description("Subscribe Reddit notifications (bot will post all hottest Reddit topics on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ToggleRedditNotifications(CommandContext ctx)
+        public async Task ToggleRedditNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ToggleNotifications(ctx, SubscriptionType.Reddit);
+            await ToggleNotificationsAsync(ctx, SubscriptionType.Reddit);
         }
 
         [Command("EnableAllNotifications")]
         [Aliases("SubscribeAll", "SubAll", "ean")]
-        [Description("Subscribe all notifications.")]
+        [Description("Subscribe all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task EnableAllNotifications(CommandContext ctx)
+        public async Task EnableAllNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await _subscriptionsService.AddAllSubscriptionsAsync(ctx.Guild.Id, ctx.Channel.Id);
@@ -107,9 +107,9 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("DisableAllNotifications")]
         [Aliases("UnsubscribeAll", "UnsubAll", "dan")]
-        [Description("Unsubscribe all notifications.")]
+        [Description("Unsubscribe all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task DisableAllNotifications(CommandContext ctx)
+        public async Task DisableAllNotificationsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ctx.Channel.Id);
@@ -126,7 +126,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("NotificationStatus")]
         [Aliases("NotificationsStatus", "SubscriptionStatus", "SubscriptionsStatus", "SubStatus", "ns")]
         [Description("Get information about subscriptions related with this channel.")]
-        public async Task NotificationStatus(CommandContext ctx)
+        public async Task NotificationStatusAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -136,7 +136,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        private async Task ToggleNotifications(CommandContext ctx,  SubscriptionType type)
+        private async Task ToggleNotificationsAsync(CommandContext ctx,  SubscriptionType type)
         {
             DiscordEmbedBuilder embed;
             if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))
@@ -153,12 +153,12 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        private async Task Client_GuildDeleted(GuildDeleteEventArgs e)
+        private async Task Client_GuildDeletedAsync(GuildDeleteEventArgs e)
         {
             await _subscriptionsService.RemoveAllSubscriptionsFromGuildAsync(e.Guild.Id);
         }
 
-        private async Task Client_ChannelDeleted(ChannelDeleteEventArgs e)
+        private async Task Client_ChannelDeletedAsync(ChannelDeleteEventArgs e)
         {
             await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(e.Channel.Id);
         }

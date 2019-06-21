@@ -45,50 +45,50 @@ namespace InElonWeTrust.Core.Commands
                 CacheContentType.LaunchesWithOrbit
             };
 
-            Bot.Client.MessageReactionAdded += Client_MessageReactionAdded;
+            Bot.Client.MessageReactionAdded += Client_MessageReactionAddedAsync;
 
             _cacheService.RegisterDataProvider(CacheContentType.UpcomingLaunches, async p => await _oddity.Launches.GetUpcoming().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.PastLaunches, async p => await _oddity.Launches.GetPast().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.FailedStarts, async p => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.FailedLandings, async p => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProvider(p));
+            _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProviderAsync(p));
         }
 
         [Command("UpcomingLaunches")]
         [Aliases("Upcoming", "ul", "NextLaunches")]
         [Description("Get list of upcoming launches.")]
-        public async Task UpcomingLaunches(CommandContext ctx)
+        public async Task UpcomingLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.UpcomingLaunches);
+            await DisplayLaunchesAsync(ctx, CacheContentType.UpcomingLaunches);
         }
 
         [Command("PastLaunches")]
         [Aliases("Past", "pl")]
         [Description("Get list of past launches.")]
-        public async Task PastLaunches(CommandContext ctx)
+        public async Task PastLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.PastLaunches);
+            await DisplayLaunchesAsync(ctx, CacheContentType.PastLaunches);
         }
 
         [Command("AllLaunches")]
-        [Aliases("All", "Launches", "GetLaunches", "al")]
+        [Aliases("All", "Launches", "GetLaunchesAsync", "al")]
         [Description("Get list of all launches.")]
-        public async Task AllLaunches(CommandContext ctx)
+        public async Task AllLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.AllLaunches);
+            await DisplayLaunchesAsync(ctx, CacheContentType.AllLaunches);
         }
 
         [Command("FailedLaunches")]
         [Aliases("FailedStarts", "fs")]
         [Description("Get list of all failed launches.")]
-        public async Task FailedLaunches(CommandContext ctx)
+        public async Task FailedLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.FailedStarts);
+            await DisplayLaunchesAsync(ctx, CacheContentType.FailedStarts);
         }
 
         /*[Command("FailedLandings")]
@@ -97,16 +97,16 @@ namespace InElonWeTrust.Core.Commands
         public async Task FailedLandings(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.FailedLandings);
+            await DisplayLaunchesAsync(ctx, CacheContentType.FailedLandings);
         }*/
 
         [Command("LaunchesWithOrbit")]
         [Aliases("Orbit", "o")]
         [Description("Get list of all launches with the specified orbit.")]
-        public async Task LaunchesWithOrbit(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
+        public async Task LaunchesWithOrbitAsync(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
         {
             await ctx.TriggerTypingAsync();
-            await DisplayLaunches(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
+            await DisplayLaunchesAsync(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
         }
 
         private string BuildTableWithPagination(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
@@ -120,11 +120,11 @@ namespace InElonWeTrust.Core.Commands
             return _launchesListTableGenerator.Build(itemsToDisplay, contentType, currentPage, paginationFooter);
         }
 
-        private async Task DisplayLaunches(CommandContext ctx, CacheContentType contentType, string parameter = null)
+        private async Task DisplayLaunchesAsync(CommandContext ctx, CacheContentType contentType, string parameter = null)
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await GetLaunches(contentType, parameter);
+            var launchData = await GetLaunchesAsync(contentType, parameter);
             if (launchData == null)
             {
                 var embed = new DiscordEmbedBuilder {Color = new DiscordColor(Constants.EmbedErrorColor)};
@@ -140,12 +140,12 @@ namespace InElonWeTrust.Core.Commands
             await _paginationService.InitPagination(message, contentType, parameter);
         }
 
-        private async Task<List<LaunchInfo>> GetLaunches(CacheContentType contentType, string parameter = null)
+        private async Task<List<LaunchInfo>> GetLaunchesAsync(CacheContentType contentType, string parameter = null)
         {
             return await _cacheService.Get<List<LaunchInfo>>(contentType, parameter);
         }
 
-        private async Task<object> GetLaunchesWithOrbitDataProvider(string parameter)
+        private async Task<object> GetLaunchesWithOrbitDataProviderAsync(string parameter)
         {
             if (Enum.TryParse(typeof(OrbitType), parameter, true, out var output))
             {
@@ -155,7 +155,7 @@ namespace InElonWeTrust.Core.Commands
             return null;
         }
 
-        private async Task Client_MessageReactionAdded(MessageReactionAddEventArgs e)
+        private async Task Client_MessageReactionAddedAsync(MessageReactionAddEventArgs e)
         {
             if (e.User.IsBot || !await _paginationService.IsPaginationSet(e.Message))
             {
@@ -165,17 +165,17 @@ namespace InElonWeTrust.Core.Commands
             var paginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
-                var items = await GetLaunches(paginationData.ContentType, paginationData.Parameter);
+                var items = await GetLaunchesAsync(paginationData.ContentType, paginationData.Parameter);
                 if (items != null)
                 {
                     var editedMessage = e.Message;
 
-                    if (await _paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                    if (await _paginationService.DoAction(editedMessage, e.Emoji, items.Count))
                     {
-                        var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
+                        var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(editedMessage);
                         var launchesList = BuildTableWithPagination(items, updatedPaginationData.ContentType, updatedPaginationData.CurrentPage);
 
-                        editedMessage = await e.Message.ModifyAsync(launchesList);
+                        editedMessage = await editedMessage.ModifyAsync(launchesList);
                     }
 
                     await _paginationService.DeleteReaction(editedMessage, e.User, e.Emoji);

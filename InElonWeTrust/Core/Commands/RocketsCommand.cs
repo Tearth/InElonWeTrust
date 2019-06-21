@@ -27,8 +27,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("Rockets")]
         [Aliases("GetRockets")]
-        [Description("Get list of all SpaceX rockets.")]
-        public async Task Rockets(CommandContext ctx)
+        [Description("Get a list of all SpaceX rockets.")]
+        public async Task RocketsAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

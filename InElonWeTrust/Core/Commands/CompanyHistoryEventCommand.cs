@@ -29,23 +29,23 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("GetEvent")]
         [Aliases("Event", "e")]
-        [Description("Get information about event with the specified id (which can be obtained by `e!CompanyHistory`).")]
-        public async Task GetEvent(CommandContext ctx, [Description("Event id which can be obtained by `e!CompanyHistory`")] int id)
+        [Description("Get an information about event with the specified id.")]
+        public async Task GetEventAsync(CommandContext ctx, [Description("Event id which can be obtained by `e!CompanyHistory`")] int id)
         {
             await ctx.TriggerTypingAsync();
 
             var history = await _cacheService.Get<List<HistoryEvent>>(CacheContentType.CompanyHistory);
-            var sortedHistory = history.OrderBy(p => p.EventDate ?? DateTime.MinValue).ToList();
 
-            if (id <= 0 || id > sortedHistory.Count)
+            if (id > 0 && id <= history.Count)
             {
-                var errorEmbed = _companyHistoryEventEmbedGenerator.BuildError();
-                await ctx.RespondAsync(string.Empty, false, errorEmbed);
+                var sortedHistory = history.OrderBy(p => p.EventDate ?? DateTime.MinValue).ToList();
+                var embed = _companyHistoryEventEmbedGenerator.Build(sortedHistory[id - 1]);
+                await ctx.RespondAsync(string.Empty, false, embed);
             }
             else
             {
-                var embed = _companyHistoryEventEmbedGenerator.Build(sortedHistory[id - 1]);
-                await ctx.RespondAsync(string.Empty, false, embed);
+                var errorEmbed = _companyHistoryEventEmbedGenerator.BuildError();
+                await ctx.RespondAsync(string.Empty, false, errorEmbed);
             }
         }
     }

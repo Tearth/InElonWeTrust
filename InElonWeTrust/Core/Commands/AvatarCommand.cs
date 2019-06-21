@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("Avatar")]
         [Description("Get Elon's Twitter avatar. Only for people with strong nerves.")]
-        public async Task Avatar(CommandContext ctx)
+        public async Task AvatarAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

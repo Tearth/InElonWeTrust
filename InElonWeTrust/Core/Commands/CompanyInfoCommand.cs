@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("CompanyInfo")]
         [Aliases("Company", "ci", "info")]
         [Description("Get the most important information about SpaceX.")]
-        public async Task CompanyInfo(CommandContext ctx)
+        public async Task CompanyInfoAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

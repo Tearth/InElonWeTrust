@@ -10,8 +10,8 @@ namespace InElonWeTrust.Core.Commands
     public class PingCommand : BaseCommandModule
     {
         [Command("Ping")]
-        [Description("Ping command")]
-        public async Task Ping(CommandContext ctx)
+        [Description("Pong")]
+        public async Task PingAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
             await ctx.RespondAsync($"Pong - {ctx.Client.Ping} ms");

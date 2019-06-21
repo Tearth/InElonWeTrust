@@ -22,8 +22,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomElonQuote")]
         [Aliases("RandomQuote", "ElonQuote", "Quote", "q")]
-        [Description("Get random Elon quote.")]
-        public async Task GetElonQuote(CommandContext ctx)
+        [Description("Get a random Elon quote.")]
+        public async Task GetElonQuoteAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

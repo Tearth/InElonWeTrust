@@ -19,10 +19,14 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("Uptime")]
         [Description("Get uptime")]
-        public async Task Uptime(CommandContext ctx)
+        public async Task UptimeAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            await ctx.RespondAsync($"Uptime: {DateTime.Now - _startTime:g}");
+
+            var uptime = DateTime.Now - _startTime;
+            var formattedTime = $"{uptime.Days} days, {uptime.Hours} hours, {uptime.Minutes} minutes, {uptime.Seconds} seconds";
+
+            await ctx.RespondAsync($"Uptime: {formattedTime}");
         }
     }
 }

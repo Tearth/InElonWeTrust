@@ -28,20 +28,20 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _launchNotificationEmbedBuilder = launchNotificationEmbedBuilder;
 
-            launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotification;
+            launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotificationAsync;
         }
 
         [Command("__LaunchNotificationsCommands__Hidden")]
         [HiddenCommand]
         // ReSharper disable once UnusedMember.Global
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task HiddenCommand(CommandContext ctx)
+        public async Task HiddenCommandAsync(CommandContext ctx)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             // Fake command necessary for DSharpPlus (without it, constructor won't be called).
         }
 
-        private async void LaunchNotificationsOnLaunchNotification(object sender, LaunchNotification launchNotification)
+        private async void LaunchNotificationsOnLaunchNotificationAsync(object sender, LaunchNotification launchNotification)
         {
             var embed = _launchNotificationEmbedBuilder.Build(launchNotification);
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core.Commands
                     var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
-                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
@@ -88,7 +88,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send launch notification on the channel with id {channelData.ChannelId}");
+                    _logger.Error(ex, $"Can't send launch notification to the channel with id {channelData.ChannelId}");
                 }
             }
 

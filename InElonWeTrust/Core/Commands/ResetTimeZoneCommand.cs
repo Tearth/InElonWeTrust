@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
         [Command("ResetTimeZone")]
         [Description("Reset local timezone.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task ResetTimeZone(CommandContext ctx)
+        public async Task ResetTimeZoneAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

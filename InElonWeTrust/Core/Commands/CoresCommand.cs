@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -9,7 +8,6 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
-using NLog;
 using Oddity;
 using Oddity.API.Models.DetailedCore;
 
@@ -23,7 +21,6 @@ namespace InElonWeTrust.Core.Commands
         private readonly CoresListTableGenerator _coresListTableGenerator;
 
         private readonly List<CacheContentType> _allowedPaginationTypes;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CoresCommand(OddityCore oddity, PaginationService paginationService, CacheService cacheService, CoresListTableGenerator coresListTableGenerator)
         {
@@ -37,13 +34,13 @@ namespace InElonWeTrust.Core.Commands
             };
             _cacheService.RegisterDataProvider(CacheContentType.Cores, async p => await oddity.DetailedCores.GetAll().ExecuteAsync());
 
-            Bot.Client.MessageReactionAdded += ClientOnMessageReactionAdded;
+            Bot.Client.MessageReactionAdded += ClientOnMessageReactionAddedAsync;
         }
 
         [Command("Cores")]
         [Aliases("c", "CoresList")]
-        [Description("Get list of all SpaceX cores.")]
-        public async Task Cores(CommandContext ctx)
+        [Description("Get a list of all SpaceX cores.")]
+        public async Task CoresAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -56,13 +53,7 @@ namespace InElonWeTrust.Core.Commands
 
         private string BuildTableWithPagination(List<DetailedCoreInfo> cores, int currentPage)
         {
-            // Move cores without original launch date to the top of list (API returns on begin)
-            var itemsWithoutOriginalLaunch = cores.Where(p => !p.OriginalLaunch.HasValue).ToList();
-            foreach (var itemToRemove in itemsWithoutOriginalLaunch)
-            {
-                cores.Remove(itemToRemove);
-            }
-            cores.AddRange(itemsWithoutOriginalLaunch);
+            cores.Sort(CoreLaunchDateComparer);
 
             var itemsToDisplay = _paginationService.GetItemsToDisplay(cores, currentPage);
 
@@ -72,7 +63,7 @@ namespace InElonWeTrust.Core.Commands
             return _coresListTableGenerator.Build(itemsToDisplay, currentPage, paginationFooter);
         }
 
-        private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
+        private async Task ClientOnMessageReactionAddedAsync(MessageReactionAddEventArgs e)
         {
             if (e.User.IsBot || !await _paginationService.IsPaginationSet(e.Message))
             {
@@ -85,16 +76,36 @@ namespace InElonWeTrust.Core.Commands
                 var items = await _cacheService.Get<List<DetailedCoreInfo>>(CacheContentType.Cores);
                 var editedMessage = e.Message;
 
-                if (await _paginationService.DoAction(e.Message, e.Emoji, items.Count))
+                if (await _paginationService.DoAction(editedMessage, e.Emoji, items.Count))
                 {
-                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
+                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(editedMessage);
                     var tableWithPagination = BuildTableWithPagination(items, updatedPaginationData.CurrentPage);
 
-                    editedMessage = await e.Message.ModifyAsync(tableWithPagination);
+                    editedMessage = await editedMessage.ModifyAsync(tableWithPagination);
                 }
 
                 await _paginationService.DeleteReaction(editedMessage, e.User, e.Emoji);
             }
+        }
+
+        private int CoreLaunchDateComparer(DetailedCoreInfo a, DetailedCoreInfo b)
+        {
+            if (a.OriginalLaunch.HasValue && !b.OriginalLaunch.HasValue)
+            {
+                return -1;
+            }
+
+            if (b.OriginalLaunch.HasValue && !a.OriginalLaunch.HasValue)
+            {
+                return 1;
+            }
+
+            if (a.OriginalLaunch.HasValue && b.OriginalLaunch.HasValue)
+            {
+                return a.OriginalLaunch.Value > b.OriginalLaunch.Value ? 1 : -1;
+            }
+
+            return 0;
         }
     }
 }

@@ -38,8 +38,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("NextLaunch")]
         [Aliases("Next", "nl")]
-        [Description("Get information about the next launch.")]
-        public async Task NextLaunch(CommandContext ctx)
+        [Description("Get an information about the next launch.")]
+        public async Task NextLaunchAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -54,8 +54,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("LatestLaunch")]
         [Aliases("Latest", "ll")]
-        [Description("Get information about the latest launch.")]
-        public async Task LatestLaunch(CommandContext ctx)
+        [Description("Get an information about the latest launch.")]
+        public async Task LatestLaunchAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -67,8 +67,8 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomLaunch")]
         [Aliases("Random", "rl")]
-        [Description("Get information about random launch.")]
-        public async Task RandomLaunch(CommandContext ctx)
+        [Description("Get an information about random launch.")]
+        public async Task RandomLaunchAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -81,26 +81,26 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("GetLaunch")]
         [Aliases("Launch", "gl")]
-        [Description("Get information about launch with the specified flight number (which can be obtained by `e!AllLaunches` command).")]
-        public async Task GetLaunch(CommandContext ctx, [Description("Launch number (type `e!AllLaunches` to catch them all)")] int id)
+        [Description("Get an information about the launch with the specified flight number (which can be obtained by `e!AllLaunches` command).")]
+        public async Task GetLaunchAsync(CommandContext ctx, [Description("Launch number")] int id)
         {
             await ctx.TriggerTypingAsync();
 
             var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            if (!launchData.Any())
+            if (launchData.Any())
+            {
+                var embed = _launchInfoEmbedGenerator.Build(launchData.First(), ctx.Guild.Id, false);
+                await ctx.RespondAsync(string.Empty, false, embed);
+            }
+            else
             {
                 var errorEmbedBuilder = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(Constants.EmbedErrorColor)
                 };
 
-                errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist, type `e!alllaunches` to list them.");
+                errorEmbedBuilder.AddField(":octagonal_sign: Error", "Flight with the specified launch number doesn't exist, type `e!AllLaunches` to list them.");
                 await ctx.RespondAsync(string.Empty, false, errorEmbedBuilder);
-            }
-            else
-            {
-                var embed = _launchInfoEmbedGenerator.Build(launchData.First(), ctx.Guild.Id, false);
-                await ctx.RespondAsync(string.Empty, false, embed);
             }
         }
     }

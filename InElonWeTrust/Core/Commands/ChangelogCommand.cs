@@ -25,7 +25,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("Changelog")]
         [Description("Get the bot changelog.")]
-        public async Task Changelog(CommandContext ctx)
+        public async Task ChangelogAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

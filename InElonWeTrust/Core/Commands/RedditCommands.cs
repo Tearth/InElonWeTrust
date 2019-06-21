@@ -28,13 +28,13 @@ namespace InElonWeTrust.Core.Commands
             _subscriptionsService = subscriptionsService;
             _redditEmbedGenerator = redditEmbedGenerator;
 
-            _redditService.OnNewHotTopic += Reddit_OnNewHotTopic;
+            _redditService.OnNewHotTopic += Reddit_OnNewHotTopicAsync;
         }
 
         [Command("RandomRedditTopic")]
         [Aliases("RandomReddit", "RandomTopic", "Reddit", "rrt")]
-        [Description("Get random Reddit topic from /r/spacex.")]
-        public async Task RandomRedditTopic(CommandContext ctx)
+        [Description("Get a random Reddit topic from /r/spacex.")]
+        public async Task RandomRedditTopicAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 
@@ -46,8 +46,8 @@ namespace InElonWeTrust.Core.Commands
 
         [HiddenCommand]
         [Command("ReloadRedditCache")]
-        [Description("Reload cached Reddit topics in database.")]
-        public async Task ReloadRedditCache(CommandContext ctx)
+        [Description("Reload cached Reddit topics in the database.")]
+        public async Task ReloadRedditCacheAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)
             {
@@ -57,7 +57,7 @@ namespace InElonWeTrust.Core.Commands
             await _redditService.ReloadCachedTopicsAsync();
         }
 
-        private async void Reddit_OnNewHotTopic(object sender, RedditChildData e)
+        private async void Reddit_OnNewHotTopicAsync(object sender, RedditChildData e)
         {
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
             foreach (var channelData in channels)
@@ -74,12 +74,12 @@ namespace InElonWeTrust.Core.Commands
                     var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                     var guildOwner = guild.Owner;
 
-                    _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                    _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
                     var ownerDm = await guildOwner.CreateDmChannelAsync();
                     var errorEmbed = _redditEmbedGenerator.BuildUnauthorizedError();
-
                     await ownerDm.SendMessageAsync(embed: errorEmbed);
                 }
                 catch (NotFoundException)
@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send Reddit topic on the channel with id {channelData.ChannelId}");
+                    _logger.Error(ex, $"Can't send Reddit topic to the channel with id {channelData.ChannelId}");
                 }
             }
 
