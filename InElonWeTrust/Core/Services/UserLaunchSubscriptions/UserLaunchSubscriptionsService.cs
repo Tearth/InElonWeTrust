@@ -51,7 +51,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             {
                 if (!await databaseContext.UserLaunchSubscriptions.AnyAsync(p => p.UserId == fixedUserId && p.LaunchId == nextLaunch.FlightNumber))
                 {
-                    await databaseContext.UserLaunchSubscriptions.AddAsync(new UserLaunchSubscription(nextLaunch.FlightNumber.Value, fixedGuildId, fixedUserId));
+                    await databaseContext.UserLaunchSubscriptions.AddAsync(new UserLaunchSubscription(nextLaunch.FlightNumber ?? uint.MinValue, fixedGuildId, fixedUserId));
                     await databaseContext.SaveChangesAsync();
                 }
             }
@@ -107,7 +107,9 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         private async Task UpdateLaunchNotifications()
         {
             var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
-            var minutesToLaunch = (nextLaunch.LaunchDateUtc.Value - DateTime.Now.ToUniversalTime()).TotalMinutes;
+            var nextLaunchDateUtc = nextLaunch.LaunchDateUtc ?? DateTime.MaxValue;
+
+            var minutesToLaunch = (nextLaunchDateUtc - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
             if (_notified && minutesToLaunch > MinutesToLaunchToNotify)
             {

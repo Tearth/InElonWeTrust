@@ -61,12 +61,12 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             }
         }
 
-        private void DisplayDiagnosticTimerOnElapsed(object sender, ElapsedEventArgs e)
+        private async Task DisplayDiagnosticTimerOnElapsedAsync(object sender, ElapsedEventArgs e)
         {
             try
             {
                 DisplayDiagnostic();
-                _statsPanelService.PostStatsAsync();
+                await _statsPanelService.PostStatsAsync();
             }
             catch (Exception ex)
             {

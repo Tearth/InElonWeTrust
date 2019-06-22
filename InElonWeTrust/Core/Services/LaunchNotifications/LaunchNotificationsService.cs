@@ -20,8 +20,8 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private readonly System.Timers.Timer _notificationsUpdateTimer;
         private readonly CacheService _cacheService;
-        private LaunchInfo _nextLaunchState;
         private readonly List<int> _notificationTimes;
+        private LaunchInfo _savedNextLaunchState;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
@@ -72,40 +72,44 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
             try
             {
-                if (_nextLaunchState == null)
+                if (_savedNextLaunchState == null)
                 {
-                    _nextLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
+                    _savedNextLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
                 }
                 else
                 {
                     var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
+                    var savedFlightNumber = _savedNextLaunchState.FlightNumber ?? uint.MinValue;
+                    var newFlightNumber = newLaunchState.FlightNumber ?? uint.MaxValue;
 
-                    if (newLaunchState.FlightNumber.Value == _nextLaunchState.FlightNumber.Value || newLaunchState.MissionName == _nextLaunchState.MissionName)
+                    if (savedFlightNumber == newFlightNumber || newLaunchState.MissionName == _savedNextLaunchState.MissionName)
                     {
-                        if (newLaunchState.LaunchDateUtc != _nextLaunchState.LaunchDateUtc)
+                        if (newLaunchState.LaunchDateUtc != _savedNextLaunchState.LaunchDateUtc)
                         {
-                            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _nextLaunchState, newLaunchState));
+                            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _savedNextLaunchState, newLaunchState));
                             _logger.Info("Scrub notification sent");
                         }
                         else
                         {
-                            var previousStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.AddMinutes(-UpdateNotificationsIntervalMinutes).ToUniversalTime()).Value.TotalMinutes;
-                            var newStateMinutesToLaunch = (newLaunchState.LaunchDateUtc - DateTime.Now.ToUniversalTime()).Value.TotalMinutes;
+                            var minutesToLaunch = ((newLaunchState.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
+
+                            var previousStateMinutesToLaunch = minutesToLaunch - 1;
+                            var newStateMinutesToLaunch = minutesToLaunch;
 
                             if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
                             {
-                                OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _nextLaunchState, newLaunchState));
+                                OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _savedNextLaunchState, newLaunchState));
                                 _logger.Info("Reminder notification sent");
                             }
                         }
                     }
                     else
                     {
-                        OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _nextLaunchState, newLaunchState));
+                        OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.NewTarget, _savedNextLaunchState, newLaunchState));
                         _logger.Info("New target notification sent");
                     }
 
-                    _nextLaunchState = newLaunchState;
+                    _savedNextLaunchState = newLaunchState;
                 }
             }
             finally
