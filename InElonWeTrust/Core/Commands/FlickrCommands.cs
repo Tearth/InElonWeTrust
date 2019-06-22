@@ -73,8 +73,6 @@ namespace InElonWeTrust.Core.Commands
 
                         await channel.SendMessageAsync(string.Empty, false, embed);
                     }
-
-                    _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
                 }
                 catch (UnauthorizedException)
                 {
@@ -99,6 +97,8 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send Flickr photo to the channel with id {channelData.ChannelId}");
                 }
             }
+
+            _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
         }
     }
 }
