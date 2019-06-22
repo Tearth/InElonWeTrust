@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
@@ -130,17 +131,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             var guild = await Bot.Client.GetGuildAsync(ulong.Parse(user.GuildId));
                             var member = await guild.GetMemberAsync(ulong.Parse(user.UserId));
 
-                            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
-                            await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
-
-                            if (nextLaunch.Links.VideoLink != null)
-                            {
-                                await member.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
-                            }
-
-                            await member.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
-                                                          "subscription is one-time and you have to do it again if you want to receive similar notification " +
-                                                          "about next launch in the future.*");
+                            await SendLaunchNotificationToUser(member, nextLaunch);
                         }
                         catch (Exception ex)
                         {
@@ -151,6 +142,21 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                     _logger.Info($"{minutesToLaunch} to launch! {usersToNotify.Count} sent");
                 }
             }
+        }
+
+        private async Task SendLaunchNotificationToUser(DiscordMember member, LaunchInfo nextLaunch)
+        {
+            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
+            await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
+
+            if (nextLaunch.Links.VideoLink != null)
+            {
+                await member.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
+            }
+
+            await member.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +
+                                          "subscription is one-time and you have to do it again if you want to receive similar notification " +
+                                          "about next launch in the future.*");
         }
 
         private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
