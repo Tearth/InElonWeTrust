@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -58,17 +59,22 @@ namespace InElonWeTrust.Core.Commands
             await _flickrService.ReloadCachedPhotosAsync();
         }
 
-        private async void FlickrServiceOnNewFlickrServicePhotoAsync(object sender, CachedFlickrPhoto e)
+        private async void FlickrServiceOnNewFlickrServicePhotoAsync(object sender, List<CachedFlickrPhoto> e)
         {
             var subscribedChannels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
             foreach (var channelData in subscribedChannels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _flickrEmbedGenerator.Build(e);
+                    foreach (var photo in e)
+                    {
+                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                        var embed = _flickrEmbedGenerator.Build(photo);
 
-                    await channel.SendMessageAsync(string.Empty, false, embed);
+                        await channel.SendMessageAsync(string.Empty, false, embed);
+                    }
+
+                    _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
                 }
                 catch (UnauthorizedException)
                 {
@@ -93,8 +99,6 @@ namespace InElonWeTrust.Core.Commands
                     _logger.Error(ex, $"Can't send Flickr photo to the channel with id {channelData.ChannelId}");
                 }
             }
-
-            _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
         }
     }
 }

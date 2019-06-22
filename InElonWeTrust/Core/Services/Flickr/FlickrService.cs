@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace InElonWeTrust.Core.Services.Flickr
 {
     public class FlickrService
     {
-        public event EventHandler<CachedFlickrPhoto> OnNewFlickrPhoto;
+        public event EventHandler<List<CachedFlickrPhoto>> OnNewFlickrPhoto;
 
         private readonly System.Timers.Timer _notificationsUpdateTimer;
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
@@ -63,51 +64,21 @@ namespace InElonWeTrust.Core.Services.Flickr
                 using (var databaseContext = new DatabaseContext())
                 {
                     _logger.Info("Reload Flickr cached photos starts");
-
-                    var currentPage = 1;
-
+                    
                     var sendNotifyWhenNewPhoto = await databaseContext.CachedFlickrPhotos.AnyAsync();
-                    var newPhotos = 0;
+                    var allPhotos = await GetListOfPhotosAsync();
+                    var photosToSend = GetNewPhotosToSend(allPhotos);
+                    var cachedPhotosToSend = await AddPhotosToDatabaseAsync(photosToSend);
 
-                    while (true)
+                    if (sendNotifyWhenNewPhoto && cachedPhotosToSend.Count > 0)
                     {
-                        var response = await _httpClient.GetStringAsync(string.Format(ImagesListUrl, SettingsLoader.Data.FlickrKey, SpaceXProfileId, currentPage));
-                        var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
-
-                        foreach (var photo in parsedResponse.Photos.Photo.AsEnumerable().Reverse())
-                        {
-                            if (!await databaseContext.CachedFlickrPhotos.AnyAsync(p => p.Id == photo.Id))
-                            {
-                                var source = await GetImageUrlAsync(photo.Id);
-                                var date = await GetImageUploadDateAsync(photo.Id);
-
-                                var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
-
-                                await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
-                                newPhotos++;
-
-                                if (sendNotifyWhenNewPhoto)
-                                {
-                                    OnNewFlickrPhoto?.Invoke(this, cachedPhoto);
-                                }
-                            }
-
-                        }
-
-                        _logger.Info($"Flickr page ({currentPage}) done");
-
-                        if (currentPage >= parsedResponse.Photos.Pages)
-                        {
-                            break;
-                        }
-
-                        currentPage++;
+                        OnNewFlickrPhoto?.Invoke(this, cachedPhotosToSend);
                     }
 
                     await databaseContext.SaveChangesAsync();
 
                     var photosCount = await databaseContext.CachedFlickrPhotos.CountAsync();
-                    _logger.Info($"Flickr update finished ({newPhotos} sent, {photosCount} photos in database)");
+                    _logger.Info($"Flickr update finished ({photosToSend.Count} sent, {photosCount} photos in database)");
                 }
             }
             finally
@@ -142,6 +113,58 @@ namespace InElonWeTrust.Core.Services.Flickr
             var parsedResponse = JsonConvert.DeserializeObject<FlickrPhotoInfoResponse>(response);
 
             return new DateTime().UnixTimeStampToDateTime(long.Parse(parsedResponse.Photo.DateUploaded));
+        }
+
+        private async Task<List<FlickrPhoto>> GetListOfPhotosAsync()
+        {
+            var page = 1;
+            var photos = new List<FlickrPhoto>();
+
+            while (true)
+            {
+                var response = await _httpClient.GetStringAsync(string.Format(ImagesListUrl, SettingsLoader.Data.FlickrKey, SpaceXProfileId, page));
+                var responseContainer =  JsonConvert.DeserializeObject<FlickrPhotoListResponse>(response);
+                photos.AddRange(responseContainer.Photos.Photo);
+
+                if (page >= responseContainer.Photos.Pages)
+                {
+                    break;
+                }
+
+                page++;
+            }
+
+            photos.Reverse();
+            return photos;
+        }
+
+        private List<FlickrPhoto> GetNewPhotosToSend(List<FlickrPhoto> allPhotos)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                return allPhotos.Where(newPhoto => !databaseContext.CachedFlickrPhotos.Any(photoInDb => photoInDb.Id == newPhoto.Id)).ToList();
+            }
+        }
+
+        private async Task<List<CachedFlickrPhoto>> AddPhotosToDatabaseAsync(List<FlickrPhoto> photos)
+        {
+            var cachedPhotos = new List<CachedFlickrPhoto>();
+            using (var databaseContext = new DatabaseContext())
+            {
+                foreach (var photo in photos)
+                {
+                    var source = await GetImageUrlAsync(photo.Id);
+                    var date = await GetImageUploadDateAsync(photo.Id);
+                    var cachedPhoto = new CachedFlickrPhoto(photo, date, source);
+
+                    await databaseContext.CachedFlickrPhotos.AddAsync(cachedPhoto);
+                    cachedPhotos.Add(cachedPhoto);
+                }
+
+                await databaseContext.SaveChangesAsync();
+            }
+
+            return cachedPhotos;
         }
     }
 }
