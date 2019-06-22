@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
 
 #if !DEBUG
-            _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsed;
+            _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsedAsync;
             _displayDiagnosticTimer.Start();
 #endif
         }
@@ -61,7 +61,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             }
         }
 
-        private async Task DisplayDiagnosticTimerOnElapsedAsync(object sender, ElapsedEventArgs e)
+        private async void DisplayDiagnosticTimerOnElapsedAsync(object sender, ElapsedEventArgs e)
         {
             try
             {
