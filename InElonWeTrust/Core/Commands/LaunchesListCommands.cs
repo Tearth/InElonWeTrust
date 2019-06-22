@@ -51,7 +51,6 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.PastLaunches, async p => await _oddity.Launches.GetPast().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.FailedStarts, async p => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.FailedLandings, async p => await _oddity.Launches.GetAll().WithLandSuccess(false).ExecuteAsync());
             _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProviderAsync(p));
         }
 
