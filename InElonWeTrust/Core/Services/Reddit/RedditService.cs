@@ -30,11 +30,11 @@ namespace InElonWeTrust.Core.Services.Reddit
             _httpClient = new HttpClient {BaseAddress = new Uri("https://www.reddit.com/r/spacex/")};
 
             var notificationsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
-            notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsed;
+            notificationsUpdateTimer.Elapsed += NotificationsUpdateTimerOnElapsedAsync;
             notificationsUpdateTimer.Start();
         }
 
-        public async Task<RedditChildData> GetRandomTopic()
+        public async Task<RedditChildData> GetRandomTopicAsync()
         {
             var response = await _httpClient.GetStringAsync(RandomTopicUrl);
 
@@ -87,7 +87,7 @@ namespace InElonWeTrust.Core.Services.Reddit
             }
         }
 
-        private async void NotificationsUpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        private async void NotificationsUpdateTimerOnElapsedAsync(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             try
             {

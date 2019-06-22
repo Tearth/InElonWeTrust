@@ -38,7 +38,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var topic = await _redditService.GetRandomTopic();
+            var topic = await _redditService.GetRandomTopicAsync();
             var embed = _redditEmbedGenerator.Build(topic);
 
             await ctx.RespondAsync(embed: embed);

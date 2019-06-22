@@ -48,7 +48,7 @@ namespace InElonWeTrust.Core.Commands
             var tableWithPagination = BuildTableWithPagination(cores, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
-            await _paginationService.InitPagination(message, CacheContentType.Cores, string.Empty);
+            await _paginationService.InitPaginationAsync(message, CacheContentType.Cores, string.Empty);
         }
 
         private string BuildTableWithPagination(List<DetailedCoreInfo> cores, int currentPage)
@@ -65,26 +65,26 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task ClientOnMessageReactionAddedAsync(MessageReactionAddEventArgs e)
         {
-            if (e.User.IsBot || !await _paginationService.IsPaginationSet(e.Message))
+            if (e.User.IsBot || !await _paginationService.IsPaginationSetAsync(e.Message))
             {
                 return;
             }
 
-            var paginationData = await _paginationService.GetPaginationDataForMessage(e.Message);
+            var paginationData = await _paginationService.GetPaginationDataForMessageAsync(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
                 var items = await _cacheService.GetAsync<List<DetailedCoreInfo>>(CacheContentType.Cores);
                 var editedMessage = e.Message;
 
-                if (await _paginationService.DoAction(editedMessage, e.Emoji, items.Count))
+                if (await _paginationService.DoActionAsync(editedMessage, e.Emoji, items.Count))
                 {
-                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessage(editedMessage);
+                    var updatedPaginationData = await _paginationService.GetPaginationDataForMessageAsync(editedMessage);
                     var tableWithPagination = BuildTableWithPagination(items, updatedPaginationData.CurrentPage);
 
                     editedMessage = await editedMessage.ModifyAsync(tableWithPagination);
                 }
 
-                await _paginationService.DeleteReaction(editedMessage, e.User, e.Emoji);
+                await _paginationService.DeleteReactionAsync(editedMessage, e.User, e.Emoji);
             }
         }
 

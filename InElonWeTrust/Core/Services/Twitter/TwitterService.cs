@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             Auth.SetUserCredentials(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
             _tweetsUpdateTimer = new System.Timers.Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
-            _tweetsUpdateTimer.Elapsed += TweetRangesUpdateTimer_Elapsed;
+            _tweetsUpdateTimer.Elapsed += TweetRangesUpdateTimer_ElapsedAsync;
             _tweetsUpdateTimer.Start();
         }
 
@@ -147,7 +147,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
         }
 
-        private async void TweetRangesUpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void TweetRangesUpdateTimer_ElapsedAsync(object sender, ElapsedEventArgs e)
         {
             try
             {

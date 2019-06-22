@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Services.Pagination
         private const string LastEmojiName = ":next_track:";
         public const int ItemsPerPage = 15;
 
-        public async Task InitPagination(DiscordMessage message, CacheContentType contentType, string parameter)
+        public async Task InitPaginationAsync(DiscordMessage message, CacheContentType contentType, string parameter)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             _logger.Info($"New pagination for {contentType} added");
         }
 
-        public async Task<bool> IsPaginationSet(DiscordMessage message)
+        public async Task<bool> IsPaginationSetAsync(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             return (int)Math.Ceiling((double)totalItemsCount / ItemsPerPage);
         }
 
-        public async Task<PaginatedMessage> GetPaginationDataForMessage(DiscordMessage message)
+        public async Task<PaginatedMessage> GetPaginationDataForMessageAsync(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -80,20 +80,20 @@ namespace InElonWeTrust.Core.Services.Pagination
             return $"page {currentPage} from {maxPagesCount}";
         }
 
-        public async Task<bool> DoAction(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
+        public async Task<bool> DoActionAsync(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)
         {
             switch (clickedEmoji.GetDiscordName())
             {
-                case RightEmojiName: return await GoToNextPage(message, totalItemsCount);
-                case LeftEmojiName: return await GoToPreviousPage(message);
-                case FirstEmojiName: return await GoToFirstPage(message);
-                case LastEmojiName: return await GoToLastPage(message, totalItemsCount);
+                case RightEmojiName: return await GoToNextPageAsync(message, totalItemsCount);
+                case LeftEmojiName: return await GoToPreviousPageAsync(message);
+                case FirstEmojiName: return await GoToFirstPageAsync(message);
+                case LastEmojiName: return await GoToLastPageAsync(message, totalItemsCount);
             }
 
             return false;
         }
 
-        public async Task<bool> DeleteReaction(DiscordMessage message, DiscordUser reactionUser, DiscordEmoji emoji)
+        public async Task<bool> DeleteReactionAsync(DiscordMessage message, DiscordUser reactionUser, DiscordEmoji emoji)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             return true;
         }
 
-        private async Task<bool> GoToNextPage(DiscordMessage message, int totalItemsCount)
+        private async Task<bool> GoToNextPageAsync(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -138,7 +138,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             return false;
         }
 
-        private async Task<bool> GoToPreviousPage(DiscordMessage message)
+        private async Task<bool> GoToPreviousPageAsync(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -157,7 +157,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             return false;
         }
 
-        private async Task<bool> GoToFirstPage(DiscordMessage message)
+        private async Task<bool> GoToFirstPageAsync(DiscordMessage message)
         {
             using (var databaseContext = new DatabaseContext())
             {
@@ -171,7 +171,7 @@ namespace InElonWeTrust.Core.Services.Pagination
             }
         }
 
-        private async Task<bool> GoToLastPage(DiscordMessage message, int totalItemsCount)
+        private async Task<bool> GoToLastPageAsync(DiscordMessage message, int totalItemsCount)
         {
             using (var databaseContext = new DatabaseContext())
             {
