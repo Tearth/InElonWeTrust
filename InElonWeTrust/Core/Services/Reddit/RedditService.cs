@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.Services.Reddit
 {
     public class RedditService
     {
-        public event EventHandler<RedditChildData> OnNewHotTopic;
+        public event EventHandler<List<RedditChildData>> OnNewHotTopic;
         private readonly HttpClient _httpClient;
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
@@ -56,29 +56,17 @@ namespace InElonWeTrust.Core.Services.Reddit
                     _logger.Info("Reddit topics check starts");
 
                     var sendNotifies = await databaseContext.CachedRedditTopics.AnyAsync();
-                    var response = await _httpClient.GetStringAsync(HotTopicsUrl);
+                    var allHotThreads = await GetAllHotThreadsNames();
+                    var hotThreadsToSend = GetHotThreadsNamesToSend(allHotThreads);
+                    await AddHotThreadsToDatabase(hotThreadsToSend);
 
-                    var names = JsonConvert.DeserializeObject<RedditResponse>(response);
-                    var newTopics = 0;
-
-                    foreach (var topic in names.Data.Children.Select(p => p.Data))
+                    if (sendNotifies && hotThreadsToSend.Count > 0)
                     {
-                        if (!await databaseContext.CachedRedditTopics.AnyAsync(p => p.Name == topic.Name))
-                        {
-                            if (sendNotifies)
-                            {
-                                OnNewHotTopic?.Invoke(this, topic);
-                            }
-
-                            newTopics++;
-                            await databaseContext.CachedRedditTopics.AddAsync(new CachedRedditTopic(topic.Name));
-                        }
+                        OnNewHotTopic?.Invoke(this, hotThreadsToSend);
                     }
 
-                    await databaseContext.SaveChangesAsync();
-
                     var topicsCount = databaseContext.CachedRedditTopics.Count();
-                    _logger.Info($"Reddit update finished ({newTopics} sent, {topicsCount} topics in database)");
+                    _logger.Info($"Reddit update finished ({hotThreadsToSend.Count} sent, {topicsCount} topics in database)");
                 }
             }
             finally
@@ -96,6 +84,32 @@ namespace InElonWeTrust.Core.Services.Reddit
             catch (Exception ex)
             {
                 _logger.Error(ex, "Can't refresh Reddit topics.");
+            }
+        }
+
+        private async Task<List<RedditChildData>> GetAllHotThreadsNames()
+        {
+            var response = await _httpClient.GetStringAsync(HotTopicsUrl);
+            var hotThreads = JsonConvert.DeserializeObject<RedditResponse>(response).Data.Children.Select(p => p.Data).ToList();
+
+            hotThreads.Reverse();
+            return hotThreads;
+        }
+
+        private List<RedditChildData> GetHotThreadsNamesToSend(List<RedditChildData> hotThreads)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                return hotThreads.Where(newHotThread => !databaseContext.CachedRedditTopics.Any(threadInDb => threadInDb.Name == newHotThread.Name)).ToList();
+            }
+        }
+
+        private async Task AddHotThreadsToDatabase(List<RedditChildData> hotThreads)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                await databaseContext.CachedRedditTopics.AddRangeAsync(hotThreads.Select(p => new CachedRedditTopic(p.Name)));
+                await databaseContext.SaveChangesAsync();
             }
         }
     }

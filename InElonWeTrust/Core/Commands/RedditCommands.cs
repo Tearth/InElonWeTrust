@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -57,17 +58,20 @@ namespace InElonWeTrust.Core.Commands
             await _redditService.ReloadCachedTopicsAsync();
         }
 
-        private async void Reddit_OnNewHotTopicAsync(object sender, RedditChildData e)
+        private async void Reddit_OnNewHotTopicAsync(object sender, List<RedditChildData> e)
         {
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
             foreach (var channelData in channels)
             {
                 try
                 {
-                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _redditEmbedGenerator.Build(e);
+                    foreach (var thread in e)
+                    {
+                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                        var embed = _redditEmbedGenerator.Build(thread);
 
-                    await channel.SendMessageAsync(embed: embed);
+                        await channel.SendMessageAsync(embed: embed);
+                    }
                 }
                 catch (UnauthorizedException)
                 {
