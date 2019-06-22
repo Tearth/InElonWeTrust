@@ -130,7 +130,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             var guild = await Bot.Client.GetGuildAsync(ulong.Parse(user.GuildId));
                             var member = await guild.GetMemberAsync(ulong.Parse(user.UserId));
 
-                            await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, _launchInfoEmbedGenerator.Build(nextLaunch, null, false));
+                            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
+                            await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
 
                             if (nextLaunch.Links.VideoLink != null)
                             {
