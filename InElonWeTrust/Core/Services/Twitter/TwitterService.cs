@@ -18,7 +18,7 @@ namespace InElonWeTrust.Core.Services.Twitter
 {
     public class TwitterService
     {
-        public event EventHandler<List<ITweet>> OnNewTweets;
+        public event EventHandler<List<CachedTweet>> OnNewTweets;
 
         private readonly System.Timers.Timer _tweetsUpdateTimer;
         private readonly Dictionary<TwitterUserType, string> _users;
@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private const int UpdateNotificationsIntervalMinutes = 5;
+        private const int UpdateNotificationsIntervalMinutes = 1;
 
         public TwitterService()
         {
@@ -90,46 +90,18 @@ namespace InElonWeTrust.Core.Services.Twitter
                     _logger.Info("Twitter reload cached tweets starts");
 
                     var sendNotifyWhenNewTweet = await databaseContext.CachedTweets.AnyAsync();
-                    var newTweets = 0;
+                    var sentTweets = 0;
 
                     foreach (var account in _users)
                     {
-                        var firstRequest = true;
-                        var minTweetId = long.MaxValue;
+                        var allTweets = GetAllTweets(account.Value, checkOnlyLastTweets);
+                        var cachedTweetsToSend = GetTweetsToSend(allTweets);
+                        await AddTweetsToDatabase(cachedTweetsToSend);
 
-                        while (true)
+                        if (sendNotifyWhenNewTweet)
                         {
-                            var messages = Timeline.GetUserTimeline(account.Value, new UserTimelineParameters
-                            {
-                                MaxId = firstRequest ? -1 : minTweetId - 1,
-                                MaximumNumberOfTweetsToRetrieve = 200
-                            })?.ToList();
-
-                            if (messages == null || !messages.Any())
-                            {
-                                break;
-                            }
-
-                            var messagesToSend = messages.Where(msg =>
-                                !databaseContext.CachedTweets
-                                    .Any(p => p.Id == msg.Id))
-                                    .OrderBy(p => p.CreatedAt)
-                                    .ToList();
-                            await databaseContext.CachedTweets.AddRangeAsync(messagesToSend.Select(msg => new CachedTweet(msg)));
-                            newTweets += messagesToSend.Count;
-
-                            if (sendNotifyWhenNewTweet)
-                            {
-                                OnNewTweets?.Invoke(account, messagesToSend);
-                            }
-
-                            if (checkOnlyLastTweets)
-                            {
-                                break;
-                            }
-
-                            minTweetId = Math.Min(minTweetId, messages.Min(p => p.Id));
-                            firstRequest = false;
+                            OnNewTweets?.Invoke(account, cachedTweetsToSend);
+                            sentTweets += cachedTweetsToSend.Count;
                         }
 
                         _logger.Info($"Twitter user ({account.Value}) done");
@@ -138,12 +110,60 @@ namespace InElonWeTrust.Core.Services.Twitter
                     await databaseContext.SaveChangesAsync();
 
                     var tweetsCount = await databaseContext.CachedTweets.CountAsync();
-                    _logger.Info($"Twitter update finished ({newTweets} sent, {tweetsCount} tweets in database)");
+                    _logger.Info($"Twitter update finished ({sentTweets} sent, {tweetsCount} tweets in database)");
                 }
             }
             finally
             {
                 _updateSemaphore.Release();
+            }
+        }
+
+        private List<ITweet> GetAllTweets(string username, bool onlyOnePage)
+        {
+            var firstRequest = true;
+            var maxTweetId = long.MaxValue;
+            var tweets = new List<ITweet>();
+
+            while (true)
+            {
+                var retrievedTweets = Timeline.GetUserTimeline(username, new UserTimelineParameters
+                {
+                    MaxId = firstRequest ? -1 : maxTweetId - 1,
+                    MaximumNumberOfTweetsToRetrieve = 200
+                })?.ToList();
+
+                tweets.AddRange(retrievedTweets);
+
+                if (onlyOnePage || retrievedTweets == null || !retrievedTweets.Any())
+                {
+                    break;
+                }
+
+                maxTweetId = Math.Min(maxTweetId, retrievedTweets.Min(p => p.Id));
+                firstRequest = false;
+            }
+
+            return tweets;
+        }
+
+        private List<CachedTweet> GetTweetsToSend(List<ITweet> tweets)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                return tweets.Where(msg => !databaseContext.CachedTweets.Any(p => p.Id == msg.Id))
+                    .OrderBy(p => p.CreatedAt)
+                    .Select(p => new CachedTweet(p))
+                    .ToList();
+            }
+        }
+
+        private async Task AddTweetsToDatabase(List<CachedTweet> cachedTweets)
+        {
+            using (var databaseContext = new DatabaseContext())
+            {
+                await databaseContext.CachedTweets.AddRangeAsync(cachedTweets);
+                await databaseContext.SaveChangesAsync();
             }
         }
 

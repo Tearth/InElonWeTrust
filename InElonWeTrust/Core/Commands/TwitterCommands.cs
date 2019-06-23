@@ -86,11 +86,11 @@ namespace InElonWeTrust.Core.Commands
             await _twitterService.ReloadCachedTweetsAsync(false);
         }
 
-        private async void TwitterOnNewTweetsAsync(object sender, List<ITweet> tweets)
+        private async void TwitterOnNewTweetsAsync(object sender, List<CachedTweet> tweets)
         {
             foreach (var tweet in tweets)
             {
-                var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedBy.ScreenName);
+                var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedByRealName);
                 var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
 
                 foreach (var channelData in channels)
@@ -98,7 +98,7 @@ namespace InElonWeTrust.Core.Commands
                     try
                     {
                         var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                        var embed = _twitterEmbedGenerator.Build(new CachedTweet(tweet));
+                        var embed = _twitterEmbedGenerator.Build(tweet);
 
                         await channel.SendMessageAsync(embed: embed);
                     }
