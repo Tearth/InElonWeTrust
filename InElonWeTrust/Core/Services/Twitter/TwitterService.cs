@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private const int UpdateNotificationsIntervalMinutes = 1;
+        private const int UpdateNotificationsIntervalMinutes = 5;
 
         public TwitterService()
         {
