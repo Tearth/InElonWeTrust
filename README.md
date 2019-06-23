@@ -20,7 +20,7 @@ Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus
 You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130016780337).
 
 **Main features**:
-  * previous, upcoming and more specialized list of launches (missions with failed landings or to specified orbit? No problem!)
+  * previous, upcoming and more specialized list of launches
   * counter for the next launch
   * random stuff like SpaceX or Elon's tweet, photo or Reddit topic 
   * notifications (you will be notified about all new tweets, Flickr photos, hottest topics on /r/spacex and upcoming launches)
@@ -43,13 +43,12 @@ There is a few methods to call bot command (space between prefix and command is 
 ### Launches
 | Command | Description | Required permissions |
 |---|---|---|
+| **e!NextLaunch**  | get information about the next lanuch | None |
 | e!AllLaunches  | get list of all launches (past and upcoming) | None |
 | e!FailedLaunches  | get list of launches which landings were unsuccesfull | None |
-| e!FailedStarts  | get list of launches where rocket did rapid unscheduled disassembly | None |
 | e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
 | e!LatestLaunch  | get information about the latest launch | None |
 | e!LaunchesWithOrbit [OrbitType] | get list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get list of them) | None |
-| e!NextLaunch  | get information about the next lanuch | None |
 | e!PastLaunches  | get list of past launches | None |
 | e!RandomLaunch  | get information about the random launch | None |
 | e!UpcomingLaunches  | get list of upcoming launches | None |
