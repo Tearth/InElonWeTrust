@@ -37,7 +37,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             Bot.Client.MessageReactionRemoved += ClientOnMessageReactionRemoved;
 
             _notificationsUpdateTimer = new Timer(UpdateNotificationsIntervalMinutes * 60 * 1000);
-            _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
+            _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsedAsync;
             _notificationsUpdateTimer.Start();
         }
 
@@ -131,7 +131,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             var guild = await Bot.Client.GetGuildAsync(ulong.Parse(user.GuildId));
                             var member = await guild.GetMemberAsync(ulong.Parse(user.UserId));
 
-                            await SendLaunchNotificationToUser(member, nextLaunch);
+                            await SendLaunchNotificationToUserAsync(member, nextLaunch);
                         }
                         catch (Exception ex)
                         {
@@ -144,7 +144,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
         }
 
-        private async Task SendLaunchNotificationToUser(DiscordMember member, LaunchInfo nextLaunch)
+        private async Task SendLaunchNotificationToUserAsync(DiscordMember member, LaunchInfo nextLaunch)
         {
             var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
             await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
@@ -159,7 +159,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                                           "about next launch in the future.*");
         }
 
-        private async void Notifications_UpdateTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        private async void Notifications_UpdateTimerOnElapsedAsync(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             try
             {
