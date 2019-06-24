@@ -116,10 +116,10 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
         {
             var minutesToLaunch = ((newLaunchState.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
-            var previousStateMinutesToLaunch = minutesToLaunch - 1;
+            var previousStateMinutesToLaunch = minutesToLaunch + 1;
             var newStateMinutesToLaunch = minutesToLaunch;
 
-            if (_notificationTimes.Any(p => previousStateMinutesToLaunch >= p && newStateMinutesToLaunch < p))
+            if (_notificationTimes.Any(p => p < previousStateMinutesToLaunch && p >= newStateMinutesToLaunch))
             {
                 OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _savedNextLaunchState, newLaunchState));
                 _logger.Info("Reminder notification sent");
