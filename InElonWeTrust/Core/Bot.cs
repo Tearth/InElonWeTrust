@@ -42,15 +42,15 @@ namespace InElonWeTrust.Core
     {
         public static DiscordClient Client { get; set; }
 
-        private CommandsNextExtension _commands;
-        private OddityCore _oddity;
-        private CacheService _cacheService;
-        private DiagnosticService _diagnosticService;
+        private readonly CommandsNextExtension _commands;
+        private readonly OddityCore _oddity;
+        private readonly CacheService _cacheService;
+        private readonly DiagnosticService _diagnosticService;
         //private WatchdogService _watchdog;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task Run()
+        public Bot()
         {
             _oddity = new OddityCore();
             _cacheService = new CacheService();
@@ -77,7 +77,10 @@ namespace InElonWeTrust.Core
             _commands.SetHelpFormatter<CustomHelpFormatter>();
 
             RegisterCommands();
+        }
 
+        public async Task Run()
+        {
             //_watchdog.Start();
             await Client.ConnectAsync();
         }
