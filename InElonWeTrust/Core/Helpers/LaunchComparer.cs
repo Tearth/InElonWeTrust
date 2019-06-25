@@ -31,12 +31,10 @@ namespace InElonWeTrust.Core.Helpers
                 launch.FlightNumber.ToString(),
                 launch.MissionName,
                 launch.StaticFireDateUtc.ToString(),
-                launch.Rocket.RocketName,
-                launch.Rocket.FirstStage.Cores.Count.ToString(),
                 launch.Rocket.FirstStage.Cores[0].CoreSerial,
                 launch.Rocket.SecondStage.Payloads.Count.ToString(),
                 launch.Rocket.SecondStage.Payloads[0].PayloadId,
-                launch.Rocket.SecondStage.Payloads[0].PayloadMassKilograms.ToString(),
+                launch.Rocket.SecondStage.Payloads[0].Orbit.ToString(),
                 launch.Details
             };
         }
