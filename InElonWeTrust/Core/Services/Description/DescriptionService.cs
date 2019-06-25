@@ -18,6 +18,7 @@ namespace InElonWeTrust.Core.Services.Description
 
         private const int DescriptionUpdateIntervalMinutes = 1;
         private const int HoursMinutesEdge = 99;
+        private const int WeeksHoursEdge = 144;
         private const string DescriptionPattern = "e!help | no launch date";
         private const string DescriptionPatternExtended = "e!help | {0} to launch";
 
@@ -62,9 +63,18 @@ namespace InElonWeTrust.Core.Services.Description
                 }
                 else
                 {
-                    description = timeToLaunch.TotalMinutes <= HoursMinutesEdge ?
-                        string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min") :
-                        string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
+                    if (timeToLaunch.TotalMinutes <= HoursMinutesEdge)
+                    {
+                        description = string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min");
+                    }
+                    else if (timeToLaunch.TotalHours <= WeeksHoursEdge)
+                    {
+                        description = string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
+                    }
+                    else
+                    {
+                        description = string.Format(DescriptionPatternExtended, GetWeeksToLaunch(timeToLaunch) + " weeks");
+                    }
                 }
             }
 
@@ -79,6 +89,11 @@ namespace InElonWeTrust.Core.Services.Description
         private int GetHoursToLaunch(TimeSpan time)
         {
             return (int)Math.Max(0, Math.Ceiling(time.TotalHours));
+        }
+
+        private int GetWeeksToLaunch(TimeSpan time)
+        {
+            return (int)Math.Max(0, Math.Ceiling(time.TotalHours / 144));
         }
     }
 }
