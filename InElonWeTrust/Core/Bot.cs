@@ -193,6 +193,7 @@ namespace InElonWeTrust.Core
         private Task Client_Ready(ReadyEventArgs e)
         {
             _logger.Info("In Elon We Trust, In Thrust We Trust.");
+            _logger.Info($"DSharpPlus {Client.VersionString}");
             //_watchdog.Stop();
 
             return Task.CompletedTask;
