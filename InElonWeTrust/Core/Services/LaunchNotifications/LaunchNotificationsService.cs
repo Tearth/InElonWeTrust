@@ -7,6 +7,7 @@ using System.Timers;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using NLog;
 using Oddity;
@@ -79,10 +80,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 }
 
                 var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
-                var savedFlightNumber = _savedNextLaunchState.FlightNumber ?? uint.MinValue;
-                var newFlightNumber = newLaunchState.FlightNumber ?? uint.MaxValue;
-
-                if (savedFlightNumber == newFlightNumber || newLaunchState.MissionName == _savedNextLaunchState.MissionName)
+                if (LaunchComparer.IsLaunchTheSame(_savedNextLaunchState, newLaunchState))
                 {
                     if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc)
                     {
