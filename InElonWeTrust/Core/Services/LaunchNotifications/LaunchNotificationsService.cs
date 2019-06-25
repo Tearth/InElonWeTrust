@@ -82,7 +82,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
                 if (LaunchComparer.IsLaunchTheSame(_savedNextLaunchState, newLaunchState))
                 {
-                    if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc)
+                    if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc && CheckIfReminderShouldBeSend(newLaunchState))
                     {
                         SendReminderNotification(newLaunchState);
                     }
@@ -104,6 +104,16 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             }
         }
 
+        private bool CheckIfReminderShouldBeSend(LaunchInfo launch)
+        {
+            var minutesToLaunch = ((launch.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
+
+            var previousStateMinutesToLaunch = minutesToLaunch + 1;
+            var newStateMinutesToLaunch = minutesToLaunch;
+
+            return _notificationTimes.Any(p => p < previousStateMinutesToLaunch && p >= newStateMinutesToLaunch);
+        }
+
         private void SendScrubNotification(LaunchInfo newLaunchState)
         {
             OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Scrub, _savedNextLaunchState, newLaunchState));
@@ -112,16 +122,8 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private void SendReminderNotification(LaunchInfo newLaunchState)
         {
-            var minutesToLaunch = ((newLaunchState.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
-
-            var previousStateMinutesToLaunch = minutesToLaunch + 1;
-            var newStateMinutesToLaunch = minutesToLaunch;
-
-            if (_notificationTimes.Any(p => p < previousStateMinutesToLaunch && p >= newStateMinutesToLaunch))
-            {
-                OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _savedNextLaunchState, newLaunchState));
-                _logger.Info("Reminder notification sent");
-            }
+            OnLaunchNotification?.Invoke(this, new LaunchNotification(LaunchNotificationType.Reminder, _savedNextLaunchState, newLaunchState));
+            _logger.Info("Reminder notification sent");
         }
 
         private void SendNewTargetNotification(LaunchInfo newLaunchState)
