@@ -82,9 +82,12 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
                 if (LaunchComparer.IsLaunchTheSame(_savedNextLaunchState, newLaunchState))
                 {
-                    if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc && CheckIfReminderShouldBeSend(newLaunchState))
+                    if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc)
                     {
-                        SendReminderNotification(newLaunchState);
+                        if (CheckIfReminderShouldBeSend(newLaunchState))
+                        {
+                            SendReminderNotification(newLaunchState);
+                        }
                     }
                     else
                     {
