@@ -12,7 +12,7 @@ namespace InElonWeTrust.Core.Helpers
                 return true;
             }
 
-            if (first.LaunchSite.SiteName != second.LaunchSite.SiteName || first.Rocket.Id != second.Rocket.Id)
+            if (first.LaunchSite.SiteId != second.LaunchSite.SiteId || first.Rocket.Id != second.Rocket.Id)
             {
                 return false;
             }
@@ -35,6 +35,8 @@ namespace InElonWeTrust.Core.Helpers
                 launch.Rocket.SecondStage.Payloads.Count.ToString(),
                 launch.Rocket.SecondStage.Payloads[0].PayloadId,
                 launch.Rocket.SecondStage.Payloads[0].Orbit.ToString(),
+                launch.Links.VideoLink,
+                launch.Links.Presskit,
                 launch.Details
             };
         }
@@ -42,14 +44,21 @@ namespace InElonWeTrust.Core.Helpers
         private static (int Similar, int Total) CalculateSimilarity(List<string> firstLaunchFeatures, List<string> secondLaunchFeatures)
         {
             var similar = 0;
-            var total = firstLaunchFeatures.Count;
+            var total = 0;
 
-            for (var i = 0; i < total; i++)
+            for (var i = 0; i < firstLaunchFeatures.Count; i++)
             {
+                if (firstLaunchFeatures[i] == null && secondLaunchFeatures[i] == null)
+                {
+                    continue;
+                }
+
                 if (firstLaunchFeatures[i] == secondLaunchFeatures[i])
                 {
                     similar++;
                 }
+
+                total++;
             }
 
             return (similar, total);
