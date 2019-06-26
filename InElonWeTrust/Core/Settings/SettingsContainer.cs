@@ -68,5 +68,7 @@ namespace InElonWeTrust.Core.Settings
         [JsonProperty("divine_discord_bots_token")]
         public string DivineDiscordBotsToken { get; set; }
 
+        [JsonProperty("discord_bots_gg_token")]
+        public string DiscordBotsGgToken { get; set; }
     }
 }
