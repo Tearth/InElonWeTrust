@@ -17,8 +17,8 @@ namespace InElonWeTrust.Core.Services.Description
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const int DescriptionUpdateIntervalMinutes = 1;
-        private const int HoursMinutesEdge = 99;
-        private const int WeeksHoursEdge = 144;
+        private const int DaysHoursEdge = 48;
+        private const int HoursMinutesEdge = 60;
         private const string DescriptionPattern = "e!help | no launch date";
         private const string DescriptionPatternExtended = "e!help | {0} to launch";
 
@@ -67,13 +67,13 @@ namespace InElonWeTrust.Core.Services.Description
                     {
                         description = string.Format(DescriptionPatternExtended, GetMinutesToLaunch(timeToLaunch) + " min");
                     }
-                    else if (timeToLaunch.TotalHours <= WeeksHoursEdge)
+                    else if (timeToLaunch.TotalHours <= DaysHoursEdge)
                     {
                         description = string.Format(DescriptionPatternExtended, GetHoursToLaunch(timeToLaunch) + " h");
                     }
                     else
                     {
-                        description = string.Format(DescriptionPatternExtended, GetWeeksToLaunch(timeToLaunch) + " weeks");
+                        description = string.Format(DescriptionPatternExtended, GetDaysToLaunch(timeToLaunch) + " days");
                     }
                 }
             }
@@ -83,17 +83,17 @@ namespace InElonWeTrust.Core.Services.Description
 
         private int GetMinutesToLaunch(TimeSpan time)
         {
-            return (int)Math.Max(0, Math.Ceiling(time.TotalMinutes));
+            return (int)Math.Ceiling(time.TotalMinutes);
         }
 
         private int GetHoursToLaunch(TimeSpan time)
         {
-            return (int)Math.Max(0, Math.Ceiling(time.TotalHours));
+            return (int)Math.Ceiling(time.TotalHours);
         }
 
-        private int GetWeeksToLaunch(TimeSpan time)
+        private int GetDaysToLaunch(TimeSpan time)
         {
-            return (int)Math.Max(0, Math.Ceiling(time.TotalHours / 144));
+            return (int)Math.Ceiling(time.TotalDays);
         }
     }
 }
