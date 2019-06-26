@@ -135,7 +135,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                         }
                         catch (Exception ex)
                         {
-                            _logger.Warn(ex, $"Can't send launch notification to the uesr with id {user.UserId}");
+                            _logger.Warn(ex, $"Can't send launch notification to the user with id {user.UserId}");
                         }
                     }
 
