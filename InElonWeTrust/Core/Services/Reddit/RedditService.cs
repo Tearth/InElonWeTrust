@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                     var hotThreadsToSend = GetHotThreadsNamesToSend(allHotThreads);
                     await AddHotThreadsToDatabase(hotThreadsToSend);
 
-                    if (sendNotifies && hotThreadsToSend.Count > 0)
+                    if (hotThreadsToSend.Count > 0 && sendNotifies)
                     {
                         OnNewHotTopic?.Invoke(this, hotThreadsToSend);
                     }

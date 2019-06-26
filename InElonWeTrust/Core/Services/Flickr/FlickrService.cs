@@ -70,7 +70,7 @@ namespace InElonWeTrust.Core.Services.Flickr
                     var photosToSend = GetNewPhotosToSend(allPhotos);
                     var cachedPhotosToSend = await AddPhotosToDatabaseAsync(photosToSend);
 
-                    if (sendNotifyWhenNewPhoto && cachedPhotosToSend.Count > 0)
+                    if (cachedPhotosToSend.Count > 0 && sendNotifyWhenNewPhoto)
                     {
                         OnNewFlickrPhoto?.Invoke(this, cachedPhotosToSend);
                     }

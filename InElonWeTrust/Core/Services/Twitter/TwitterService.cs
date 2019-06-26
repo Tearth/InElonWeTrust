@@ -98,7 +98,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                         var cachedTweetsToSend = GetTweetsToSend(allTweets);
                         await AddTweetsToDatabase(cachedTweetsToSend);
 
-                        if (sendNotifyWhenNewTweet)
+                        if (cachedTweetsToSend.Count > 0 && sendNotifyWhenNewTweet && checkOnlyLastTweets)
                         {
                             OnNewTweets?.Invoke(account, cachedTweetsToSend);
                             sentTweets += cachedTweetsToSend.Count;
