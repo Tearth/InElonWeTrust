@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleElonTwitter")]
         [Aliases("TogElonTwitter", "SubscribeElonTwitter", "SubElonTwitter", "tet")]
-        [Description("Subscribe Elon Musk Twitter profile (the bot will post all new tweets on this channel).")]
+        [Description("Toggle Elon Musk Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleElonTwitterNotificationsAsync(CommandContext ctx)
         {
@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleSpaceXTwitter")]
         [Aliases("TogSpaceXTwitter", "SubscribeSpaceXTwitter", "SubSpaceXTwitter", "tst")]
-        [Description("Subscribe SpaceX Twitter profile (the bot will post all new tweets).")]
+        [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXTwitterNotificationsAsync(CommandContext ctx)
         {
@@ -49,7 +49,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleSpaceXFleetTwitter")]
         [Aliases("TogSpaceXFleetTwitter", "SubscribeSpaceXFleetTwitter", "SubSpaceXFleetTwitter", "tsft")]
-        [Description("Subscribe SpaceX Twitter profile (the bot will post all new tweets on this channel).")]
+        [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXFleetTwitterNotificationsAsync(CommandContext ctx)
         {
@@ -59,7 +59,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleFlickr")]
         [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
-        [Description("Subscribe Flickr profile (the bot will post all new photos from SpaceX profile on this channel).")]
+        [Description("Toggle Flickr profile (the bot will post all new photos from SpaceX profile on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleFlickrNotificationsAsync(CommandContext ctx)
         {
@@ -69,7 +69,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleLaunches")]
         [Aliases("TogLaunches", "SubscribeLaunches", "SubLaunches", "tl")]
-        [Description("Subscribe launch notifications (the bot will post notification on this channel when the next launch will be coming).")]
+        [Description("Toggle launch notifications (the bot will post notification on this channel when the next launch will be coming).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleLaunchNotificationsAsync(CommandContext ctx)
         {
@@ -79,7 +79,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("ToggleReddit")]
         [Aliases("SubscribeReddit", "SubReddit", "tr")]
-        [Description("Subscribe Reddit notifications (the bot will post all hottest Reddit topics on this channel).")]
+        [Description("Toggle Reddit notifications (the bot will post all hottest Reddit topics on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleRedditNotificationsAsync(CommandContext ctx)
         {
@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("EnableAllNotifications")]
         [Aliases("SubscribeAll", "SubAll", "ean")]
-        [Description("Subscribe all notifications on this channel.")]
+        [Description("Enable all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task EnableAllNotificationsAsync(CommandContext ctx)
         {
@@ -107,7 +107,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("DisableAllNotifications")]
         [Aliases("UnsubscribeAll", "UnsubAll", "dan")]
-        [Description("Unsubscribe all notifications on this channel.")]
+        [Description("Disable all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task DisableAllNotificationsAsync(CommandContext ctx)
         {

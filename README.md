@@ -38,13 +38,13 @@ There are a few methods to call bot command (space between prefix and command is
 | Command | Description | Required permissions |
 |---|---|---|
 | __e!NextLaunch__  | get information about the next launch | none |
-| e!AllLaunches  | get a list of all launches (past and upcoming) | none |
-| e!FailedLaunches  | get a list of launches which landings were unsuccessful | none |
-| e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | none |
 | e!LatestLaunch  | get information about the latest launch | none |
+| e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | none |
+| e!RandomLaunch  | get information about the random launch | none |
+| e!AllLaunches  | get a list of all launches (past and upcoming) | none |
+| e!FailedLaunches  | get a list of unsuccessful launches | none |
 | e!LaunchesWithOrbit [OrbitType] | get a list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get a list of them) | none |
 | e!PastLaunches  | get a list of past launches | none |
-| e!RandomLaunch  | get information about the random launch | none |
 | e!UpcomingLaunches  | get a list of upcoming launches | none |
 
 ### Media
@@ -61,25 +61,25 @@ There are a few methods to call bot command (space between prefix and command is
 |---|---|---|
 | e!EnableAllNotifications  | enable all notifications at the current channel | Manage Messages |
 | e!DisableAllNotifications  | disable all notifications at the current channel | Manage Messages |
-| e!NotificationsStatus  | get information about subscriptions at the current channel | none |
-| e!ToggleLaunches  | toggle launches subscription (when enabled, the bot will post information about the next launch at the current channel) | Manage Messages |
-| e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the current channel) | Manage Messages |
-| e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the current channel) | Manage Messages |
-| e!ToggleElonTwitter  | toggle Elon Musk Twitter subscription (when enabled, all newest tweets from Elon Musk profile will be posted at the current channel) | Manage Messages |
-| e!ToggleSpaceXTwitter  | toggle SpaceX Twitter subscription (when enabled, all newest tweets from SpaceX profile will be posted at the current channel) | Manage Messages |
-| e!ToggleSpaceXFleetTwitter  | toggle SpaceXFleet Twitter subscription (when enabled, all newest tweets from SpaceXFleet profile will be posted at the current channel) | Manage Messages |
+| e!NotificationsStatus  | get information about notifications at the current channel | none |
+| e!ToggleLaunches  | toggle launch notifications (when enabled, the bot will post information about the next launch at the current channel) | Manage Messages |
+| e!ToggleFlickr  | toggle Flickr notifications (when enabled, all newest photos from SpaceX Flickr profile will be posted at the current channel) | Manage Messages |
+| e!ToggleReddit  | toggle Reddit notifications (when enabled, the hottest topics from /r/spacex will be posted at the current channel) | Manage Messages |
+| e!ToggleElonTwitter  | toggle Elon Musk Twitter notifications (when enabled, all newest tweets from Elon Musk profile will be posted at the current channel) | Manage Messages |
+| e!ToggleSpaceXTwitter  | toggle SpaceX Twitter notifications (when enabled, all newest tweets from SpaceX profile will be posted at the current channel) | Manage Messages |
+| e!ToggleSpaceXFleetTwitter  | toggle SpaceXFleet Twitter notifications (when enabled, all newest tweets from SpaceXFleet profile will be posted at the current channel) | Manage Messages |
 
 ### Time zone
 | Command | Description | Required permissions |
 |---|---|---|
-| e!SetTimeZone  | sets the specified time zone (local time will be displayed in the launch information) | Manage Messages |
-| e!ResetTimeZone  | resets time zone (local time won't be shown again) | Manage Messages |
+| e!SetTimeZone  | set the specified time zone (local time will be displayed in the launch information) | Manage Messages |
+| e!ResetTimeZone  | reset time zone (local time won't be shown again) | Manage Messages |
 
 ### Miscellaneous
 | Command | Description | Required permissions |
 |---|---|---|
-| e!Avatar  | displays current Elon Musk's Twitter avatar | none |
-| e!Changelog  | get bot changelog | none |
+| e!Avatar  | display current Elon Musk's Twitter avatar | none |
+| e!Changelog  | get the bot changelog | none |
 | e!CompanyHistory  | get a list of the most important events for SpaceX | none |
 | e!CompanyInfo  | get information about company | none |
 | e!CoreInfo [CoreSerial] | get information about the specified core | none |
@@ -88,8 +88,8 @@ There are a few methods to call bot command (space between prefix and command is
 | e!Launchpads  | get a list of all launchpads used by SpaceX | none |
 | e!Links  | get a list useful links related with SpaceX | none |
 | e!Ping  | pong | none |
-| e!RandomElonQuote  | get random Elon Musk's quote | none |
-| e!RandomVideo  | get random video related with SpaceX | none |
+| e!RandomElonQuote  | get a random Elon Musk's quote | none |
+| e!RandomVideo  | get a random video related with SpaceX | none |
 | e!Roadster  | get information about Roadster launched by Falcon Heavy | none |
 | e!Rockets  | get a list of all rockets used by SpaceX | none |
 | e!Uptime  | how long am I working? | none |

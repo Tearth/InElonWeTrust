@@ -53,7 +53,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from ");
                     descriptionBuilder.Append($"**{oldLaunchDate}** to ");
-                    descriptionBuilder.Append($"**{newLaunchDate}**.");
+                    descriptionBuilder.Append($"**{newLaunchDate}**. ");
 
                     descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
 
