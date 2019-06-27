@@ -133,7 +133,10 @@ namespace InElonWeTrust.Core.Services.Twitter
                     MaximumNumberOfTweetsToRetrieve = 200
                 })?.ToList();
 
-                tweets.AddRange(retrievedTweets);
+                if (retrievedTweets != null)
+                {
+                    tweets.AddRange(retrievedTweets);
+                }
 
                 if (onlyOnePage || retrievedTweets == null || !retrievedTweets.Any())
                 {
