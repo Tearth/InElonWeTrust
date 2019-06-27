@@ -8,13 +8,13 @@
         [GroupTypeDescription(":frame_photo:", "Media", "commands related with Twitter, Flickr and Reddit")]
         Media,
 
-        [GroupTypeDescription(":warning:", "Launch notifications", "subscribe to get all newest content")]
+        [GroupTypeDescription(":warning:", "Notifications", "subscribe to get all newest content")]
         Notifications,
 
         [GroupTypeDescription(":clock4:", "Time zone", "set local timezone to see more precise times in launch information")]
         TimeZone,
 
-        [GroupTypeDescription(":question:", "Miscellaneous", "other strange commands")]
+        [GroupTypeDescription(":question:", "Miscellaneous", "other commands")]
         Miscellaneous
     }
 }
