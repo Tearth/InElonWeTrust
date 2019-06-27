@@ -41,7 +41,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("CompanyHistory")]
         [Aliases("History", "ch")]
-        [Description("Get a list of the most important events related with SpaceX.")]
+        [Description("Get a list of the most important events related to SpaceX.")]
         public async Task CompanyHistoryAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();

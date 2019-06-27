@@ -36,7 +36,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomElonTweet")]
         [Aliases("ElonTweet", "ret")]
-        [Description("Get random Elon's tweet.")]
+        [Description("Get a random Elon's tweet.")]
         public async Task RandomElonTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -49,7 +49,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomSpaceXTweet")]
         [Aliases("SpaceXTweet", "rst")]
-        [Description("Get random SpaceX's tweet.")]
+        [Description("Get a random SpaceX's tweet.")]
         public async Task RandomSpaceXTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -62,7 +62,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("RandomSpaceXFleetTweet")]
         [Aliases("SpaceXFleetTweet", "rsft")]
-        [Description("Get random SpaceXFleet's tweet.")]
+        [Description("Get a random SpaceXFleet's tweet.")]
         public async Task RandomSpaceXFleetTweetAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -75,7 +75,7 @@ namespace InElonWeTrust.Core.Commands
 
         [HiddenCommand]
         [Command("ReloadTwitterCache")]
-        [Description("Reload cached tweets in database.")]
+        [Description("Reload cached tweets in the database.")]
         public async Task ReloadTwitterCacheAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)

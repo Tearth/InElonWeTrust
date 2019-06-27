@@ -19,7 +19,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ResetTimeZone")]
-        [Description("Reset local timezone.")]
+        [Description("Reset local timezone (local time won't be shown again).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ResetTimeZoneAsync(CommandContext ctx)
         {

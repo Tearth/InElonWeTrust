@@ -56,7 +56,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("UpcomingLaunches")]
         [Aliases("Upcoming", "ul", "NextLaunches")]
-        [Description("Get list of upcoming launches.")]
+        [Description("Get a list of upcoming launches.")]
         public async Task UpcomingLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("PastLaunches")]
         [Aliases("Past", "pl")]
-        [Description("Get list of past launches.")]
+        [Description("Get a list of past launches.")]
         public async Task PastLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -74,7 +74,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("AllLaunches")]
         [Aliases("All", "Launches", "GetLaunchesAsync", "al")]
-        [Description("Get list of all launches.")]
+        [Description("Get a list of all launches.")]
         public async Task AllLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -83,7 +83,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("FailedLaunches")]
         [Aliases("FailedStarts", "fs")]
-        [Description("Get list of all failed launches.")]
+        [Description("Get a list of all failed launches.")]
         public async Task FailedLaunchesAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
@@ -101,7 +101,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("LaunchesWithOrbit")]
         [Aliases("Orbit", "o")]
-        [Description("Get list of all launches with the specified orbit.")]
+        [Description("Get a list of all launches with the specified orbit.")]
         public async Task LaunchesWithOrbitAsync(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
         {
             await ctx.TriggerTypingAsync();

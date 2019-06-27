@@ -18,7 +18,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("Uptime")]
-        [Description("Get uptime")]
+        [Description("Get the bot uptime")]
         public async Task UptimeAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
