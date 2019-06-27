@@ -115,7 +115,7 @@ namespace InElonWeTrust.Core.Helpers
                                "more detailed information about the specified command. The bot is case-insensitive and has " +
                                "no troubles with spaces between the prefix and the command.\r\n\r\n");
             helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)**\r\n");
-            helpBuilder.Append(":computer: Profile on **[GitHub](https://github.com/Tearth/InElonWeTrust)**, **[discordbots.org](https://discordbots.org/bot/462742130016780337)** and **[bots.discord.pw](https://bots.discord.pw/bots/462742130016780337)**\r\n");
+            helpBuilder.Append(":computer: Profile on **[GitHub](https://github.com/Tearth/InElonWeTrust)**, **[discordbots.org](https://discordbots.org/bot/462742130016780337)** and **[bots.ondiscord.xyz](https://bots.ondiscord.xyz/bots/462742130016780337)**\r\n");
             helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot) to your server!**");
 
             embed.AddField(":rocket: In Elon We Trust, In Thrust We Trust", helpBuilder.ToString());
