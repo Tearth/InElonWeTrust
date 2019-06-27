@@ -10,7 +10,7 @@
 </p>
 
 
-Discord bot providing commands related to SpaceX and Elon Musk. 
+Discord bot providing commands related to SpaceX and Elon Musk.
 
 Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
 
@@ -37,31 +37,31 @@ There are a few methods to call bot command (space between prefix and command is
 ### Launches
 | Command | Description | Required permissions |
 |---|---|---|
-| __e!NextLaunch__  | get information about the next launch | None |
-| e!AllLaunches  | get a list of all launches (past and upcoming) | None |
-| e!FailedLaunches  | get a list of launches which landings were unsuccessful | None |
-| e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
-| e!LatestLaunch  | get information about the latest launch | None |
-| e!LaunchesWithOrbit [OrbitType] | get a list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get a list of them) | None |
-| e!PastLaunches  | get a list of past launches | None |
-| e!RandomLaunch  | get information about the random launch | None |
-| e!UpcomingLaunches  | get a list of upcoming launches | None |
+| __e!NextLaunch__  | get information about the next launch | none |
+| e!AllLaunches  | get a list of all launches (past and upcoming) | none |
+| e!FailedLaunches  | get a list of launches which landings were unsuccessful | none |
+| e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | none |
+| e!LatestLaunch  | get information about the latest launch | none |
+| e!LaunchesWithOrbit [OrbitType] | get a list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get a list of them) | none |
+| e!PastLaunches  | get a list of past launches | none |
+| e!RandomLaunch  | get information about the random launch | none |
+| e!UpcomingLaunches  | get a list of upcoming launches | none |
 
 ### Media
 | Command | Description | Required permissions |
 |---|---|---|
-| e!RandomElonTweet  | get a random tweet from Elon Musk's Twitter profile | None |
-| e!RandomSpaceXTweet  | get a random tweet from SpaceX's Twitter profile | None |
-| e!RandomSpaceXFleetTweet  | get a random tweet from SpaceXFleet's Twitter profile | None |
-| e!RandomFlickrPhoto  | get a random photo from SpaceX's Flickr profile | None |
-| e!RandomRedditTopic  | get a random topic from /r/spacex subreddit | None |
+| e!RandomElonTweet  | get a random tweet from Elon Musk's Twitter profile | none |
+| e!RandomSpaceXTweet  | get a random tweet from SpaceX's Twitter profile | none |
+| e!RandomSpaceXFleetTweet  | get a random tweet from SpaceXFleet's Twitter profile | none |
+| e!RandomFlickrPhoto  | get a random photo from SpaceX's Flickr profile | none |
+| e!RandomRedditTopic  | get a random topic from /r/spacex subreddit | none |
 
 ### Notifications
 | Command | Description | Required permissions |
 |---|---|---|
 | e!EnableAllNotifications  | enable all notifications at the current channel | Manage Messages |
 | e!DisableAllNotifications  | disable all notifications at the current channel | Manage Messages |
-| e!NotificationsStatus  | get information about subscriptions at the current channel | None |
+| e!NotificationsStatus  | get information about subscriptions at the current channel | none |
 | e!ToggleLaunches  | toggle launches subscription (when enabled, the bot will post information about the next launch at the current channel) | Manage Messages |
 | e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the current channel) | Manage Messages |
 | e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the current channel) | Manage Messages |
@@ -75,24 +75,24 @@ There are a few methods to call bot command (space between prefix and command is
 | e!SetTimeZone  | sets the specified time zone (local time will be displayed in the launch information) | Manage Messages |
 | e!ResetTimeZone  | resets time zone (local time won't be shown again) | Manage Messages |
 
-### Misc
+### Miscellaneous
 | Command | Description | Required permissions |
 |---|---|---|
-| e!Avatar  | displays current Elon Musk's Twitter avatar | None |
-| e!Changelog  | get bot changelog | None |
-| e!CompanyHistory  | get a list of the most important events for SpaceX | None |
-| e!CompanyInfo  | get information about company | None |
-| e!CoreInfo [CoreSerial] | get information about the specified core | None |
-| e!Cores | get a list of all cores | None |
-| e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
-| e!Launchpads  | get a list of all launchpads used by SpaceX | None |
-| e!Links  | get a list useful links related with SpaceX | None |
-| e!Ping  | pong | None |
-| e!RandomElonQuote  | get random Elon Musk's quote | None |
-| e!RandomVideo  | get random video related with SpaceX | None |
-| e!Roadster  | get information about Roadster launched by Falcon Heavy | None |
-| e!Rockets  | get a list of all rockets used by SpaceX | None |
-| e!Uptime  | how long am I working? | None |
+| e!Avatar  | displays current Elon Musk's Twitter avatar | none |
+| e!Changelog  | get bot changelog | none |
+| e!CompanyHistory  | get a list of the most important events for SpaceX | none |
+| e!CompanyInfo  | get information about company | none |
+| e!CoreInfo [CoreSerial] | get information about the specified core | none |
+| e!Cores | get a list of all cores | none |
+| e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | none |
+| e!Launchpads  | get a list of all launchpads used by SpaceX | none |
+| e!Links  | get a list useful links related with SpaceX | none |
+| e!Ping  | pong | none |
+| e!RandomElonQuote  | get random Elon Musk's quote | none |
+| e!RandomVideo  | get random video related with SpaceX | none |
+| e!Roadster  | get information about Roadster launched by Falcon Heavy | none |
+| e!Rockets  | get a list of all rockets used by SpaceX | none |
+| e!Uptime  | how long am I working? | none |
 
 # Examples
 <p align="center">
