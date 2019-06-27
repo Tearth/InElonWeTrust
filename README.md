@@ -1,28 +1,22 @@
-<h1 align="center" style="font-weight: bold">In Elon We Trust, In Thrust We Trust</h1>
+<h1 align="center" style="font-weight: bold">In Elon We Trust</h1>
 <p align="center">
-<img src="https://i.imgur.com/cYPoKXr.jpg" alt="SpaceXLogo">
+<img src="https://i.imgur.com/67oDn3w.jpg" alt="SpaceXLogo">
 </p>
 
 <p align="center">
-<a href="https://discordbots.org/bot/462742130016780337" >
 <img src="https://discordbots.org/api/widget/status/462742130016780337.svg" alt="InElonWeTrust" />
 <img src="https://discordbots.org/api/widget/servers/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
-<img src="https://discordbots.org/api/widget/upvotes/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
 <img src="https://discordbots.org/api/widget/lib/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
-</a>
 </p>
 
 
-Discord bot providing a lot of funny (or not) commands related with SpaceX and Elon Musk. Written at the beginning only to collect information about the upcoming start, it developed into a full-fledged bot providing a lot of information about SpaceX and Elon Musk. 
+Discord bot providing commands related to SpaceX and Elon Musk. 
 
 Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
 
-You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130016780337).
-
 **Main features**:
+  * information about the next launch
   * previous, upcoming and more specialized list of launches
-  * counter for the next launch
-  * random stuff like SpaceX or Elon's tweet, photo or Reddit topic 
   * notifications (you will be notified about all new tweets, Flickr photos, hottest topics on /r/spacex and upcoming launches)
   * other fun stuff: Elon's quotes, company data and history, random videos, launchpads, rockets and more
 
@@ -31,11 +25,11 @@ You can find this bot on [discordbots.org](https://discordbots.org/bot/462742130
 </h1>
 
 <p align="center" style="font-style: italic">
-Requires Manage Messages permission to do pagination properly. It will work without it but it won't be that fun.
+Requires Manage Messages permission to do pagination properly. It will work without (but won't be that fun).
 </p>
 
 # Prefixes
-There is a few methods to call bot command (space between prefix and command is allowed):
+There are a few methods to call bot command (space between prefix and command is allowed):
   * e!command
   * elon!command
 
@@ -43,59 +37,68 @@ There is a few methods to call bot command (space between prefix and command is 
 ### Launches
 | Command | Description | Required permissions |
 |---|---|---|
-| **e!NextLaunch**  | get information about the next lanuch | None |
-| e!AllLaunches  | get list of all launches (past and upcoming) | None |
-| e!FailedLaunches  | get list of launches which landings were unsuccesfull | None |
+| __e!NextLaunch__  | get information about the next launch | None |
+| e!AllLaunches  | get a list of all launches (past and upcoming) | None |
+| e!FailedLaunches  | get a list of launches which landings were unsuccessful | None |
 | e!GetLaunch [FlightNumber]  | get information about the launch with the specified flight number (which can be obtained by e!AllLaunches or similar command) | None |
 | e!LatestLaunch  | get information about the latest launch | None |
-| e!LaunchesWithOrbit [OrbitType] | get list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get list of them) | None |
-| e!PastLaunches  | get list of past launches | None |
+| e!LaunchesWithOrbit [OrbitType] | get a list of launches with the specified target orbit (type e!help LaunchesWithOrbit to get a list of them) | None |
+| e!PastLaunches  | get a list of past launches | None |
 | e!RandomLaunch  | get information about the random launch | None |
-| e!UpcomingLaunches  | get list of upcoming launches | None |
+| e!UpcomingLaunches  | get a list of upcoming launches | None |
 
 ### Media
 | Command | Description | Required permissions |
 |---|---|---|
-| e!RandomElonTweet  | get random tweet from Elon Musk's Twitter profile | None |
-| e!RandomFlickrPhoto  | get random photo from SpaceX's Flickr profile | None |
-| e!RandomRedditTopic  | get random topic from /r/spacex subreddit | None |
-| e!RandomSpaceXTweet  | get random tweet from SpaceX's Twitter profile | None |
-
-### Misc
-| Command | Description | Required permissions |
-|---|---|---|
-| e!Changelog  | get bot changelog | None |
-| e!CompanyHistory  | get list of the most imporatnt events for SpaceX | None |
-| e!CompanyInfo  | get information about company | None |
-| e!CoreInfo [CoreSerial] | get information about the specified core | None |
-| e!Cores | get list of all cores | None |
-| e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
-| e!Launchpads  | get list of all launchpads used by SpaceX | None |
-| e!Links  | get list useful links related with SpaceX | None |
-| e!Ping  | pong | None |
-| e!RandomElonQuote  | get random Elon Musk's quote | None |
-| e!RandomVideo  | get random video related with SpaceX | None |
-| e!Roadster  | get information about Roadster launched by Falcon Heavy | None |
-| e!Rockets  | get list of all rockets used by SpaceX | None |
-| e!Uptime  | how long am I working? | None |
+| e!RandomElonTweet  | get a random tweet from Elon Musk's Twitter profile | None |
+| e!RandomSpaceXTweet  | get a random tweet from SpaceX's Twitter profile | None |
+| e!RandomSpaceXFleetTweet  | get a random tweet from SpaceXFleet's Twitter profile | None |
+| e!RandomFlickrPhoto  | get a random photo from SpaceX's Flickr profile | None |
+| e!RandomRedditTopic  | get a random topic from /r/spacex subreddit | None |
 
 ### Notifications
 | Command | Description | Required permissions |
 |---|---|---|
-| e!EnableAllNotifications  | enable all notifications at the specified channel | Manage Messages |
-| e!DisableAllNotifications  | disable all notifications at the specified channel | Manage Messages |
+| e!EnableAllNotifications  | enable all notifications at the current channel | Manage Messages |
+| e!DisableAllNotifications  | disable all notifications at the current channel | Manage Messages |
 | e!NotificationsStatus  | get information about subscriptions at the current channel | None |
-| e!ToggleLaunches  | toggle launches subscription (when enabled, bot will post information about next launch) | Manage Messages |
-| e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the specified channel) | Manage Messages |
-| e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the specified channel) | Manage Messages |
-| e!ToggleElonTwitter  | toggle Elon Musk Twitter subscription (when enabled, all newest tweets from Elon Musk profile will be posted at the specified channel) | Manage Messages |
-| e!ToggleSpaceXTwitter  | toggle SpaceX Twitter subscription (when enabled, all newest tweets from SpaceX profile will be posted at the specified channel) | Manage Messages |
+| e!ToggleLaunches  | toggle launches subscription (when enabled, the bot will post information about the next launch at the current channel) | Manage Messages |
+| e!ToggleFlickr  | toggle Flickr subscription (when enabled, all newest photos from SpaceX Flickr profile will be posted at the current channel) | Manage Messages |
+| e!ToggleReddit  | toggle Reddit subscription (when enabled, the hottest topics from /r/spacex will be posted at the current channel) | Manage Messages |
+| e!ToggleElonTwitter  | toggle Elon Musk Twitter subscription (when enabled, all newest tweets from Elon Musk profile will be posted at the current channel) | Manage Messages |
+| e!ToggleSpaceXTwitter  | toggle SpaceX Twitter subscription (when enabled, all newest tweets from SpaceX profile will be posted at the current channel) | Manage Messages |
+| e!ToggleSpaceXFleetTwitter  | toggle SpaceXFleet Twitter subscription (when enabled, all newest tweets from SpaceXFleet profile will be posted at the current channel) | Manage Messages |
+
+### Time zone
+| Command | Description | Required permissions |
+|---|---|---|
+| e!SetTimeZone  | sets the specified time zone (local time will be displayed in the launch information) | Manage Messages |
+| e!ResetTimeZone  | resets time zone (local time won't be shown again) | Manage Messages |
+
+### Misc
+| Command | Description | Required permissions |
+|---|---|---|
+| e!Avatar  | displays current Elon Musk's Twitter avatar | None |
+| e!Changelog  | get bot changelog | None |
+| e!CompanyHistory  | get a list of the most important events for SpaceX | None |
+| e!CompanyInfo  | get information about company | None |
+| e!CoreInfo [CoreSerial] | get information about the specified core | None |
+| e!Cores | get a list of all cores | None |
+| e!GetEvent [EventNumber] | get information about the event with the specified id (which can be obtained by e!CompanyHistory) | None |
+| e!Launchpads  | get a list of all launchpads used by SpaceX | None |
+| e!Links  | get a list useful links related with SpaceX | None |
+| e!Ping  | pong | None |
+| e!RandomElonQuote  | get random Elon Musk's quote | None |
+| e!RandomVideo  | get random video related with SpaceX | None |
+| e!Roadster  | get information about Roadster launched by Falcon Heavy | None |
+| e!Rockets  | get a list of all rockets used by SpaceX | None |
+| e!Uptime  | how long am I working? | None |
 
 # Examples
 <p align="center">
-<img src="https://i.imgur.com/WnTuvV8.png" alt="Example1">
-<img src="https://i.imgur.com/NnOKjEa.png" alt="Example2">
-<img src="https://i.imgur.com/o3oU66w.png" alt="Example3">
-<img src="https://i.imgur.com/UMHKOjK.png" alt="Example4">
-<img src="https://i.imgur.com/N0UGeTU.png" alt="Example5">
+<img src="https://i.imgur.com/Ym2taqH.png" alt="Example1">
+<img src="https://i.imgur.com/9HGxerU.png" alt="Example2">
+<img src="https://i.imgur.com/5I9phQj.png" alt="Example3">
+<img src="https://i.imgur.com/lmzNNuG.png" alt="Example4">
+<img src="https://i.imgur.com/jZsXAZ3.png" alt="Example5">
 </p>
