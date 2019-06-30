@@ -12,7 +12,7 @@ namespace InElonWeTrust.Core.Commands
     {
         [Command("Say")]
         [Description("Say something as Elon")]
-        [HiddenCommand]
+        [Hidden]
         public async Task Say(CommandContext ctx, string content)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)

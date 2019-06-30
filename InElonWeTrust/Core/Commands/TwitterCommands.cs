@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [HiddenCommand]
+        [Hidden]
         [Command("ReloadTwitterCache")]
         [Description("Reload cached tweets in the database.")]
         public async Task ReloadTwitterCacheAsync(CommandContext ctx)

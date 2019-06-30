@@ -46,7 +46,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [HiddenCommand]
+        [Hidden]
         [Command("ReloadFlickrCache")]
         [Description("Reload cached Flickr photos in the database.")]
         public async Task ReloadFlickrCacheAsync(CommandContext ctx)

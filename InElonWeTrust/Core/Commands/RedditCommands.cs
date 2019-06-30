@@ -32,6 +32,7 @@ namespace InElonWeTrust.Core.Commands
             _redditService.OnNewHotTopic += Reddit_OnNewHotTopicAsync;
         }
 
+        [Hidden]
         [Command("RandomRedditTopic")]
         [Aliases("RandomReddit", "RandomTopic", "Reddit", "rrt")]
         [Description("Get a random Reddit topic from /r/spacex.")]
@@ -45,9 +46,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [HiddenCommand]
-        [Command("ReloadRedditCache")]
-        [Description("Reload cached Reddit topics in the database.")]
+        [Command("ReloadRedditCache"), Hidden, Description("Reload cached Reddit topics in the database.")]
         public async Task ReloadRedditCacheAsync(CommandContext ctx)
         {
             if (ctx.User.Id != SettingsLoader.Data.OwnerId)

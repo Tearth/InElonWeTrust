@@ -76,7 +76,7 @@ namespace InElonWeTrust.Core.Helpers
                         var methodAttributes = method.GetCustomAttributes().ToList();
                         var commandAttribute = (CommandAttribute)methodAttributes.FirstOrDefault(p => p is CommandAttribute);
 
-                        if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenCommandAttribute))
+                        if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenAttribute))
                         {
                             if (!_subCommands.ContainsKey(groupAttribute.GroupType))
                             {
