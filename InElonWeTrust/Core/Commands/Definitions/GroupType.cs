@@ -5,7 +5,7 @@
         [GroupTypeDescription(":rocket:", "Launches", "information about all SpaceX launches")]
         Launches,
 
-        [GroupTypeDescription(":frame_photo:", "Media", "commands related with Twitter, Flickr and Reddit")]
+        [GroupTypeDescription(":frame_photo:", "Media", "commands related to Twitter, Flickr and Reddit")]
         Media,
 
         [GroupTypeDescription(":warning:", "Notifications", "subscribe to get all newest content")]

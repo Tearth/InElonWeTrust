@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.Commands
     {
         [Command("RandomVideo")]
         [Aliases("Video", "rv")]
-        [Description("Get a random video related with SpaceX.")]
+        [Description("Get a random video related to SpaceX.")]
         public async Task RandomVideoAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
