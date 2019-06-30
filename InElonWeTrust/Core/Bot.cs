@@ -41,6 +41,7 @@ namespace InElonWeTrust.Core
     public class Bot
     {
         public static DiscordClient Client { get; set; }
+        public static bool LogExecutedCommands { get; set; }
 
         private readonly CommandsNextExtension _commands;
         private readonly OddityCore _oddity;
@@ -62,6 +63,7 @@ namespace InElonWeTrust.Core
             _oddity.OnDeserializationError += Oddity_OnDeserializationError;
 
             Client = new DiscordClient(GetClientConfiguration());
+            LogExecutedCommands = true;
 
             Client.Ready += Client_Ready;
             Client.Heartbeated += Client_Heartbeat;
@@ -105,6 +107,7 @@ namespace InElonWeTrust.Core
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 CaseSensitive = false,
+                IgnoreExtraArguments = true,
                 PrefixResolver = CustomPrefixPredicate,
 
                 Services = BuildDependencies()
@@ -234,8 +237,11 @@ namespace InElonWeTrust.Core
 
         private async Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
-            _logger.Info(GetCommandInfo(e.Context));
-            await _diagnosticService.AddExecutedCommandAsync(e.Command, e.Context.Guild);
+            if (LogExecutedCommands)
+            {
+                _logger.Info(GetCommandInfo(e.Context));
+                await _diagnosticService.AddExecutedCommandAsync(e.Command, e.Context.Guild);
+            }
         }
 
         private async Task Commands_CommandError(CommandErrorEventArgs e)
