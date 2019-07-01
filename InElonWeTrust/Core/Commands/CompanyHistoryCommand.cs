@@ -39,8 +39,7 @@ namespace InElonWeTrust.Core.Commands
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAddedAsync;
         }
 
-        [Command("CompanyHistory")]
-        [Aliases("History", "ch")]
+        [Command("CompanyHistory"), Aliases("History")]
         [Description("Get a list of the most important events related to SpaceX.")]
         public async Task CompanyHistoryAsync(CommandContext ctx)
         {

@@ -25,8 +25,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.Rockets, async p => await oddity.Rockets.GetAll().ExecuteAsync());
         }
 
-        [Command("Rockets")]
-        [Aliases("GetRockets")]
+        [Command("Rockets"), Aliases("GetRockets")]
         [Description("Get a list of all SpaceX rockets.")]
         public async Task RocketsAsync(CommandContext ctx)
         {

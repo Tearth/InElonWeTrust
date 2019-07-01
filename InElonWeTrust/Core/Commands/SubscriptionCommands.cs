@@ -28,7 +28,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleElonTwitter")]
-        [Aliases("TogElonTwitter", "SubscribeElonTwitter", "SubElonTwitter", "tet")]
         [Description("Toggle Elon Musk Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleElonTwitterNotificationsAsync(CommandContext ctx)
@@ -38,7 +37,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleSpaceXTwitter")]
-        [Aliases("TogSpaceXTwitter", "SubscribeSpaceXTwitter", "SubSpaceXTwitter", "tst")]
         [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXTwitterNotificationsAsync(CommandContext ctx)
@@ -48,7 +46,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleSpaceXFleetTwitter")]
-        [Aliases("TogSpaceXFleetTwitter", "SubscribeSpaceXFleetTwitter", "SubSpaceXFleetTwitter", "tsft")]
         [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXFleetTwitterNotificationsAsync(CommandContext ctx)
@@ -58,7 +55,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleFlickr")]
-        [Aliases("TogFlickr", "SubscribeFlickr", "SubFlickr", "tf")]
         [Description("Toggle Flickr profile (the bot will post all new photos from SpaceX profile on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleFlickrNotificationsAsync(CommandContext ctx)
@@ -68,7 +64,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleLaunches")]
-        [Aliases("TogLaunches", "SubscribeLaunches", "SubLaunches", "tl")]
         [Description("Toggle launch notifications (the bot will post notification on this channel when the next launch will be coming).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleLaunchNotificationsAsync(CommandContext ctx)
@@ -78,7 +73,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("ToggleReddit")]
-        [Aliases("SubscribeReddit", "SubReddit", "tr")]
         [Description("Toggle Reddit notifications (the bot will post all hottest Reddit topics on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleRedditNotificationsAsync(CommandContext ctx)
@@ -87,8 +81,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.Reddit);
         }
 
-        [Command("EnableAllNotifications")]
-        [Aliases("SubscribeAll", "SubAll", "ean")]
+        [Command("EnableAllNotifications"), Aliases("EnableNotifications", "EnableNotification")]
         [Description("Enable all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task EnableAllNotificationsAsync(CommandContext ctx)
@@ -105,8 +98,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Command("DisableAllNotifications")]
-        [Aliases("UnsubscribeAll", "UnsubAll", "dan")]
+        [Command("DisableAllNotifications"), Aliases("DisableNotifications", "DisableNotification")]
         [Description("Disable all notifications on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task DisableAllNotificationsAsync(CommandContext ctx)
@@ -123,8 +115,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Command("NotificationStatus")]
-        [Aliases("NotificationsStatus", "SubscriptionStatus", "SubscriptionsStatus", "SubStatus", "ns")]
+        [Command("NotificationStatus"), Aliases("NotificationsStatus")]
         [Description("Get an information about subscriptions related to this channel.")]
         public async Task NotificationStatusAsync(CommandContext ctx)
         {

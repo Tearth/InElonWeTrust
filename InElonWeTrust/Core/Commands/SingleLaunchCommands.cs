@@ -36,8 +36,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.Launches.GetLatest().ExecuteAsync());
         }
 
-        [Command("NextLaunch")]
-        [Aliases("Next", "nl")]
+        [Command("NextLaunch"), Aliases("Next")]
         [Description("Get an information about the next launch.")]
         public async Task NextLaunchAsync(CommandContext ctx)
         {
@@ -52,8 +51,7 @@ namespace InElonWeTrust.Core.Commands
             await _launchNotificationsService.AddMessageToSubscribe(ctx.Channel, sentMessage);
         }
 
-        [Command("LatestLaunch")]
-        [Aliases("Latest", "ll")]
+        [Command("LatestLaunch"), Aliases("Latest")]
         [Description("Get an information about the latest launch.")]
         public async Task LatestLaunchAsync(CommandContext ctx)
         {
@@ -65,8 +63,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Command("RandomLaunch")]
-        [Aliases("Random", "rl")]
+        [Command("RandomLaunch"), Aliases("Random")]
         [Description("Get an information about random launch.")]
         public async Task RandomLaunchAsync(CommandContext ctx)
         {
@@ -79,8 +76,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Command("GetLaunch")]
-        [Aliases("Launch", "gl")]
+        [Command("GetLaunch"), Aliases("Launch")]
         [Description("Get an information about the launch with the specified flight number (which can be obtained by `e!AllLaunches` command).")]
         public async Task GetLaunchAsync(CommandContext ctx, [Description("Launch number")] int id)
         {

@@ -31,8 +31,7 @@ namespace InElonWeTrust.Core.Commands
             launchNotificationsService.OnLaunchNotification += LaunchNotificationsOnLaunchNotificationAsync;
         }
 
-        [Command("__LaunchNotificationsCommands__Hidden")]
-        [Hidden]
+        [Hidden, Command("__LaunchNotificationsCommands__Hidden")]
         // ReSharper disable once UnusedMember.Global
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task HiddenCommandAsync(CommandContext ctx)

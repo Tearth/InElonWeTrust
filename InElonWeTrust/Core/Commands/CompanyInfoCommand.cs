@@ -24,8 +24,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.CompanyInfo, async p => await oddity.Company.GetInfo().ExecuteAsync());
         }
 
-        [Command("CompanyInfo")]
-        [Aliases("Company", "ci", "info")]
+        [Command("CompanyInfo"), Aliases("SpaceX", "Company")]
         [Description("Get the most important information about SpaceX.")]
         public async Task CompanyInfoAsync(CommandContext ctx)
         {

@@ -54,8 +54,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProviderAsync(p));
         }
 
-        [Command("UpcomingLaunches")]
-        [Aliases("Upcoming", "ul", "NextLaunches")]
+        [Command("UpcomingLaunches"), Aliases("Upcoming", "NextLaunches")]
         [Description("Get a list of upcoming launches.")]
         public async Task UpcomingLaunchesAsync(CommandContext ctx)
         {
@@ -63,8 +62,7 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchesAsync(ctx, CacheContentType.UpcomingLaunches);
         }
 
-        [Command("PastLaunches")]
-        [Aliases("Past", "pl")]
+        [Command("PastLaunches"), Aliases("Past", "PreviousLaunches")]
         [Description("Get a list of past launches.")]
         public async Task PastLaunchesAsync(CommandContext ctx)
         {
@@ -72,8 +70,7 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchesAsync(ctx, CacheContentType.PastLaunches);
         }
 
-        [Command("AllLaunches")]
-        [Aliases("All", "Launches", "GetLaunchesAsync", "al")]
+        [Command("AllLaunches"), Aliases("All", "Launches")]
         [Description("Get a list of all launches.")]
         public async Task AllLaunchesAsync(CommandContext ctx)
         {
@@ -82,7 +79,6 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("FailedLaunches")]
-        [Aliases("FailedStarts", "fs")]
         [Description("Get a list of all failed launches.")]
         public async Task FailedLaunchesAsync(CommandContext ctx)
         {
@@ -100,7 +96,6 @@ namespace InElonWeTrust.Core.Commands
         }*/
 
         [Command("LaunchesWithOrbit")]
-        [Aliases("Orbit", "o")]
         [Description("Get a list of all launches with the specified orbit.")]
         public async Task LaunchesWithOrbitAsync(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
         {

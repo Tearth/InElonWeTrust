@@ -20,8 +20,7 @@ namespace InElonWeTrust.Core.Commands
             _quoteEmbedGenerator = quoteEmbedGenerator;
         }
 
-        [Command("RandomElonQuote")]
-        [Aliases("RandomQuote", "ElonQuote", "Quote", "q")]
+        [Command("RandomElonQuote"), Aliases("RandomQuote", "ElonQuote", "Quote")]
         [Description("Get a random Elon quote.")]
         public async Task GetElonQuoteAsync(CommandContext ctx)
         {

@@ -9,7 +9,6 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
-using InElonWeTrust.Core.Settings;
 using NLog;
 
 namespace InElonWeTrust.Core.Commands
@@ -32,9 +31,7 @@ namespace InElonWeTrust.Core.Commands
             _redditService.OnNewHotTopic += Reddit_OnNewHotTopicAsync;
         }
 
-        [Hidden]
-        [Command("RandomRedditTopic")]
-        [Aliases("RandomReddit", "RandomTopic", "Reddit", "rrt")]
+        [Hidden, Command("RandomRedditTopic"), Aliases("RandomReddit", "RandomTopic")]
         [Description("Get a random Reddit topic from /r/spacex.")]
         public async Task RandomRedditTopicAsync(CommandContext ctx)
         {
@@ -46,14 +43,11 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [Command("ReloadRedditCache"), Hidden, Description("Reload cached Reddit topics in the database.")]
+        [RequireOwner]
+        [Hidden, Command("ReloadRedditCache")]
+        [Description("Reload cached Reddit topics in the database.")]
         public async Task ReloadRedditCacheAsync(CommandContext ctx)
         {
-            if (ctx.User.Id != SettingsLoader.Data.OwnerId)
-            {
-                return;
-            }
-
             await _redditService.ReloadCachedTopicsAsync();
         }
 

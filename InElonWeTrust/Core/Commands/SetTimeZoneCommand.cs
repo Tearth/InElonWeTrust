@@ -18,8 +18,7 @@ namespace InElonWeTrust.Core.Commands
             _timeZoneService = timeZoneService;
         }
 
-        [Command("SetTimeZone")]
-        [Aliases("TimeZone")]
+        [Command("SetTimeZone"), Aliases("TimeZone")]
         [Description("Set a local timezone (local time will be displayed in launch information). Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List (column \"TZ database name\", e.g `e!SetTimeZone Europe/Warsaw`).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task SetTimeZoneAsync(CommandContext ctx, [Description("Name of the timezone")] string timeZoneName)

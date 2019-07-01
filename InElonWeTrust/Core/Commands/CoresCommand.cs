@@ -37,8 +37,7 @@ namespace InElonWeTrust.Core.Commands
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAddedAsync;
         }
 
-        [Command("Cores")]
-        [Aliases("c", "CoresList")]
+        [Command("Cores"), Aliases("CoresList")]
         [Description("Get a list of all SpaceX cores.")]
         public async Task CoresAsync(CommandContext ctx)
         {

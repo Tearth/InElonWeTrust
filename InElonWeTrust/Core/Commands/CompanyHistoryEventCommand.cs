@@ -27,8 +27,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.CompanyHistory, async p => await oddity.Company.GetHistory().ExecuteAsync());
         }
 
-        [Command("GetEvent")]
-        [Aliases("Event", "e")]
+        [Command("GetEvent"), Aliases("Event")]
         [Description("Get an information about event with the specified id.")]
         public async Task GetEventAsync(CommandContext ctx, [Description("Event id which can be obtained by `e!CompanyHistory`")] int id)
         {

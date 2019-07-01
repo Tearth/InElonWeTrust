@@ -24,8 +24,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.Roadster, async p => await oddity.Roadster.Get().ExecuteAsync());
         }
 
-        [Command("Roadster")]
-        [Aliases("TeslaRoadster", "Tesla", "Starman")]
+        [Command("Roadster"), Aliases("TeslaRoadster", "Tesla", "Starman")]
         [Description("Get an information about Tesla Roadster sent on Falcon Heavy (`e!getlaunch 55`).")]
         public async Task CompanyInfoAsync(CommandContext ctx)
         {

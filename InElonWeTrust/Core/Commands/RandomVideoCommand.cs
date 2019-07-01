@@ -12,8 +12,7 @@ namespace InElonWeTrust.Core.Commands
     [Commands(GroupType.Miscellaneous)]
     public class RandomVideoCommand : BaseCommandModule
     {
-        [Command("RandomVideo")]
-        [Aliases("Video", "rv")]
+        [Command("RandomVideo"), Aliases("Video")]
         [Description("Get a random video related to SpaceX.")]
         public async Task RandomVideoAsync(CommandContext ctx)
         {

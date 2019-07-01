@@ -25,8 +25,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await oddity.Launchpads.GetAll().ExecuteAsync());
         }
 
-        [Command("Launchpads")]
-        [Aliases("GetLaunchpads", "LaunchpadList")]
+        [Command("Launchpads"), Aliases("GetLaunchpads", "LaunchpadList")]
         [Description("Get a list of all SpaceX launchpads.")]
         public async Task LaunchpadsAsync(CommandContext ctx)
         {

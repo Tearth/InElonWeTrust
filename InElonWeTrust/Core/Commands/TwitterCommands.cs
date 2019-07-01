@@ -10,9 +10,7 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Services.Twitter;
-using InElonWeTrust.Core.Settings;
 using NLog;
-using Tweetinvi.Models;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -34,8 +32,7 @@ namespace InElonWeTrust.Core.Commands
             _twitterService.OnNewTweets += TwitterOnNewTweetsAsync;
         }
 
-        [Command("RandomElonTweet")]
-        [Aliases("ElonTweet", "ret")]
+        [Command("RandomElonTweet"), Aliases("ElonTweet")]
         [Description("Get a random Elon's tweet.")]
         public async Task RandomElonTweetAsync(CommandContext ctx)
         {
@@ -47,8 +44,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [Command("RandomSpaceXTweet")]
-        [Aliases("SpaceXTweet", "rst")]
+        [Command("RandomSpaceXTweet"), Aliases("SpaceXTweet")]
         [Description("Get a random SpaceX's tweet.")]
         public async Task RandomSpaceXTweetAsync(CommandContext ctx)
         {
@@ -60,8 +56,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [Command("RandomSpaceXFleetTweet")]
-        [Aliases("SpaceXFleetTweet", "rsft")]
+        [Command("RandomSpaceXFleetTweet"), Aliases("SpaceXFleetTweet")]
         [Description("Get a random SpaceXFleet's tweet.")]
         public async Task RandomSpaceXFleetTweetAsync(CommandContext ctx)
         {
@@ -73,16 +68,11 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        [Hidden]
-        [Command("ReloadTwitterCache")]
+        [RequireOwner]
+        [Hidden, Command("ReloadTwitterCache")]
         [Description("Reload cached tweets in the database.")]
         public async Task ReloadTwitterCacheAsync(CommandContext ctx)
         {
-            if (ctx.User.Id != SettingsLoader.Data.OwnerId)
-            {
-                return;
-            }
-
             await _twitterService.ReloadCachedTweetsAsync(false);
         }
 

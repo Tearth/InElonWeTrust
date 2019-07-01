@@ -10,7 +10,6 @@ using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Flickr;
 using InElonWeTrust.Core.Services.Subscriptions;
-using InElonWeTrust.Core.Settings;
 using NLog;
 
 namespace InElonWeTrust.Core.Commands
@@ -33,8 +32,7 @@ namespace InElonWeTrust.Core.Commands
             _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhotoAsync;
         }
 
-        [Command("RandomFlickrPhoto")]
-        [Aliases("FlickrPhoto", "Flickr", "rfp")]
+        [Command("RandomFlickrPhoto"), Aliases("RandomPhoto", "FlickrPhoto")]
         [Description("Get a random photo from the SpaceX Flickr profile.")]
         public async Task RandomFlickrPhotoAsync(CommandContext ctx)
         {
@@ -46,16 +44,11 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Hidden]
-        [Command("ReloadFlickrCache")]
+        [RequireOwner]
+        [Hidden, Command("ReloadFlickrCache")]
         [Description("Reload cached Flickr photos in the database.")]
         public async Task ReloadFlickrCacheAsync(CommandContext ctx)
         {
-            if (ctx.User.Id != SettingsLoader.Data.OwnerId)
-            {
-                return;
-            }
-
             await _flickrService.ReloadCachedPhotosAsync();
         }
 
