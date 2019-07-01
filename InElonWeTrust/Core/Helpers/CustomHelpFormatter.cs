@@ -29,29 +29,25 @@ namespace InElonWeTrust.Core.Helpers
 
         public override BaseHelpFormatter WithCommand(Command command)
         {
-            _commandName = command.Name;
+            var commandAttribute = (CommandAttribute)command.CustomAttributes.First(p => p is CommandAttribute);
+
+            _commandName = commandAttribute.Name;
             _commandDescription = command.Description;
 
-            if (command.Overloads.Count > 0)
+            foreach (var argument in command.Overloads[0].Arguments)
             {
-                foreach (var argument in command.Overloads[0].Arguments)
+                var argumentBuilder = new StringBuilder();
+                argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
+
+                if (argument.DefaultValue != null)
                 {
-                    var argumentBuilder = new StringBuilder();
-                    argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
-
-                    if (argument.DefaultValue != null)
-                    {
-                        argumentBuilder.Append($" Default value: {argument.DefaultValue}");
-                    }
-
-                    _parameters.Add(argumentBuilder.ToString());
+                    argumentBuilder.Append($" Default value: {argument.DefaultValue}");
                 }
+
+                _parameters.Add(argumentBuilder.ToString());
             }
 
-            foreach (var alias in command.Aliases)
-            {
-                _aliases.Add($"`{alias}`");
-            }
+            _aliases.AddRange(command.Aliases.Select(p => $"`{p}`"));
 
             return this;
         }
@@ -113,22 +109,23 @@ namespace InElonWeTrust.Core.Helpers
             helpBuilder.Append("SpaceX Discord bot providing a lot of stuff related to SpaceX and Elon Musk. " +
                                "Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help [command_name]` to get " +
                                "more detailed information about the specified command. The bot is case-insensitive and has " +
-                               "no troubles with spaces between the prefix and the command.\r\n\r\n");
+                               "no troubles with spaces between the prefix and the command. Data provided by "+
+                               "[Unofficial SpaceX API](https://github.com/r-spacex/SpaceX-API).\r\n\r\n");
             helpBuilder.Append(":newspaper: Join to **[InElonWeTrust bot support](https://discord.gg/cf6ZPZ3)**\r\n");
             helpBuilder.Append(":computer: Profile on **[GitHub](https://github.com/Tearth/InElonWeTrust)**, **[discordbots.org](https://discordbots.org/bot/462742130016780337)** and **[bots.ondiscord.xyz](https://bots.ondiscord.xyz/bots/462742130016780337)**\r\n");
-            helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot) to your server!**");
+            helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot) to your guild!**");
 
             embed.AddField(":rocket: In Elon We Trust", helpBuilder.ToString());
             helpBuilder.Clear();
 
-            var orderedSubCommands = _subCommands.OrderBy(p => p.Key).ToList();
-            foreach (var group in orderedSubCommands)
+            var orderedSubCommands = _subCommands.OrderBy(p => p.Key);
+            foreach (var (key, value) in orderedSubCommands)
             {
-                var groupDescription = GetGroupDescription(group.Key);
+                var groupDescription = GetGroupDescription(key);
 
-                helpBuilder.Append( "\r\n\r\n");
+                helpBuilder.Append("\r\n\r\n");
                 helpBuilder.Append($"{groupDescription.Icon} **{groupDescription.Group}** *({groupDescription.Description}):*\r\n");
-                helpBuilder.Append($"{string.Join(", ", group.Value)}");
+                helpBuilder.Append($"{string.Join(", ", value)}");
 
                 embed.AddField("\u200b", helpBuilder.ToString());
                 helpBuilder.Clear();

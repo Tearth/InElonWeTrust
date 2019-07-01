@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.Commands
     public class PreburnerCommand : BaseCommandModule
     {
         [RequireOwner]
-        [Hidden, Command("Preburner")]
+        [Hidden, Command("Preburner"), Aliases("Preburn")]
         [Description("Preburn all non hidden commands to speed up their execution.")]
         public async Task PreburnerAsync(CommandContext ctx)
         {
