@@ -12,6 +12,10 @@ namespace InElonWeTrust.Core.Commands
     public class SetTimeZoneCommand : BaseCommandModule
     {
         private readonly TimeZoneService _timeZoneService;
+        private const string SetTimeZoneParameterDescription = 
+            "Name of the timezone. Complete list is available on " +
+            "[Wikipedia page](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) " +
+            "(column \"**TZ database name**\", e.g. `e!SetTimeZone Europe/Warsaw` or `e!SetTimeZone Etc/GMT+11`)";
 
         public SetTimeZoneCommand(TimeZoneService timeZoneService)
         {
@@ -19,9 +23,9 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("SetTimeZone"), Aliases("TimeZone")]
-        [Description("Set a local timezone (local time will be displayed in launch information). Complete list is available on https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List (column \"TZ database name\", e.g `e!SetTimeZone Europe/Warsaw`).")]
+        [Description("Set a local timezone (local time will be displayed in the launch information).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
-        public async Task SetTimeZoneAsync(CommandContext ctx, [Description("Name of the timezone")] string timeZoneName)
+        public async Task SetTimeZoneAsync(CommandContext ctx, [Description(SetTimeZoneParameterDescription), RemainingText] string timeZoneName)
         {
             await ctx.TriggerTypingAsync();
 
