@@ -26,11 +26,31 @@ namespace InElonWeTrust.Core.Commands
 
             foreach (var command in commandsWithoutDuplicates)
             {
-                var fakeContext = ctx.CommandsNext.CreateFakeContext(ctx.User, ctx.Channel, $"{ctx.Prefix}{command.Name} 10", ctx.Prefix, command, "10");
+                var parameters = GetParametersForCommand(command);
+                var message = $"{ctx.Prefix}{command.Name} {parameters}";
+
+                var fakeContext = ctx.CommandsNext.CreateFakeContext(ctx.User, ctx.Channel, message, ctx.Prefix, command, parameters);
                 await ctx.CommandsNext.ExecuteCommandAsync(fakeContext);
             }
 
             Bot.LogExecutedCommands = true;
+        }
+
+        private string GetParametersForCommand(Command command)
+        {
+            var output = string.Empty;
+            foreach (var parameter in command.Overloads[0].Arguments)
+            {
+                switch (parameter.Name)
+                {
+                    case "id": output += "10 "; break;
+                    case "timeZoneName": output += "Europe/Warsaw "; break;
+                    case "coreSerial": output += "B1050 "; break;
+                    case "orbitType": output += "GEO "; break;
+                }
+            }
+
+            return output;
         }
     }
 }
