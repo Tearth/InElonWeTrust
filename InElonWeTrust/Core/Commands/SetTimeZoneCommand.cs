@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            if (_timeZoneService.TimeZoneExists(ctx.RawArgumentString))
+            if (_timeZoneService.TimeZoneExists(timeZoneName))
             {
                 await _timeZoneService.SetTimeZoneAsync(ctx.Guild.Id, timeZoneName);
                 await ctx.RespondAsync($"Time zone has been set to {ctx.RawArgumentString}. You can reset it in the future by `e!ResetTimeZone`.");
