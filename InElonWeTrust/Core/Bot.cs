@@ -267,12 +267,15 @@ namespace InElonWeTrust.Core
                     var similarCommand = _commands.RegisteredCommands
                         .Select(p => new
                         {
+                            Name = p.Key,
                             Command = p.Value,
                             Distance = StringComparer.CalculateLevenshteinDistance(
                                  p.Key.ToLower(),
                                  commandNotFoundException.CommandName.ToLower())
                         })
-                        .Where(p => p.Distance <= commandNotFoundException.CommandName.Length / 6 + 1)
+                        .Where(p => 
+                            !p.Command.IsHidden &&
+                            p.Distance <= commandNotFoundException.CommandName.Length / 6 + 1)
                         .OrderBy(p => p.Distance)
                         .FirstOrDefault();
 
@@ -280,10 +283,9 @@ namespace InElonWeTrust.Core
                     {
                         var newMessage = $"{similarCommand.Command.Name} {parameters}";
 
-                        var commandAttribute = (CommandAttribute)similarCommand.Command.CustomAttributes.First(p => p is CommandAttribute);
                         var message = $"Typo in command detected but found a similar one: " +
                                       $"{commandNotFoundException.CommandName} -> " +
-                                      $"{commandAttribute.Name}";
+                                      $"{similarCommand.Name}";
 
                         _logger.Warn(message);
                         await e.Context.RespondAsync($"*{message}*");
