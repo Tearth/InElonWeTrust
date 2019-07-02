@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -73,6 +74,7 @@ namespace InElonWeTrust.Core
             Client.ClientErrored += Client_ClientError;
             Client.SocketErrored += Client_SocketError;
             Client.SocketClosed += Client_SocketClosed;
+            Client.Resumed += Client_Resumed;
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
@@ -263,16 +265,30 @@ namespace InElonWeTrust.Core
                     var parameters = string.Join(' ', splitMessage.Skip(1));
 
                     var similarCommand = _commands.RegisteredCommands
-                        .FirstOrDefault(p => StringComparer.CalculateLevenshteinDistance(
-                                                 p.Key.ToLower(),
-                                                 commandNotFoundException.CommandName.ToLower()) <= p.Key.Length / 6 + 1);
+                        .Select(p => new
+                        {
+                            Command = p.Value,
+                            Distance = StringComparer.CalculateLevenshteinDistance(
+                                 p.Key.ToLower(),
+                                 commandNotFoundException.CommandName.ToLower())
+                        })
+                        .Where(p => p.Distance <= commandNotFoundException.CommandName.Length / 6 + 1)
+                        .OrderBy(p => p.Distance)
+                        .FirstOrDefault();
 
-                    var newMessage = $"{similarCommand.Key} {parameters}";
-                    if (similarCommand.Value != null)
+                    if (similarCommand != null)
                     {
-                        _logger.Warn($"Typo in command detected but found a similar one: {commandNotFoundException.CommandName} -> {similarCommand.Key}");
+                        var newMessage = $"{similarCommand.Command.Name} {parameters}";
 
-                        var fakeContext = e.Context.CommandsNext.CreateFakeContext(e.Context.User, e.Context.Channel, newMessage, e.Context.Prefix, similarCommand.Value, parameters);
+                        var commandAttribute = (CommandAttribute)similarCommand.Command.CustomAttributes.First(p => p is CommandAttribute);
+                        var message = $"Typo in command detected but found a similar one: " +
+                                      $"{commandNotFoundException.CommandName} -> " +
+                                      $"{commandAttribute.Name}";
+
+                        _logger.Warn(message);
+                        await e.Context.RespondAsync($"*{message}*");
+
+                        var fakeContext = e.Context.CommandsNext.CreateFakeContext(e.Context.User, e.Context.Channel, newMessage, e.Context.Prefix, similarCommand.Command, parameters);
                         await e.Context.CommandsNext.ExecuteCommandAsync(fakeContext);
                     }
                     else
@@ -330,6 +346,11 @@ namespace InElonWeTrust.Core
         private Task Client_SocketClosed(SocketCloseEventArgs e)
         {
             //_watchdog.ResetApp();
+            return Task.CompletedTask;
+        }
+
+        private Task Client_Resumed(ReadyEventArgs e)
+        {
             return Task.CompletedTask;
         }
 
