@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Commands
             Bot.Client.ChannelDeleted += Client_ChannelDeletedAsync;
         }
 
-        [Command("ToggleElonTwitter")]
+        [Command("ToggleElonTwitter"), Aliases("ToggleElonTwitterNotifications")]
         [Description("Toggle Elon Musk Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleElonTwitterNotificationsAsync(CommandContext ctx)
@@ -36,7 +36,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.ElonTwitter);
         }
 
-        [Command("ToggleSpaceXTwitter")]
+        [Command("ToggleSpaceXTwitter"), Aliases("ToggleSpaceXTwitterNotifications")]
         [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXTwitterNotificationsAsync(CommandContext ctx)
@@ -45,7 +45,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.SpaceXTwitter);
         }
 
-        [Command("ToggleSpaceXFleetTwitter")]
+        [Command("ToggleSpaceXFleetTwitter"), Aliases("ToggleSpaceXFleetTwitterNotifications")]
         [Description("Toggle SpaceX Twitter profile (the bot will post all new tweets on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleSpaceXFleetTwitterNotificationsAsync(CommandContext ctx)
@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.SpaceXFleetTwitter);
         }
 
-        [Command("ToggleFlickr")]
+        [Command("ToggleFlickr"), Aliases("ToggleFlickrNotifications")]
         [Description("Toggle Flickr profile (the bot will post all new photos from SpaceX profile on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleFlickrNotificationsAsync(CommandContext ctx)
@@ -63,7 +63,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.Flickr);
         }
 
-        [Command("ToggleLaunches")]
+        [Command("ToggleLaunches"), Aliases("ToggleLaunchNotifications")]
         [Description("Toggle launch notifications (the bot will post notification on this channel when the next launch will be coming).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleLaunchNotificationsAsync(CommandContext ctx)
@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Commands
             await ToggleNotificationsAsync(ctx, SubscriptionType.NextLaunch);
         }
 
-        [Command("ToggleReddit")]
+        [Command("ToggleReddit"), Aliases("ToggleRedditNotifications")]
         [Description("Toggle Reddit notifications (the bot will post all hottest Reddit topics on this channel).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task ToggleRedditNotificationsAsync(CommandContext ctx)
