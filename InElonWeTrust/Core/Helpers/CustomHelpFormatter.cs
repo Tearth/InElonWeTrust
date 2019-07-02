@@ -60,11 +60,10 @@ namespace InElonWeTrust.Core.Helpers
             foreach (var type in assemblyTypes)
             {
                 var attributes = type.GetCustomAttributes().ToList();
-                var commandGroupAttribute = attributes.FirstOrDefault(p => p is CommandsAttribute);
+                var commandGroupAttribute = (CommandsAttribute)attributes.FirstOrDefault(p => p is CommandsAttribute);
 
                 if (commandGroupAttribute != null)
                 {
-                    var groupAttribute = (CommandsAttribute)attributes.First(p => p is CommandsAttribute);
                     var commandHandlers = type.GetMethods().ToList();
 
                     foreach (var method in commandHandlers)
@@ -74,17 +73,17 @@ namespace InElonWeTrust.Core.Helpers
 
                         if (commandAttribute != null && !methodAttributes.Any(p => p is HiddenAttribute))
                         {
-                            if (!_subCommands.ContainsKey(groupAttribute.GroupType))
+                            if (!_subCommands.ContainsKey(commandGroupAttribute.GroupType))
                             {
-                                _subCommands.Add(groupAttribute.GroupType, new List<string>());
+                                _subCommands.Add(commandGroupAttribute.GroupType, new List<string>());
                             }
 
-                            _subCommands[groupAttribute.GroupType].Add($"`{commandAttribute.Name}`");
+                            _subCommands[commandGroupAttribute.GroupType].Add($"`{commandAttribute.Name}`");
                         }
 
-                        if (_subCommands.ContainsKey(groupAttribute.GroupType))
+                        if (_subCommands.ContainsKey(commandGroupAttribute.GroupType))
                         {
-                            _subCommands[groupAttribute.GroupType] = _subCommands[groupAttribute.GroupType].OrderBy(p => p).ToList();
+                            _subCommands[commandGroupAttribute.GroupType] = _subCommands[commandGroupAttribute.GroupType].OrderBy(p => p).ToList();
                         }
                     }
                 }
