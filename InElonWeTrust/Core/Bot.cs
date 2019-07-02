@@ -35,6 +35,7 @@ using Newtonsoft.Json.Serialization;
 using NLog;
 using Oddity;
 using Oddity.API.Builders;
+using StringComparer = InElonWeTrust.Core.Helpers.StringComparer;
 
 namespace InElonWeTrust.Core
 {
@@ -254,10 +255,31 @@ namespace InElonWeTrust.Core
             var sendErrorMessageOnChannel = true;
             switch (e.Exception)
             {
-                case CommandNotFoundException _:
+                case CommandNotFoundException commandNotFoundException:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
-                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+                    var messageContent = e.Context.Message.Content;
+                    var messageWithoutPrefix = messageContent.Replace(e.Context.Prefix, "");
+                    var splitMessage = messageWithoutPrefix.Split(' ');
+                    var parameters = string.Join(' ', splitMessage.Skip(1));
+
+                    var similarCommand = _commands.RegisteredCommands
+                        .FirstOrDefault(p => StringComparer.CalculateLevenshteinDistance(
+                                                 p.Key.ToLower(),
+                                                 commandNotFoundException.CommandName.ToLower()) <= p.Key.Length / 6 + 1);
+
+                    var newMessage = $"{similarCommand.Key} {parameters}";
+                    if (similarCommand.Value != null)
+                    {
+                        _logger.Warn($"Typo in command detected but found a similar one: {commandNotFoundException.CommandName} -> {similarCommand.Key}");
+
+                        var fakeContext = e.Context.CommandsNext.CreateFakeContext(e.Context.User, e.Context.Channel, newMessage, e.Context.Prefix, similarCommand.Value, parameters);
+                        await e.Context.CommandsNext.ExecuteCommandAsync(fakeContext);
+                    }
+                    else
+                    {
+                        errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
+                        _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+                    }
 
                     sendErrorMessageOnChannel = false;
                     break;
