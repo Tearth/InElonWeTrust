@@ -83,7 +83,7 @@ namespace InElonWeTrust.Core.Services.Reddit
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Can't refresh Reddit topics.");
+                _logger.Error(ex, "Failed to reload Reddit topics");
             }
         }
 

@@ -48,7 +48,7 @@ namespace InElonWeTrust.Core.Services.Cache
             {
                 if (!_dataProviders.TryGetValue(type, out var dataProvider))
                 {
-                    throw new NoDataProviderException($"{type} data provider doesn't exists in cache.");
+                    throw new NoDataProviderException($"{type} data provider doesn't exist in cache.");
                 }
 
                 if (!_items.ContainsKey(new Tuple<CacheContentType, string>(type, parameter)))

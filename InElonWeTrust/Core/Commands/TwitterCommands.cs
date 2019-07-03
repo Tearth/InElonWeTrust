@@ -92,12 +92,14 @@ namespace InElonWeTrust.Core.Commands
 
                         await channel.SendMessageAsync(embed: embed);
                     }
-                    catch (UnauthorizedException)
+                    catch (UnauthorizedException ex)
                     {
                         var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                         var guildOwner = guild.Owner;
 
-                        _logger.Warn($"No permissions to send message on channel {channelData.ChannelId}, removing all subscriptions and sending message to {guildOwner.Nickname}.");
+                        _logger.Warn($"No permissions to send message on channel [{channelData.ChannelId}], " +
+                                     $"removing all subscriptions and sending message to {guildOwner.Nickname} [{guildOwner.Id}]");
+                        _logger.Warn($"JSON: {ex.JsonMessage}");
 
                         await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
@@ -105,14 +107,16 @@ namespace InElonWeTrust.Core.Commands
                         var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
                         await ownerDm.SendMessageAsync(embed: errorEmbed);
                     }
-                    catch (NotFoundException)
+                    catch (NotFoundException ex)
                     {
-                        _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions.");
+                        _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
+                        _logger.Warn($"JSON: {ex.JsonMessage}");
+
                         await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ex, $"Can't send tweet on the channel with id {channelData.ChannelId}");
+                        _logger.Error(ex, $"Can't send tweet on the channel with id [{channelData.ChannelId}]");
                     }
                 }
 

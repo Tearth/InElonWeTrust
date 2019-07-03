@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Timers;
 using InElonWeTrust.Core.Settings;
 using NLog;
@@ -46,13 +47,13 @@ namespace InElonWeTrust.Core.Services.BotLists
                 {
                     await botList.UpdateStatusAsync(Bot.Client.Guilds.Count);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    _logger.Log(LogLevel.Warn, $"Can't update {botList.Link} list");
+                    _logger.Log(LogLevel.Warn, $"Can't update {botList.Link} list: {ex.Message}");
                 }
             }
 
-            _logger.Log(LogLevel.Info, "Common status updated.");
+            _logger.Log(LogLevel.Info, "Botlist status updated");
         }
     }
 }

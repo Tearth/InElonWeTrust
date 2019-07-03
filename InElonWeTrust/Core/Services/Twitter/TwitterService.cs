@@ -178,7 +178,7 @@ namespace InElonWeTrust.Core.Services.Twitter
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to reload cached tweets.");
+                _logger.Error(ex, "Failed to reload cached tweets");
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
@@ -133,9 +134,19 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
                             await SendLaunchNotificationToUserAsync(member, nextLaunch);
                         }
+                        catch (UnauthorizedException ex)
+                        {
+                            _logger.Warn($"No permissions to send launch notification to [{user.Id}] (from guild [{user.GuildId}])");
+                            _logger.Warn($"JSON: {ex.JsonMessage}");
+                        }
+                        catch (NotFoundException ex)
+                        {
+                            _logger.Warn($"User [{user.Id}] (from guild [{user.GuildId}]) not found");
+                            _logger.Warn($"JSON: {ex.JsonMessage}");
+                        }
                         catch (Exception ex)
                         {
-                            _logger.Warn(ex, $"Can't send launch notification to the user with id {user.UserId}");
+                            _logger.Warn(ex, $"Can't send launch notification to the user with id [{user.UserId}] (from guild [{user.GuildId}])");
                         }
                     }
 

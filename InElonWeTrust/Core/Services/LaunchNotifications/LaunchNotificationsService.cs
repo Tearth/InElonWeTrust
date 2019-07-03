@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Unable to update notifications");
+                _logger.Error(ex, "Unable to update launch notifications");
             }
         }
 
