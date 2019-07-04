@@ -43,6 +43,7 @@ namespace InElonWeTrust.Core
     {
         public static DiscordClient Client { get; set; }
         public static bool LogExecutedCommands { get; set; }
+        public static int HandledMessagesCount { get; set; }
 
         private readonly CommandsNextExtension _commands;
         private readonly OddityCore _oddity;
@@ -72,6 +73,7 @@ namespace InElonWeTrust.Core
             Client.SocketErrored += Client_SocketError;
             Client.SocketClosed += Client_SocketClosed;
             Client.Resumed += Client_Resumed;
+            Client.MessageCreated += Client_MessageCreated;
 
             _commands = Client.UseCommandsNext(GetCommandsConfiguration());
             _commands.CommandExecuted += Commands_CommandExecuted;
@@ -349,6 +351,12 @@ namespace InElonWeTrust.Core
         private Task Client_Resumed(ReadyEventArgs e)
         {
             _logger.Warn("Client resumed");
+            return Task.CompletedTask;
+        }
+
+        private Task Client_MessageCreated(MessageCreateEventArgs e)
+        {
+            HandledMessagesCount++;
             return Task.CompletedTask;
         }
 

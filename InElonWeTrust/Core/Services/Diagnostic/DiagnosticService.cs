@@ -16,16 +16,16 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         private readonly StatsPanelService _statsPanelService;
         private readonly Timer _displayDiagnosticTimer;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private int _lastHandledMessagesCount;
 
-        private const int DisplayDiagnosticIntervalMinutes = 30;
+        private const int DisplayDiagnosticIntervalMinutes = 15;
 
         public DiagnosticService()
         {
             _statsPanelService = new StatsPanelService();
 
-            _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
-
 #if !DEBUG
+            _displayDiagnosticTimer = new Timer(DisplayDiagnosticIntervalMinutes * 60 * 1000);
             _displayDiagnosticTimer.Elapsed += DisplayDiagnosticTimerOnElapsedAsync;
             _displayDiagnosticTimer.Start();
 #endif
@@ -77,14 +77,20 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         private void DisplayDiagnostic()
         {
             var guildsCount = Bot.Client.Guilds.Count;
-            var membersCount = Bot.Client.Guilds.Values.Sum(p => p.MemberCount);
+            var humansCount = Bot.Client.Guilds.Values.Sum(p => p.Members.Count(m => !m.Value.IsBot));
+            var botsCount = Bot.Client.Guilds.Values.Sum(p => p.Members.Count(m => m.Value.IsBot));
+            var totalMembersCount = humansCount + botsCount;
 
-            _logger.Info($"Diagnostic info: {guildsCount} guilds, {membersCount} members");
+            _logger.Info($"==== Diagnostic info: {guildsCount} guilds, {totalMembersCount} members ({humansCount} humans and {botsCount} bots) ====");
 
             using (var databaseContext = new DatabaseContext())
             {
                 var guildsStats = databaseContext.GuildsStats.OrderByDescending(p => p.CommandExecutionsCount).ToList();
-                _logger.Info($" ==== Total commands usage: {guildsStats.Sum(p => p.CommandExecutionsCount)} ==== ");
+                _logger.Info($"==== Total commands usage: {guildsStats.Sum(p => p.CommandExecutionsCount)} ====");
+                _logger.Info($"==== Handled messages: {Bot.HandledMessagesCount} " +
+                             $"({Bot.HandledMessagesCount - _lastHandledMessagesCount} in the last {DisplayDiagnosticIntervalMinutes} minutes) ====");
+
+                _lastHandledMessagesCount = Bot.HandledMessagesCount;
             }
         }
     }
