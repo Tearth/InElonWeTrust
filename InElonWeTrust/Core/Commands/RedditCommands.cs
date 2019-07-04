@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Commands
                     var guildOwner = guild.Owner;
 
                     _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
-                                 $"removing all subscriptions and sending message to {guildOwner.Nickname} [{guildOwner.Id}]");
+                                 $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
                     _logger.Warn($"JSON: {ex.JsonMessage}");
 
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));

@@ -348,11 +348,14 @@ namespace InElonWeTrust.Core
         private Task Client_SocketClosed(SocketCloseEventArgs e)
         {
             //_watchdog.ResetApp();
+
+            _logger.Warn($"Client socket error: {e.CloseMessage} ({e.CloseCode})");
             return Task.CompletedTask;
         }
 
         private Task Client_Resumed(ReadyEventArgs e)
         {
+            _logger.Warn("Client resumed");
             return Task.CompletedTask;
         }
 
