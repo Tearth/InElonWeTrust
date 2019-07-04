@@ -59,43 +59,55 @@ namespace InElonWeTrust.Core.Commands
             {
                 try
                 {
-                    foreach (var photo in e)
-                    {
-                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                        var embed = _flickrEmbedGenerator.Build(photo);
-
-                        await channel.SendMessageAsync(string.Empty, false, embed);
-                    }
-                }
-                catch (UnauthorizedException ex)
-                {
-                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
-                    var guildOwner = guild.Owner;
-
-                    _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, " +
-                                 $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
-                    _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
-
-                    var ownerDm = await guildOwner.CreateDmChannelAsync();
-                    var errorEmbed = _flickrEmbedGenerator.BuildUnauthorizedError();
-                    await ownerDm.SendMessageAsync(embed: errorEmbed);
-                }
-                catch (NotFoundException ex)
-                {
-                    _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
-                    _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+                    await SendPhotosToChannel(channelData, e);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send Flickr photo to the channel with id [{channelData.ChannelId}]");
+                    _logger.Error(ex, "General error occurred when trying to send Flickr notification");
                 }
             }
 
             _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
+        }
+
+        private async Task SendPhotosToChannel(SubscribedChannel channelData, List<CachedFlickrPhoto> photos)
+        {
+            try
+            {
+                foreach (var photo in photos)
+                {
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                    var embed = _flickrEmbedGenerator.Build(photo);
+
+                    await channel.SendMessageAsync(string.Empty, false, embed);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                var guildOwner = guild.Owner;
+
+                _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, " +
+                             $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+
+                var ownerDm = await guildOwner.CreateDmChannelAsync();
+                var errorEmbed = _flickrEmbedGenerator.BuildUnauthorizedError();
+                await ownerDm.SendMessageAsync(embed: errorEmbed);
+            }
+            catch (NotFoundException ex)
+            {
+                _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Can't send Flickr photo to the channel with id [{channelData.ChannelId}]");
+            }
         }
     }
 }

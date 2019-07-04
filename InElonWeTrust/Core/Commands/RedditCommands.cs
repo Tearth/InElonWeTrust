@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.Database.Models;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Reddit;
 using InElonWeTrust.Core.Services.Subscriptions;
@@ -58,43 +59,55 @@ namespace InElonWeTrust.Core.Commands
             {
                 try
                 {
-                    foreach (var thread in e)
-                    {
-                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                        var embed = _redditEmbedGenerator.Build(thread);
-
-                        await channel.SendMessageAsync(embed: embed);
-                    }
-                }
-                catch (UnauthorizedException ex)
-                {
-                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
-                    var guildOwner = guild.Owner;
-
-                    _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
-                                 $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
-                    _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
-
-                    var ownerDm = await guildOwner.CreateDmChannelAsync();
-                    var errorEmbed = _redditEmbedGenerator.BuildUnauthorizedError();
-                    await ownerDm.SendMessageAsync(embed: errorEmbed);
-                }
-                catch (NotFoundException ex)
-                {
-                    _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
-                    _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                    await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+                    await SendTopicToChannel(channelData, e);
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, $"Can't send Reddit topic to the channel with id [{channelData.ChannelId}]");
+                    _logger.Error(ex, "General error occurred when trying to send Reddit notification");
                 }
             }
 
             _logger.Info($"Reddit notifications sent to {channels.Count} channels");
+        }
+
+        private async Task SendTopicToChannel(SubscribedChannel channelData, List<RedditChildData> topics)
+        {
+            try
+            {
+                foreach (var thread in topics)
+                {
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                    var embed = _redditEmbedGenerator.Build(thread);
+
+                    await channel.SendMessageAsync(embed: embed);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                var guildOwner = guild.Owner;
+
+                _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
+                             $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+
+                var ownerDm = await guildOwner.CreateDmChannelAsync();
+                var errorEmbed = _redditEmbedGenerator.BuildUnauthorizedError();
+                await ownerDm.SendMessageAsync(embed: errorEmbed);
+            }
+            catch (NotFoundException ex)
+            {
+                _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Can't send Reddit topic to the channel with id [{channelData.ChannelId}]");
+            }
         }
     }
 }

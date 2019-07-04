@@ -136,17 +136,17 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                         }
                         catch (UnauthorizedException ex)
                         {
-                            _logger.Warn($"No permissions to send launch notification to [{user.Id}] (from guild [{user.GuildId}])");
+                            _logger.Warn($"No permissions to send user launch notification to [{user.Id}] (from guild [{user.GuildId}])");
                             _logger.Warn($"JSON: {ex.JsonMessage}");
                         }
                         catch (NotFoundException ex)
                         {
-                            _logger.Warn($"User [{user.Id}] (from guild [{user.GuildId}]) not found");
+                            _logger.Warn($"Can't send user launch notification, user [{user.Id}] (from guild [{user.GuildId}]) not found");
                             _logger.Warn($"JSON: {ex.JsonMessage}");
                         }
                         catch (Exception ex)
                         {
-                            _logger.Warn(ex, $"Can't send launch notification to the user with id [{user.UserId}] (from guild [{user.GuildId}])");
+                            _logger.Error(ex, $"Can't send user launch notification to [{user.UserId}] (from guild [{user.GuildId}])");
                         }
                     }
 
@@ -178,7 +178,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Can't update user launch notifications");
+                _logger.Error(ex, "General error occurred when trying to send user launch notifications");
             }
         }
     }

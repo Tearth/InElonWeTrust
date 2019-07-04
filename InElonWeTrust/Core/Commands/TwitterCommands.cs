@@ -78,49 +78,64 @@ namespace InElonWeTrust.Core.Commands
 
         private async void TwitterOnNewTweetsAsync(object sender, List<CachedTweet> tweets)
         {
-            foreach (var tweet in tweets)
+            var user = (KeyValuePair<TwitterUserType, string>)sender;
+            var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(user.Value);
+            var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
+
+            foreach (var channelData in channels)
             {
-                var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(tweet.CreatedByRealName);
-                var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
-
-                foreach (var channelData in channels)
+                try
                 {
-                    try
-                    {
-                        var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                        var embed = _twitterEmbedGenerator.Build(tweet);
-
-                        await channel.SendMessageAsync(embed: embed);
-                    }
-                    catch (UnauthorizedException ex)
-                    {
-                        var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
-                        var guildOwner = guild.Owner;
-
-                        _logger.Warn($"No permissions to send message on channel [{channelData.ChannelId}], " +
-                                     $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
-                        _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                        await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
-
-                        var ownerDm = await guildOwner.CreateDmChannelAsync();
-                        var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
-                        await ownerDm.SendMessageAsync(embed: errorEmbed);
-                    }
-                    catch (NotFoundException ex)
-                    {
-                        _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
-                        _logger.Warn($"JSON: {ex.JsonMessage}");
-
-                        await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex, $"Can't send tweet on the channel with id [{channelData.ChannelId}]");
-                    }
+                    await SendTweetsToChannel(channelData, tweets);
                 }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "General error occurred when trying to send Twitter notification");
+                }
+            }
 
-                _logger.Info($"Twitter notifications sent to {channels.Count} channels");
+            _logger.Info($"Twitter notifications sent to {channels.Count} channels");
+        }
+
+        private async Task SendTweetsToChannel(SubscribedChannel channelData, List<CachedTweet> tweets)
+        {
+            try
+            {
+                foreach (var tweet in tweets)
+                {
+                    var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
+                    var embed = _twitterEmbedGenerator.Build(tweet);
+
+                    await channel.SendMessageAsync(embed: embed);
+                }
+            }
+            catch (UnauthorizedException ex)
+            {
+                var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                var guildOwner = guild.Owner;
+
+                _logger.Warn($"No permissions to send message on channel [{channelData.ChannelId}], " +
+                             $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(
+                    ulong.Parse(channelData.ChannelId));
+
+                var ownerDm = await guildOwner.CreateDmChannelAsync();
+                var errorEmbed = _twitterEmbedGenerator.BuildUnauthorizedError();
+                await ownerDm.SendMessageAsync(embed: errorEmbed);
+            }
+            catch (NotFoundException ex)
+            {
+                _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
+                _logger.Warn($"JSON: {ex.JsonMessage}");
+
+                await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(
+                    ulong.Parse(channelData.ChannelId));
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Can't send tweet on the channel with id [{channelData.ChannelId}]");
             }
         }
     }

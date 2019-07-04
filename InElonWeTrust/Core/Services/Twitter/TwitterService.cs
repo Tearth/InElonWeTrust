@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Services.Twitter
         private readonly SemaphoreSlim _updateSemaphore = new SemaphoreSlim(1);
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private const int UpdateNotificationsIntervalMinutes = 5;
+        private const int UpdateNotificationsIntervalMinutes = 1;
 
         public TwitterService()
         {
@@ -97,7 +97,7 @@ namespace InElonWeTrust.Core.Services.Twitter
                         var allTweets = GetAllTweets(account.Value, checkOnlyLastTweets);
                         var cachedTweetsToSend = GetTweetsToSend(allTweets);
                         await AddTweetsToDatabase(cachedTweetsToSend);
-
+                        
                         if (cachedTweetsToSend.Count > 0 && sendNotifyWhenNewTweet && checkOnlyLastTweets)
                         {
                             OnNewTweets?.Invoke(account, cachedTweetsToSend);
