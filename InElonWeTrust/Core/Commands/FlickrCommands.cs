@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
@@ -52,14 +54,16 @@ namespace InElonWeTrust.Core.Commands
             await _flickrService.ReloadCachedPhotosAsync();
         }
 
-        private async void FlickrServiceOnNewFlickrServicePhotoAsync(object sender, List<CachedFlickrPhoto> e)
+        private async void FlickrServiceOnNewFlickrServicePhotoAsync(object sender, List<CachedFlickrPhoto> photos)
         {
             var subscribedChannels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
+            var embedsToSend = photos.Select(p => _flickrEmbedGenerator.Build(p)).ToList();
+
             foreach (var channelData in subscribedChannels)
             {
                 try
                 {
-                    await SendPhotosToChannel(channelData, e);
+                    await SendPhotosToChannel(channelData, embedsToSend);
                 }
                 catch (Exception ex)
                 {
@@ -67,18 +71,16 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"Flickr notifications sent to {subscribedChannels.Count} channels");
+            _logger.Info($"{photos.Count} Flickr notifications sent to {subscribedChannels.Count} channels");
         }
 
-        private async Task SendPhotosToChannel(SubscribedChannel channelData, List<CachedFlickrPhoto> photos)
+        private async Task SendPhotosToChannel(SubscribedChannel channelData, List<DiscordEmbed> photoEmbeds)
         {
             try
             {
-                foreach (var photo in photos)
+                foreach (var embed in photoEmbeds)
                 {
                     var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _flickrEmbedGenerator.Build(photo);
-
                     await channel.SendMessageAsync(string.Empty, false, embed);
                 }
             }

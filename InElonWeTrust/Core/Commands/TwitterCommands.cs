@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
@@ -81,12 +83,13 @@ namespace InElonWeTrust.Core.Commands
             var user = (KeyValuePair<TwitterUserType, string>)sender;
             var subscriptionType = _twitterService.GetSubscriptionTypeByUserName(user.Value);
             var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
+            var embedsToSend = tweets.Select(p => _twitterEmbedGenerator.Build(p)).ToList();
 
             foreach (var channelData in channels)
             {
                 try
                 {
-                    await SendTweetsToChannel(channelData, tweets);
+                    await SendTweetsToChannel(channelData, embedsToSend);
                 }
                 catch (Exception ex)
                 {
@@ -94,18 +97,16 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"Twitter notifications sent to {channels.Count} channels");
+            _logger.Info($"{tweets.Count} Twitter notifications sent to {channels.Count} channels");
         }
 
-        private async Task SendTweetsToChannel(SubscribedChannel channelData, List<CachedTweet> tweets)
+        private async Task SendTweetsToChannel(SubscribedChannel channelData, List<DiscordEmbed> tweetEmbeds)
         {
             try
             {
-                foreach (var tweet in tweets)
+                foreach (var embed in tweetEmbeds)
                 {
                     var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _twitterEmbedGenerator.Build(tweet);
-
                     await channel.SendMessageAsync(embed: embed);
                 }
             }

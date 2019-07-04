@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using InElonWeTrust.Core.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
@@ -52,14 +54,16 @@ namespace InElonWeTrust.Core.Commands
             await _redditService.ReloadCachedTopicsAsync();
         }
 
-        private async void Reddit_OnNewHotTopicAsync(object sender, List<RedditChildData> e)
+        private async void Reddit_OnNewHotTopicAsync(object sender, List<RedditChildData> topics)
         {
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Reddit);
+            var embedsToSend = topics.Select(p => _redditEmbedGenerator.Build(p)).ToList();
+
             foreach (var channelData in channels)
             {
                 try
                 {
-                    await SendTopicToChannel(channelData, e);
+                    await SendTopicToChannel(channelData, embedsToSend);
                 }
                 catch (Exception ex)
                 {
@@ -67,18 +71,16 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"Reddit notifications sent to {channels.Count} channels");
+            _logger.Info($"{topics.Count} Reddit notifications sent to {channels.Count} channels");
         }
 
-        private async Task SendTopicToChannel(SubscribedChannel channelData, List<RedditChildData> topics)
+        private async Task SendTopicToChannel(SubscribedChannel channelData, List<DiscordEmbed> topicEmbeds)
         {
             try
             {
-                foreach (var thread in topics)
+                foreach (var embed in topicEmbeds)
                 {
                     var channel = await Bot.Client.GetChannelAsync(ulong.Parse(channelData.ChannelId));
-                    var embed = _redditEmbedGenerator.Build(thread);
-
                     await channel.SendMessageAsync(embed: embed);
                 }
             }
