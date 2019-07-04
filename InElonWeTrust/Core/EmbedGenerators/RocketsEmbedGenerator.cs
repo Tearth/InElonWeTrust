@@ -12,7 +12,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         private const int FieldLength = 30;
 
-        public DiscordEmbedBuilder Build(List<RocketInfo> rockets)
+        public DiscordEmbed Build(List<RocketInfo> rockets)
         {
             var embedBuilder = new DiscordEmbedBuilder
             {

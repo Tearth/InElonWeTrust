@@ -8,7 +8,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class UsefulLinksEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(List<UsefulLink> links)
+        public DiscordEmbed Build(List<UsefulLink> links)
         {
             var embedBuilder = new DiscordEmbedBuilder
             {

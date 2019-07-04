@@ -6,7 +6,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class CompanyInfoEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(CompanyInfo companyInfo)
+        public DiscordEmbed Build(CompanyInfo companyInfo)
         {
             var embed = new DiscordEmbedBuilder
             {

@@ -129,7 +129,7 @@ namespace InElonWeTrust.Core.Commands
 
         private async Task ToggleNotificationsAsync(CommandContext ctx,  SubscriptionType type)
         {
-            DiscordEmbedBuilder embed;
+            DiscordEmbed embed;
             if (await _subscriptionsService.IsChannelSubscribed(ctx.Channel.Id, type))
             {
                 await _subscriptionsService.RemoveSubscriptionAsync(ctx.Channel.Id, type);

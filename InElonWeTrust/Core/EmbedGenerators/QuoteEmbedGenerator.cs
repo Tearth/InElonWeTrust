@@ -5,7 +5,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class QuoteEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(string quote)
+        public DiscordEmbed Build(string quote)
         {
             var embed = new DiscordEmbedBuilder
             {

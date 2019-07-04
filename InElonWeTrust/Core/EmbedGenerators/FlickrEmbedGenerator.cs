@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class FlickrEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(CachedFlickrPhoto photo)
+        public DiscordEmbed Build(CachedFlickrPhoto photo)
         {
             var date = photo.UploadDate.ToString("F", CultureInfo.InvariantCulture);
             var embed = new DiscordEmbedBuilder
@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        public DiscordEmbedBuilder BuildUnauthorizedError()
+        public DiscordEmbed BuildUnauthorizedError()
         {
             var embed = new DiscordEmbedBuilder
             {

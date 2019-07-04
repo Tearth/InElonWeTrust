@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchpadsEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(List<LaunchpadInfo> launchpads)
+        public DiscordEmbed Build(List<LaunchpadInfo> launchpads)
         {
             var embedBuilder = new DiscordEmbedBuilder
             {

@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         private const string StarmanImageUrl = "https://i.imgur.com/wQg7DBS.jpg";
         private readonly DateTime _launchDate = new DateTime(2018, 2, 6);
 
-        public DiscordEmbedBuilder Build(RoadsterInfo roadster)
+        public DiscordEmbed Build(RoadsterInfo roadster)
         {
             var daysFromLaunch = (int)(DateTime.Now - _launchDate).TotalDays;
 

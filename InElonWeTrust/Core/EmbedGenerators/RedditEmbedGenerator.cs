@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class RedditEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(RedditChildData topic)
+        public DiscordEmbed Build(RedditChildData topic)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -29,7 +29,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        public DiscordEmbedBuilder BuildUnauthorizedError()
+        public DiscordEmbed BuildUnauthorizedError()
         {
             var embed = new DiscordEmbedBuilder
             {

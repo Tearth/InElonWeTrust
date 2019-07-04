@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class TwitterEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(CachedTweet tweet)
+        public DiscordEmbed Build(CachedTweet tweet)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -35,7 +35,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        public DiscordEmbedBuilder BuildUnauthorizedError()
+        public DiscordEmbed BuildUnauthorizedError()
         {
             var embed = new DiscordEmbedBuilder
             {

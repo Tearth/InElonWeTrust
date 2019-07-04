@@ -34,7 +34,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             };
         }
 
-        public DiscordEmbedBuilder BuildStatus(SubscriptionStatus status)
+        public DiscordEmbed BuildStatus(SubscriptionStatus status)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        public DiscordEmbedBuilder BuildMessageOnAdd(SubscriptionType type)
+        public DiscordEmbed BuildMessageOnAdd(SubscriptionType type)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        public DiscordEmbedBuilder BuildMessageOnRemove(SubscriptionType type)
+        public DiscordEmbed BuildMessageOnRemove(SubscriptionType type)
         {
             var embed = new DiscordEmbedBuilder
             {

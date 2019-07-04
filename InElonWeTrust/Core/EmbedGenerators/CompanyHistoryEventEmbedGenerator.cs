@@ -7,7 +7,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class CompanyHistoryEventEmbedGenerator
     {
-        public DiscordEmbedBuilder Build(HistoryEvent historyEvent)
+        public DiscordEmbed Build(HistoryEvent historyEvent)
         {
             var eventEmbedBuilder = new DiscordEmbedBuilder
             {
@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         }
 
 
-        public DiscordEmbedBuilder BuildError()
+        public DiscordEmbed BuildError()
         {
             var errorEmbedBuilder = new DiscordEmbedBuilder
             {

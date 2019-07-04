@@ -9,7 +9,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 {
     public class LaunchNotificationEmbedBuilder
     {
-        public DiscordEmbedBuilder Build(LaunchNotification launchNotification)
+        public DiscordEmbed Build(LaunchNotification launchNotification)
         {
             var oldLaunchState = launchNotification.OldLaunchState;
             var launch = launchNotification.NewLaunchState;
@@ -84,7 +84,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         }
 
 
-        public DiscordEmbedBuilder BuildUnauthorizedError()
+        public DiscordEmbed BuildUnauthorizedError()
         {
             var embed = new DiscordEmbedBuilder
             {
