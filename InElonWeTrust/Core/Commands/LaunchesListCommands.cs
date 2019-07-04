@@ -86,15 +86,6 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchesAsync(ctx, CacheContentType.FailedStarts);
         }
 
-        /*[Command("FailedLandings")]
-        [Aliases("fl")]
-        [Description("Get information about all failed launches.")]
-        public async Task FailedLandings(CommandContext ctx)
-        {
-            await ctx.TriggerTypingAsync();
-            await DisplayLaunchesAsync(ctx, CacheContentType.FailedLandings);
-        }*/
-
         [Command("LaunchesWithOrbit")]
         [Description("Get a list of all launches with the specified orbit.")]
         public async Task LaunchesWithOrbitAsync(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)

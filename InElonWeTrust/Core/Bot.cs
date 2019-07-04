@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -49,7 +48,6 @@ namespace InElonWeTrust.Core
         private readonly OddityCore _oddity;
         private readonly CacheService _cacheService;
         private readonly DiagnosticService _diagnosticService;
-        //private WatchdogService _watchdog;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -58,7 +56,6 @@ namespace InElonWeTrust.Core
             _oddity = new OddityCore();
             _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
-            //_watchdog = new WatchdogService();
 
             _oddity.OnRequestSend += Oddity_OnRequestSend;
             _oddity.OnResponseReceive += Oddity_OnResponseReceive;
@@ -86,7 +83,6 @@ namespace InElonWeTrust.Core
 
         public async Task Run()
         {
-            //_watchdog.Start();
             await Client.ConnectAsync();
         }
 
@@ -200,7 +196,6 @@ namespace InElonWeTrust.Core
         {
             _logger.Info("In Elon We Trust, In Thrust We Trust.");
             _logger.Info($"DSharpPlus {Client.VersionString}");
-            //_watchdog.Stop();
 
             return Task.CompletedTask;
         }
@@ -347,8 +342,6 @@ namespace InElonWeTrust.Core
 
         private Task Client_SocketClosed(SocketCloseEventArgs e)
         {
-            //_watchdog.ResetApp();
-
             _logger.Warn($"Client socket error: {e.CloseMessage} ({e.CloseCode})");
             return Task.CompletedTask;
         }
