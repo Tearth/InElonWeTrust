@@ -210,22 +210,23 @@ namespace InElonWeTrust.Core
 
         private Task Client_GuildCreated(GuildCreateEventArgs e)
         {
-            _logger.Info($"Bot has joined to the new guild, welcome {e.Guild.Name}!");
+            _logger.Info($"$$$$ Bot has joined to the new guild, welcome {e.Guild.Name} [{e.Guild.Id}] " +
+                         $"({e.Guild.MemberCount} members) $$$$");
             return Task.CompletedTask;
         }
 
         private Task Client_GuildDeleted(GuildDeleteEventArgs e)
         {
-            _logger.Info($"Bot has been removed from {e.Guild.Name} guild.");
+            _logger.Info($"Bot has been removed from {e.Guild.Name} [{e.Guild.Id}] guild");
             return Task.CompletedTask;
         }
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            if (e.Exception.InnerException?.Message.Contains("The given key") == false)
-            {
+            //if (e.Exception.InnerException?.Message.Contains("The given key") == false)
+            //{
                 _logger.Error(e.Exception, $"Event Name: {e.EventName}");
-            }
+            //}
             return Task.CompletedTask;
         }
 
