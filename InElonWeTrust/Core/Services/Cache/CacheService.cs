@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Timers;
+using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
 using NLog;
 
@@ -62,7 +63,9 @@ namespace InElonWeTrust.Core.Services.Cache
                 }
 
                 var cachedItem = _items[new Tuple<CacheContentType, string>(type, parameter)];
-                if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= CacheItemLifeLengthMinutes)
+                var lifetimeAttribute = type.GetEnumMemberAttribute<CacheLifetimeAttribute>(type);
+
+                if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= lifetimeAttribute.Lifetime)
                 {
                     var data = await dataProvider(parameter);
                     cachedItem.Update(data);

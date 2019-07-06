@@ -14,7 +14,9 @@ namespace InElonWeTrust.Core.Services.Diagnostic
     public class DiagnosticService
     {
         private readonly StatsPanelService _statsPanelService;
+#if !DEBUG
         private readonly Timer _displayDiagnosticTimer;
+#endif
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private int _lastHandledMessagesCount;
 
