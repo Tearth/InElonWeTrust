@@ -31,7 +31,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
                 if (response != string.Empty)
                 {
-                    _logger.Error("Can't send diagnostic data to panel.");
+                    _logger.Error("Can't send diagnostic data to panel");
                 }
             }
         }

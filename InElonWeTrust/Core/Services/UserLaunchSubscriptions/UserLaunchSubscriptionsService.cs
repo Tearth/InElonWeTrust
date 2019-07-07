@@ -93,7 +93,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await AddUserSubscription(e.User.Id, e.Channel.GuildId);
-                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been added to the launch subscription list.");
+                _logger.Info($"User {e.User.Username} [{e.User.Id}] from {e.Channel.Guild.Name} [{e.Channel.Guild.Id}] " +
+                             $"has been added to the launch subscription list");
             }
         }
 
@@ -102,7 +103,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await RemoveUserSubscription(e.User.Id, e.Channel.GuildId);
-                _logger.Info($"User {e.User.Username} from {e.Channel.Guild.Name} has been removed from the launch subscription list.");
+                _logger.Info($"User {e.User.Username} [{e.User.Id}] from {e.Channel.Guild.Name} [{e.Channel.Guild.Id}] " +
+                             $"has been removed from the launch subscription list");
             }
         }
 
@@ -125,6 +127,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                 using (var databaseContext = new DatabaseContext())
                 {
                     var usersToNotify = databaseContext.UserLaunchSubscriptions.Where(p => p.LaunchId == nextLaunch.FlightNumber).ToList();
+                    var sentWithSuccess = 0;
+
                     foreach (var user in usersToNotify)
                     {
                         try
@@ -133,6 +137,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                             var member = await guild.GetMemberAsync(ulong.Parse(user.UserId));
 
                             await SendLaunchNotificationToUserAsync(member, nextLaunch);
+                            sentWithSuccess++;
                         }
                         catch (UnauthorizedException ex)
                         {
@@ -150,7 +155,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                         }
                     }
 
-                    _logger.Info($"{minutesToLaunch} to launch! {usersToNotify.Count} sent");
+                    _logger.Info($"{minutesToLaunch:#.#} minutes to launch! {usersToNotify.Count} notifications sent " +
+                                 $"({usersToNotify.Count - sentWithSuccess} errors)");
                 }
             }
         }

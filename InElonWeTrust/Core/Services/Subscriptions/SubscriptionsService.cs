@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                 await databaseContext.SubscribedChannels.AddAsync(subscribedChannel);
                 await databaseContext.SaveChangesAsync();
 
-                _logger.Info($"Subscription for {type} added");
+                _logger.Info($"Subscription for {type} added (guild [{guildId}], channel [{channelId}])");
             }
 
             return true;
@@ -54,7 +54,7 @@ namespace InElonWeTrust.Core.Services.Subscriptions
                 databaseContext.SubscribedChannels.Remove(subscribedChannel);
                 await databaseContext.SaveChangesAsync();
 
-                _logger.Info($"Subscription for {type} removed");
+                _logger.Info($"Subscription for {type} removed (channel [{channelId}])");
             }
 
             return true;

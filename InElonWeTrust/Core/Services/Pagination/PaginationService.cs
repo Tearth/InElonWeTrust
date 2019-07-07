@@ -110,7 +110,7 @@ namespace InElonWeTrust.Core.Services.Pagination
                                       "bot/channel permissions and be sure that I have ability to manage messages.*";
                 }
 
-                _logger.Warn("Can't do pagination due to permissions.");
+                _logger.Warn("Can't do pagination due to permissions");
                 await message.ModifyAsync(messageContent);
 
                 return false;

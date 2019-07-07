@@ -189,15 +189,22 @@ namespace InElonWeTrust.Core
                     var genericRegisterCommandMethod = registerCommandsMethod?.MakeGenericMethod(type);
                     genericRegisterCommandMethod?.Invoke(_commands, null);
 
-                    _logger.Info(genericRegisterCommandMethod != null ? $"{type.Name} registered" : $"Can't register {type.Name}");
+                    if (genericRegisterCommandMethod == null)
+                    {
+                        _logger.Fatal($"Can't register {type.Name}");
+                        return;
+                    }
+
+                    _logger.Info($"{type.Name} registered");
                 }
             }
         }
 
         private Task Client_Ready(ReadyEventArgs e)
         {
-            _logger.Info("In Elon We Trust, In Thrust We Trust.");
-            _logger.Info($"DSharpPlus {Client.VersionString}");
+            _logger.Info("In Elon We Trust, In Thrust We Trust");
+            _logger.Info($"DSharpPlus v{Client.VersionString}");
+            _logger.Info($"Gateway v{Client.GatewayVersion} ({Client.GatewayUri})");
 
             return Task.CompletedTask;
         }
@@ -217,7 +224,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_GuildDeleted(GuildDeleteEventArgs e)
         {
-            _logger.Info($"Bot has been removed from {e.Guild.Name} [{e.Guild.Id}] guild");
+            _logger.Info($"Bot has been removed from {e.Guild.Name} [{e.Guild.Id}] ({e.Guild.MemberCount} members)");
             return Task.CompletedTask;
         }
 
@@ -345,7 +352,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_SocketClosed(SocketCloseEventArgs e)
         {
-            _logger.Warn($"Client socket error: {e.CloseMessage} ({e.CloseCode})");
+            _logger.Warn($"Client socket error. Message: {e.CloseMessage} ({e.CloseCode})");
             return Task.CompletedTask;
         }
 
@@ -374,12 +381,12 @@ namespace InElonWeTrust.Core
 
         private void Oddity_OnResponseReceive(object sender, ResponseReceiveEventArgs e)
         {
-            _logger.Info($"Oddity response received ({e.Response?.Length} chars, status {e.StatusCode}).");
+            _logger.Info($"Oddity response received ({e.Response?.Length} chars, status {e.StatusCode})");
         }
 
         private void Oddity_OnDeserializationError(object sender, ErrorEventArgs e)
         {
-            _logger.Warn(e.ErrorContext.Error, "Oddity deserialization error.");
+            _logger.Warn(e.ErrorContext.Error, "Oddity deserialization error");
             e.ErrorContext.Handled = true;
         }
 
@@ -387,9 +394,9 @@ namespace InElonWeTrust.Core
         {
             var infoList = new List<string>
             {
-                $"Guild: {ctx.Guild.Name}",
-                $"Channel: {ctx.Channel.Name}",
-                $"User: {ctx.User.Username}",
+                $"Guild: {ctx.Guild.Name} [{ctx.Guild.Id}]",
+                $"Channel: {ctx.Channel.Name} [{ctx.Channel.Id}]",
+                $"User: {ctx.User.Username} [{ctx.User.Id}]",
                 $"Call: {ctx.Message.Content}"
             };
 
