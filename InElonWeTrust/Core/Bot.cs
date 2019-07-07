@@ -276,11 +276,11 @@ namespace InElonWeTrust.Core
                             Command = p.Value,
                             Distance = StringComparer.CalculateLevenshteinDistance(
                                  p.Key.ToLower(),
-                                 commandNotFoundException.CommandName.ToLower())
+                                 (commandNotFoundException.CommandName ?? string.Empty).ToLower())
                         })
                         .Where(p => 
                             !p.Command.IsHidden &&
-                            p.Distance <= commandNotFoundException.CommandName.Length / 6 + 1)
+                            p.Distance <= (commandNotFoundException.CommandName ?? string.Empty).Length / 6 + 1)
                         .OrderBy(p => p.Distance)
                         .FirstOrDefault();
 
