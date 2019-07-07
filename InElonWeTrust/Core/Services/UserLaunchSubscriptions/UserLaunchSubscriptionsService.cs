@@ -90,7 +90,18 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
+            string emojiName;
+            try
+            {
+                emojiName = e.Emoji.GetDiscordName();
+            }
+            catch (ArgumentNullException)
+            {
+                // Skip it, Discord API sometimes returns strange values
+                return;
+            }
+
+            if (!e.User.IsBot && emojiName == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await AddUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} [{e.User.Id}] from {e.Channel.Guild.Name} [{e.Channel.Guild.Id}] " +
@@ -100,7 +111,18 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task ClientOnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
         {
-            if (!e.User.IsBot && e.Emoji.GetDiscordName() == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
+            string emojiName;
+            try
+            {
+                emojiName = e.Emoji.GetDiscordName();
+            }
+            catch (ArgumentNullException)
+            {
+                // Skip it, Discord API sometimes returns strange values
+                return;
+            }
+
+            if (!e.User.IsBot && emojiName == SubscribeEmojiName && await IsMessageSubscribable(e.Message.Id))
             {
                 await RemoveUserSubscription(e.User.Id, e.Channel.GuildId);
                 _logger.Info($"User {e.User.Username} [{e.User.Id}] from {e.Channel.Guild.Name} [{e.Channel.Guild.Id}] " +
