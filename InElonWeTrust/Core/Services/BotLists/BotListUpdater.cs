@@ -35,6 +35,8 @@ namespace InElonWeTrust.Core.Services.BotLists
             var json = $"{{ \"{CountFieldName}\": {guildsCount} }}";
 
             var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
+            requestContent.Headers.ContentType.CharSet = string.Empty;
+
             var link = string.Format(Link, SettingsLoader.Data.BotId);
 
             var result = await _httpClient.PostAsync(link, requestContent);
