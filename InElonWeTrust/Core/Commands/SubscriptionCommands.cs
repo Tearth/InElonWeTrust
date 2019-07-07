@@ -82,7 +82,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("EnableAllNotifications"), Aliases("EnableNotifications", "EnableNotification")]
-        [Description("Enable all notifications on this channel.")]
+        [Description("Enable all notifications (Twitter, Reddit, Flickr, launches) on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task EnableAllNotificationsAsync(CommandContext ctx)
         {
@@ -99,7 +99,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("DisableAllNotifications"), Aliases("DisableNotifications", "DisableNotification")]
-        [Description("Disable all notifications on this channel.")]
+        [Description("Disable all notifications (Twitter, Reddit, Flickr, launches) on this channel.")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task DisableAllNotificationsAsync(CommandContext ctx)
         {
