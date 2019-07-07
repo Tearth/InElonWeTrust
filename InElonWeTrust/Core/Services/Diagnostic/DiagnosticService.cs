@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private int _lastHandledMessagesCount;
 
-        private const int DisplayDiagnosticIntervalMinutes = 15;
+        private const int DisplayDiagnosticIntervalMinutes = 60;
 
         public DiagnosticService()
         {
@@ -79,11 +79,14 @@ namespace InElonWeTrust.Core.Services.Diagnostic
         private void DisplayDiagnostic()
         {
             var guildsCount = Bot.Client.Guilds.Count;
-            var humansCount = Bot.Client.Guilds.Values.Sum(p => p.Members.Count(m => !m.Value.IsBot));
-            var botsCount = Bot.Client.Guilds.Values.Sum(p => p.Members.Count(m => m.Value.IsBot));
-            var totalMembersCount = humansCount + botsCount;
+            var (humans, bots) = CalculateHumansBotsCount();
+            var totalMembers = humans + bots;
 
-            _logger.Info($"==== Diagnostic info: {guildsCount} guilds, {totalMembersCount} members ({humansCount} humans and {botsCount} bots) ====");
+            _logger.Info($"==== Diagnostic info: " +
+                         $"{guildsCount} guilds, " +
+                         $"{totalMembers} members " +
+                         $"({humans} humans and " +
+                         $"{bots} bots) ====");
 
             using (var databaseContext = new DatabaseContext())
             {
@@ -94,6 +97,23 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
                 _lastHandledMessagesCount = Bot.HandledMessagesCount;
             }
+        }
+
+        private (int humans, int bots) CalculateHumansBotsCount()
+        {
+            var guilds = Bot.Client.Guilds.Values.ToList();
+            var humansCountInSmallGuilds = guilds.Where(p => !p.IsLarge).Sum(p => p.Members.Count(m => !m.Value.IsBot));
+            var botsCountInSmallGuilds = guilds.Where(p => !p.IsLarge).Sum(p => p.Members.Count(m => m.Value.IsBot));
+
+            var membersInLargeGuilds = guilds.Where(p => p.IsLarge)
+                .Select(async p => await p.GetAllMembersAsync())
+                .SelectMany(p => p.Result)
+                .ToList();
+
+            var humansInLargeGuilds = membersInLargeGuilds.Count(p => !p.IsBot);
+            var botsInLargeGuilds = membersInLargeGuilds.Count(p => p.IsBot);
+
+            return (humansCountInSmallGuilds + humansInLargeGuilds, botsCountInSmallGuilds + botsInLargeGuilds);
         }
     }
 }
