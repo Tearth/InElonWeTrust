@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Flickr.PhotoInfo;
 using InElonWeTrust.Core.Services.Flickr.PhotosList;

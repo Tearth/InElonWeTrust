@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Timers;
 using InElonWeTrust.Core.Settings;
 using NLog;

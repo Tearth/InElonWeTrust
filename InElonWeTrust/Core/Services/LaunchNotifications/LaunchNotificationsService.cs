@@ -7,7 +7,6 @@ using System.Timers;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Comparers;
 using InElonWeTrust.Core.Services.Cache;
 using NLog;
