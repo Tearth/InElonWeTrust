@@ -8,7 +8,7 @@ using InElonWeTrust.Core.Services.UsefulLinks;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class UsefulLinksCommand : BaseCommandModule
     {
         private readonly UsefulLinksService _usefulLinksService;

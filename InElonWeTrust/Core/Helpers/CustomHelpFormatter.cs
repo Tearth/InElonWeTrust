@@ -60,7 +60,7 @@ namespace InElonWeTrust.Core.Helpers
             foreach (var type in assemblyTypes)
             {
                 var attributes = type.GetCustomAttributes().ToList();
-                var commandGroupAttribute = (CommandsAttribute)attributes.FirstOrDefault(p => p is CommandsAttribute);
+                var commandGroupAttribute = (CommandsGroupAttribute)attributes.FirstOrDefault(p => p is CommandsGroupAttribute);
 
                 if (commandGroupAttribute != null)
                 {

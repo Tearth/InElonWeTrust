@@ -16,7 +16,7 @@ using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Media)]
+    [CommandsGroup(GroupType.Media)]
     public class RedditCommands : BaseCommandModule
     {
         private readonly RedditService _redditService;

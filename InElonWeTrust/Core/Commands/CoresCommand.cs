@@ -13,7 +13,7 @@ using Oddity.API.Models.DetailedCore;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class CoresCommand : BaseCommandModule
     {
         private readonly PaginationService _paginationService;

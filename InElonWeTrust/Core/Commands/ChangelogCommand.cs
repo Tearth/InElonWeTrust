@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.Changelog;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class ChangelogCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

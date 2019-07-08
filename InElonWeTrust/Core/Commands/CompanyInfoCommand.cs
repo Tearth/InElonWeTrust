@@ -10,7 +10,7 @@ using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class CompanyInfoCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

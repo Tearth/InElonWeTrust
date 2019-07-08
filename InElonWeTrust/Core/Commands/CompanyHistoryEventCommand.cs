@@ -13,7 +13,7 @@ using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class CompanyHistoryEventCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

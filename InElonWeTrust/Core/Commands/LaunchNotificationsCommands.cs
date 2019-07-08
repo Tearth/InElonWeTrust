@@ -13,7 +13,7 @@ using NLog;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Notifications)]
+    [CommandsGroup(GroupType.Notifications)]
     public class LaunchNotificationsCommands : BaseCommandModule
     {
         private readonly LaunchNotificationsService _launchNotificationsService;

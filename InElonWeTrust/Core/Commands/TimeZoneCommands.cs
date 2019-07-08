@@ -8,7 +8,7 @@ using InElonWeTrust.Core.Services.TimeZone;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.TimeZone)]
+    [CommandsGroup(GroupType.TimeZone)]
     public class TimeZoneCommands : BaseCommandModule
     {
         private readonly TimeZoneService _timeZoneService;

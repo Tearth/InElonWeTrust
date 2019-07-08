@@ -8,7 +8,7 @@ using InElonWeTrust.Core.Services.Twitter;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class AvatarCommand : BaseCommandModule
     {
         private readonly TwitterService _twitterService;

@@ -18,7 +18,7 @@ using Oddity.API.Models.Launch.Rocket.SecondStage.Orbit;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Launches)]
+    [CommandsGroup(GroupType.Launches)]
     public class LaunchesListCommands : BaseCommandModule
     {
         private readonly OddityCore _oddity;

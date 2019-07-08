@@ -10,7 +10,7 @@ using Oddity.API.Models.Roadster;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class RoadsterCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

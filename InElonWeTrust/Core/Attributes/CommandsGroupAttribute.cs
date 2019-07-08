@@ -4,11 +4,11 @@ using InElonWeTrust.Core.Commands.Definitions;
 namespace InElonWeTrust.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class CommandsAttribute : Attribute
+    public class CommandsGroupAttribute : Attribute
     {
         public GroupType GroupType { get; }
 
-        public CommandsAttribute(GroupType groupType)
+        public CommandsGroupAttribute(GroupType groupType)
         {
             GroupType = groupType;
         }

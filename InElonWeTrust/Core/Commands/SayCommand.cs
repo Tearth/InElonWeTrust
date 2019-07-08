@@ -6,7 +6,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class SayCommand : BaseCommandModule
     {
         [RequireOwner]

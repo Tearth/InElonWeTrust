@@ -11,7 +11,7 @@ using Oddity.API.Models.Launchpad;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class LaunchpadsCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

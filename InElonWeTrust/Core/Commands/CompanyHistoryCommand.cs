@@ -15,7 +15,7 @@ using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class CompanyHistoryCommand : BaseCommandModule
     {
         private readonly PaginationService _paginationService;

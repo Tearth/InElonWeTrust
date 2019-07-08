@@ -10,7 +10,7 @@ using Oddity.API.Models.DetailedCore;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class CoreInfoCommand : BaseCommandModule
     {
         private readonly CacheService _cacheService;

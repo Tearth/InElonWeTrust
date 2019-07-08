@@ -8,7 +8,7 @@ using InElonWeTrust.Core.Services.Quotes;
 
 namespace InElonWeTrust.Core.Commands
 {
-    [Commands(GroupType.Miscellaneous)]
+    [CommandsGroup(GroupType.Miscellaneous)]
     public class QuotesCommands : BaseCommandModule
     {
         private readonly QuotesService _quotesService;
