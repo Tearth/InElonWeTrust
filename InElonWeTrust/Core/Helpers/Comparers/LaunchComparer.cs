@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Helpers.Comparers
             var secondLaunchFeatures = GetLaunchFeatures(second);
             var similarity = CalculateSimilarity(firstLaunchFeatures, secondLaunchFeatures);
 
-            return similarity.Similar >= similarity.Total / 2;
+            return similarity.similar >= similarity.total / 2;
         }
 
         private static List<string> GetLaunchFeatures(LaunchInfo launch)
@@ -41,7 +41,7 @@ namespace InElonWeTrust.Core.Helpers.Comparers
             };
         }
 
-        private static (int Similar, int Total) CalculateSimilarity(List<string> firstLaunchFeatures, List<string> secondLaunchFeatures)
+        private static (int similar, int total) CalculateSimilarity(List<string> firstLaunchFeatures, List<string> secondLaunchFeatures)
         {
             var similar = 0;
             var total = 0;

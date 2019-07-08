@@ -1,5 +1,6 @@
 ﻿using System;
 using DSharpPlus.Entities;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Settings;
 using NLog;
 using NLog.Targets;
@@ -17,7 +18,7 @@ namespace InElonWeTrust.Core.Helpers.Logger
                 if (Bot.Client != null)
                 {
                     var embed = new DiscordEmbedBuilder { Color = new DiscordColor(Constants.EmbedErrorColor) };
-                    embed.AddField("Error", logMessage.Substring(0, Math.Min(1024, logMessage.Length)));
+                    embed.AddField("Error", logMessage.ShortenString(1024));
 
                     var supportGuild = await Bot.Client.GetGuildAsync(SettingsLoader.Data.SupportServerId);
                     var ownerMember = await supportGuild.GetMemberAsync(SettingsLoader.Data.OwnerId);

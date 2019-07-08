@@ -15,7 +15,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1021));
+            eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1024));
             eventEmbedBuilder.AddField("Date", historyEvent.EventDate?.ToString("F"), true);
             eventEmbedBuilder.AddField("Links", GetLinksData(historyEvent), true);
 

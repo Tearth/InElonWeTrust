@@ -36,7 +36,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             embed.AddField(
                 $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
-                launch.Details.ShortenString(1000) ?? "*No description at this moment :(*");
+                launch.Details.ShortenString(1024) ?? "*No description at this moment :(*");
 
             embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
 
