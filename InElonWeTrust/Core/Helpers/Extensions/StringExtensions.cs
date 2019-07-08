@@ -9,7 +9,7 @@
                 return null;
             }
 
-            return str.Length > maxLength ? str.Substring(0, maxLength - 3).Insert(maxLength, "...") : str;
+            return str.Length > maxLength ? str.Substring(0, maxLength - 3) + "..." : str;
         }
     }
 }
