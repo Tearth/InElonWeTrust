@@ -265,9 +265,11 @@ namespace InElonWeTrust.Core
                     var messageContent = e.Context.Message.Content;
                     var messageWithoutPrefix = messageContent.Replace(e.Context.Prefix, "");
                     var splitMessage = messageWithoutPrefix.Split(' ');
+                    var commandName = splitMessage[0].ToLower();
                     var parameters = string.Join(' ', splitMessage.Skip(1));
 
-                    var similarCommand = _commands.RegisteredCommands
+                    var similarCommand = commandName == "help" ? null :
+                        _commands.RegisteredCommands
                         .Select(p => new
                         {
                             Name = p.Key,
