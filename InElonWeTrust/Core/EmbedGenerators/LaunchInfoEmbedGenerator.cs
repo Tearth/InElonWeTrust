@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Extensions;
+using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.TimeZone;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;

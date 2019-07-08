@@ -2,6 +2,7 @@
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using Oddity.API.Models.Launch;
 

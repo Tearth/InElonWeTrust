@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Extensions
 {
     public static class Extensions
     {

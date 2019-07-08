@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Extensions;
+using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;

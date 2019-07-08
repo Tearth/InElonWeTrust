@@ -1,7 +1,7 @@
 ﻿using System;
 using InElonWeTrust.Core.Commands.Definitions;
 
-namespace InElonWeTrust.Core.Attributes
+namespace InElonWeTrust.Core.Commands.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class CommandsGroupAttribute : Attribute

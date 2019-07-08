@@ -6,7 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;

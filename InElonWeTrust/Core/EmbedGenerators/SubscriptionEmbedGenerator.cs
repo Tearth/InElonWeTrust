@@ -2,6 +2,7 @@
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.EmbedGenerators

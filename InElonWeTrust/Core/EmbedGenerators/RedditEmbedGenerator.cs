@@ -4,6 +4,7 @@ using System.Text;
 using System.Web;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Reddit;
 
 namespace InElonWeTrust.Core.EmbedGenerators

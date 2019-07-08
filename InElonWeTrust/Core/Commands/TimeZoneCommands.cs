@@ -2,7 +2,7 @@
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Services.TimeZone;
 

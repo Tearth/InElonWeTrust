@@ -10,9 +10,10 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
-using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.BotLists;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Changelog;
@@ -35,7 +36,7 @@ using Newtonsoft.Json.Serialization;
 using NLog;
 using Oddity;
 using Oddity.API.Builders;
-using StringComparer = InElonWeTrust.Core.Helpers.StringComparer;
+using StringComparer = InElonWeTrust.Core.Helpers.Comparers.StringComparer;
 
 namespace InElonWeTrust.Core
 {

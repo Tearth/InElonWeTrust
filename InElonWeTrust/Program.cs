@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using InElonWeTrust.Core;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Logger;
 using NLog;
 using NLog.Targets;
 

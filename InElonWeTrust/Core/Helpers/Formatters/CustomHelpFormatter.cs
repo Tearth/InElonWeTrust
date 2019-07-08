@@ -7,10 +7,10 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.Entities;
-using InElonWeTrust.Core.Attributes;
+using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Formatters
 {
     public class CustomHelpFormatter : BaseHelpFormatter
     {

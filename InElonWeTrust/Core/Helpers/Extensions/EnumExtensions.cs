@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Extensions
 {
     public static class EnumExtensions
     {

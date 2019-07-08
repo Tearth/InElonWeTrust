@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Oddity.API.Models.Launch;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Comparers
 {
     public static class LaunchComparer
     {

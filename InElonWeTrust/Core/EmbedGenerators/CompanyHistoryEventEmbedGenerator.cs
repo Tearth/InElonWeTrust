@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Extensions;
 using Oddity.API.Models.Company;
 
 namespace InElonWeTrust.Core.EmbedGenerators

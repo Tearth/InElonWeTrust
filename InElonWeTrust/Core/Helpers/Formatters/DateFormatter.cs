@@ -2,7 +2,7 @@
 using System.Globalization;
 using Oddity.API.Models.Launch;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Formatters
 {
     public static class DateFormatter
     {

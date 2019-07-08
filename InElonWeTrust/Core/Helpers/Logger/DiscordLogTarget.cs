@@ -4,7 +4,7 @@ using InElonWeTrust.Core.Settings;
 using NLog;
 using NLog.Targets;
 
-namespace InElonWeTrust.Core.Helpers
+namespace InElonWeTrust.Core.Helpers.Logger
 {
     public sealed class DiscordLogTarget : TargetWithLayout
     {
