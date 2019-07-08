@@ -1,3 +1,6 @@
+**v1.8 [08-07-2019]**
+ - huge refactoring of the bot, everything should work just better and faster
+
 **v1.7 [24-05-2019]**
  - add SetTimeZone and ResetTimeZone commands
  - improve displaying of launch dates (information about precision)
