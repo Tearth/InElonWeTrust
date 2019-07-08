@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.TimeZone;
 namespace InElonWeTrust.Core.Commands
 {
     [Commands(GroupType.TimeZone)]
-    public class SetTimeZoneCommand : BaseCommandModule
+    public class TimeZoneCommands : BaseCommandModule
     {
         private readonly TimeZoneService _timeZoneService;
         private const string SetTimeZoneParameterDescription = 
@@ -17,7 +17,7 @@ namespace InElonWeTrust.Core.Commands
             "[Wikipedia page](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) " +
             "(column \"**TZ database name**\", e.g. `e!SetTimeZone Europe/Warsaw` or `e!SetTimeZone Etc/GMT+11`)";
 
-        public SetTimeZoneCommand(TimeZoneService timeZoneService)
+        public TimeZoneCommands(TimeZoneService timeZoneService)
         {
             _timeZoneService = timeZoneService;
         }
@@ -38,6 +38,17 @@ namespace InElonWeTrust.Core.Commands
             {
                 await ctx.RespondAsync("Invalid name of the time zone. Please type `e!help SetTimeZone` to get more information about time zone format.");
             }
+        }
+
+        [Command("ResetTimeZone")]
+        [Description("Reset local timezone (local time won't be shown again).")]
+        [RequireUserPermissions(Permissions.ManageMessages)]
+        public async Task ResetTimeZoneAsync(CommandContext ctx)
+        {
+            await ctx.TriggerTypingAsync();
+
+            await _timeZoneService.ResetTimeZoneAsync(ctx.Guild.Id);
+            await ctx.RespondAsync("Time zone has been reset.");
         }
     }
 }
