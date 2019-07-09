@@ -16,7 +16,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embedBuilder = new DiscordEmbedBuilder
             {
-                Title = "List of SpaceX rockets: ",
+                Title = "List of SpaceX rockets",
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 

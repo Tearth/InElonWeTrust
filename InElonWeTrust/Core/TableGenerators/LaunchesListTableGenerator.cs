@@ -26,12 +26,12 @@ namespace InElonWeTrust.Core.TableGenerators
         {
             _listHeader = new Dictionary<CacheContentType, string>
             {
-                {CacheContentType.UpcomingLaunches, "List of all upcoming launches:"},
-                {CacheContentType.PastLaunches, "List of all past launches:"},
-                {CacheContentType.AllLaunches, "List of all launches:"},
-                {CacheContentType.FailedStarts, "List of all failed starts:"},
-                {CacheContentType.FailedLandings, "List of all failed landings:"},
-                {CacheContentType.LaunchesWithOrbit, "List of launches with the specified orbit:"}
+                {CacheContentType.UpcomingLaunches, "List of all upcoming launches"},
+                {CacheContentType.PastLaunches, "List of all past launches"},
+                {CacheContentType.AllLaunches, "List of all launches"},
+                {CacheContentType.FailedStarts, "List of all failed starts"},
+                {CacheContentType.FailedLandings, "List of all failed landings"},
+                {CacheContentType.LaunchesWithOrbit, "List of launches with the specified orbit"}
             };
         }
 

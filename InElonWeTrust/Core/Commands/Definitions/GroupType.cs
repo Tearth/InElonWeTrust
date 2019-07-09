@@ -8,7 +8,7 @@
         [GroupTypeDescription(":frame_photo:", "Media", "commands related to Twitter, Flickr and Reddit")]
         Media,
 
-        [GroupTypeDescription(":warning:", "Notifications", "subscribe to get all newest content")]
+        [GroupTypeDescription(":warning:", "Notifications", "enable to get all newest content on the specified channel")]
         Notifications,
 
         [GroupTypeDescription(":clock4:", "Time zone", "set local timezone to see more precise times in launch information")]

@@ -16,6 +16,7 @@ namespace InElonWeTrust.Core.Commands
         public async Task PreburnerAsync(CommandContext ctx)
         {
             var commands = Bot.Client.GetCommandsNext().RegisteredCommands;
+            var helpCommand = commands.First(p => p.Key == "help").Value;
             var commandsWithoutDuplicates = commands
                 .GroupBy(p => p.Value)
                 .Where(p => !p.Key.IsHidden)
@@ -27,10 +28,14 @@ namespace InElonWeTrust.Core.Commands
             foreach (var command in commandsWithoutDuplicates)
             {
                 var parameters = GetParametersForCommand(command);
-                var message = $"{ctx.Prefix}{command.Name} {parameters}";
+                var helpMessage = $"{ctx.Prefix}help {command.Name}";
+                var commandMessage = $"{ctx.Prefix}{command.Name} {parameters}";
 
-                var fakeContext = ctx.CommandsNext.CreateFakeContext(ctx.User, ctx.Channel, message, ctx.Prefix, command, parameters);
-                await ctx.CommandsNext.ExecuteCommandAsync(fakeContext);
+                var helpFakeContext = ctx.CommandsNext.CreateFakeContext(ctx.User, ctx.Channel, helpMessage, ctx.Prefix, helpCommand, command.Name);
+                await ctx.CommandsNext.ExecuteCommandAsync(helpFakeContext);
+
+                var commandFakeContext = ctx.CommandsNext.CreateFakeContext(ctx.User, ctx.Channel, commandMessage, ctx.Prefix, command, parameters);
+                await ctx.CommandsNext.ExecuteCommandAsync(commandFakeContext);
             }
 
             Bot.LogExecutedCommands = true;

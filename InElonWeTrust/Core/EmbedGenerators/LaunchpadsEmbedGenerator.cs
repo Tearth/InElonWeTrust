@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embedBuilder = new DiscordEmbedBuilder
             {
-                Title = "List of SpaceX launchpads: ",
+                Title = "List of SpaceX launchpads",
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
