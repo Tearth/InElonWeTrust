@@ -18,7 +18,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             };
 
             embed.AddField($"{core.CoreSerial} (block {core.Block.ToString() ?? "none"})", $"{core.Details ?? "*No description at this moment :(*"}");
-            embed.AddField(":clock4: First launch date (UTC)", core.OriginalLaunch?.ToUniversalTime().ToString("F", CultureInfo.InvariantCulture) ?? "not launched yet", true);
+            embed.AddField(":clock4: First launch date (UTC)", core.OriginalLaunch?.ToUniversalTime().ToString("D", CultureInfo.InvariantCulture) ?? "not launched yet", true);
             embed.AddField(":stadium: Current status", core.Status.ToString(), true);
             embed.AddField(":recycle: Landings", GetLandingsData(core));
             embed.AddField($":rocket: Missions ({core.Missions.Count})", GetMissionsList(core.Missions));
