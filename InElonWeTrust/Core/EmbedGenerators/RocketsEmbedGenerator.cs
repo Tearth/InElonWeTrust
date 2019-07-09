@@ -73,7 +73,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         private string GetRocketPayload(List<PayloadWeightInfo> payloads)
         {
             var payloadsFormatted = new List<string>();
-            payloads.ForEach(p => payloadsFormatted.Add($"{(int)((p.Kilograms ?? 0) / 1000)} tons to {p.Type}"));
+            payloads.ForEach(p => payloadsFormatted.Add($"{(float)(p.Kilograms ?? 0) / 1000:0.#} tons to {p.Type}"));
 
             return string.Join("\r\n", payloadsFormatted);
         }
