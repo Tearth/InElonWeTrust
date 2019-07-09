@@ -322,7 +322,7 @@ namespace InElonWeTrust.Core
 
                 case ChecksFailedException _:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Error", "You have no permissions to do this action. Remember that some commands (related to subscriptions) requires Manage Messages permission.");
+                    errorEmbedBuilder.AddField(":octagonal_sign: Error", "You have no permissions to do this action. Remember that some commands (related to subscriptions) require \"Manage Messages\" permission.");
                     _logger.Warn(e.Exception, GetCommandInfo(e.Context));
 
                     break;
