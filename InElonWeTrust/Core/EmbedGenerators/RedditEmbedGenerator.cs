@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             var contentBuilder = new StringBuilder();
             contentBuilder.Append($"{topic.Author} | {topic.Upvotes} upvotes\r\n");
-            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToUniversalTime().ToString("F", CultureInfo.InvariantCulture) + " UTC");
+            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToString("F", CultureInfo.InvariantCulture) + " UTC");
 
             embed.AddField("\u200b", contentBuilder.ToString());
 

@@ -11,7 +11,10 @@ namespace InElonWeTrust.Core.Services.Reddit
         public int Upvotes { get; set; }
 
         public string Thumbnail { get; set; }
-        public float Created { get; set; }
+
+        [JsonProperty("created_utc")]
+        public ulong Created { get; set; }
+
         public string Author { get; set; }
         public string Permalink { get; set; }
     }
