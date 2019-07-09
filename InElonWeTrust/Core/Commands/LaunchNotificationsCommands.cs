@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -52,6 +53,7 @@ namespace InElonWeTrust.Core.Commands
             }
 
             var timeLeft = (launchTime - DateTime.Now.ToUniversalTime()).TotalMinutes;
+            var stopwatch = Stopwatch.StartNew();
             foreach (var channelData in channels)
             {
                 try
@@ -96,7 +98,8 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"Launch notifications sent to {channels.Count} channels");
+            _logger.Info($"Launch notifications sent to {channels.Count} channels " +
+                         $"in {stopwatch.Elapsed.TotalSeconds:0.0} seconds");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -151,6 +152,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                     var usersToNotify = databaseContext.UserLaunchSubscriptions.Where(p => p.LaunchId == nextLaunch.FlightNumber).ToList();
                     var sentWithSuccess = 0;
 
+                    var stopwatch = Stopwatch.StartNew();
                     foreach (var user in usersToNotify)
                     {
                         try
@@ -177,8 +179,8 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
                         }
                     }
 
-                    _logger.Info($"{minutesToLaunch:#.#} minutes to launch! {usersToNotify.Count} notifications sent " +
-                                 $"({usersToNotify.Count - sentWithSuccess} errors)");
+                    _logger.Info($"{minutesToLaunch:0.0} minutes to launch! {usersToNotify.Count} notifications sent " +
+                                 $"({usersToNotify.Count - sentWithSuccess} errors) in {stopwatch.Elapsed.TotalSeconds:0.0} seconds");
                 }
             }
         }

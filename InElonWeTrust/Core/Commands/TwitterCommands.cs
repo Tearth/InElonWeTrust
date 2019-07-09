@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -85,6 +86,7 @@ namespace InElonWeTrust.Core.Commands
             var channels = _subscriptionsService.GetSubscribedChannels(subscriptionType);
             var embedsToSend = tweets.Select(p => _twitterEmbedGenerator.Build(p)).ToList();
 
+            var stopwatch = Stopwatch.StartNew();
             foreach (var channelData in channels)
             {
                 try
@@ -97,7 +99,8 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"{tweets.Count} Twitter notifications sent to {channels.Count} channels");
+            _logger.Info($"{tweets.Count} Twitter notifications sent to {channels.Count} channels " +
+                         $"in {stopwatch.Elapsed.TotalSeconds:0.0} seconds");
         }
 
         private async Task SendTweetsToChannel(SubscribedChannel channelData, List<DiscordEmbed> tweetEmbeds)

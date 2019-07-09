@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -59,6 +60,7 @@ namespace InElonWeTrust.Core.Commands
             var subscribedChannels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.Flickr);
             var embedsToSend = photos.Select(p => _flickrEmbedGenerator.Build(p)).ToList();
 
+            var stopwatch = Stopwatch.StartNew();
             foreach (var channelData in subscribedChannels)
             {
                 try
@@ -71,7 +73,8 @@ namespace InElonWeTrust.Core.Commands
                 }
             }
 
-            _logger.Info($"{photos.Count} Flickr notifications sent to {subscribedChannels.Count} channels");
+            _logger.Info($"{photos.Count} Flickr notifications sent to {subscribedChannels.Count} channels " +
+                         $"in {stopwatch.Elapsed.TotalSeconds:0.0} seconds");
         }
 
         private async Task SendPhotosToChannel(SubscribedChannel channelData, List<DiscordEmbed> photoEmbeds)
