@@ -85,7 +85,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (NotFoundException ex)
                 {
-                    _logger.Warn($"Channel {channelData.ChannelId} not found, removing all subscriptions");
+                    _logger.Warn($"Channel [{channelData.ChannelId}] not found, removing all subscriptions");
                     _logger.Warn($"JSON: {ex.JsonMessage}");
 
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));

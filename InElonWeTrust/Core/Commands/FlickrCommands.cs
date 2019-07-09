@@ -89,7 +89,7 @@ namespace InElonWeTrust.Core.Commands
                 var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
                 var guildOwner = guild.Owner;
 
-                _logger.Warn($"No permissions to send message to channel {channelData.ChannelId}, " +
+                _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
                              $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
                 _logger.Warn($"JSON: {ex.JsonMessage}");
 

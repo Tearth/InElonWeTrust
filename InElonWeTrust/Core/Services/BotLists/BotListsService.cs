@@ -30,9 +30,8 @@ namespace InElonWeTrust.Core.Services.BotLists
                 new BotListUpdater("https://discord.bots.gg/api/v1/bots/{0}/stats", "guildCount", SettingsLoader.Data.DiscordBotsGgToken)
             };
 
-            _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 1000 * 60);
-
 #if !DEBUG
+            _statusRefreshTimer = new Timer(StatusUpdateIntervalMinutes * 1000 * 60);
             _statusRefreshTimer.Elapsed += StatusRefreshTimer_ElapsedAsync;
             _statusRefreshTimer.Start();
 #endif
