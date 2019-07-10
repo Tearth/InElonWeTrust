@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Can't display diagnostic data");
+                _logger.Warn(ex, "Can't display diagnostic data");
             }
         }
 
