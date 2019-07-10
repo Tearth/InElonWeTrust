@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var createdAtUtc = TimeZoneInfo.ConvertTimeToUtc(createdAtWithKind, polandTimeZone);
 
             var date = createdAtUtc.ToString("F", CultureInfo.InvariantCulture);
-            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} at {date} UTC", contentBuilder.ToString());
+            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} on {date} UTC", contentBuilder.ToString());
 
             return embed;
         }
