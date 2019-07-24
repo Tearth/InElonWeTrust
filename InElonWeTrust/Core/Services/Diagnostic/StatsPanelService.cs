@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 };
 
                 var json = JsonConvert.SerializeObject(botStats);
-                var response = webClient.UploadString("http://localhost:4000/api/stats", json);
+                var response = webClient.UploadString("https://discord.tearth.dev:4000/api/stats", json);
 
                 if (response != string.Empty)
                 {
