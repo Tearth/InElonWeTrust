@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField(":stadium: Current status", core.Status.ToString(), true);
             embed.AddField(":recycle: Landings", GetLandingsData(core));
             embed.AddField($":rocket: Missions ({core.Missions.Count})", GetMissionsList(core.Missions));
-            embed.AddField("\u200b", "*Type `e!GetLaunch [ID]` to get more detailed info abut the mission.*");
+            embed.AddField("\u200b", "*Type `e!GetLaunch [ID]` to get more detailed info about the mission.*");
 
             return embed;
         }
@@ -59,7 +59,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             if (core.WaterLanding ?? false)
             {
-                landings.Add("water landings: 1");
+                landings.Add("Water landings: 1");
             }
 
             return landings.Any() ? string.Join("\r\n", landings) : "none";
