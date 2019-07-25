@@ -22,6 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField(":stadium: Current status", core.Status.ToString(), true);
             embed.AddField(":recycle: Landings", GetLandingsData(core));
             embed.AddField($":rocket: Missions ({core.Missions.Count})", GetMissionsList(core.Missions));
+            embed.AddField("\u200b", "*Type `e!GetLaunch [ID]` to get more detailed info abut the mission.*");
 
             return embed;
         }
@@ -39,21 +40,21 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         private string GetMissionsList(List<CoreMissionInfo> missions)
         {
-            return missions.Any() ? string.Join(", ", missions.Select(p => p.Name)) : "not launched yet";
+            return missions.Any() ? string.Join("\r\n", missions.Select(p => $"{p.Flight}. {p.Name}")) : "not launched yet";
         }
 
         private string GetLandingsData(DetailedCoreInfo core)
         {
             var landings = new List<string>();
 
-            if (core.AsdsAttempt ?? false)
+            if (core.AsdsAttempts > 0)
             {
-                landings.Add("ASDS landings: " + core.AsdsLandings);
+                landings.Add($"ASDS attempts: {core.AsdsAttempts} ({core.AsdsLandings} with success)");
             }
 
-            if (core.RtlsAttempt ?? false)
+            if (core.RtlsAttempts > 0)
             {
-                landings.Add("RTLS landings: " + core.RtlsLandings);
+                landings.Add($"RTLS attempts: {core.RtlsAttempts} ({core.RtlsLandings} with success)");
             }
 
             if (core.WaterLanding ?? false)
@@ -61,7 +62,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 landings.Add("water landings: 1");
             }
 
-            return landings.Any() ? string.Join(", ", landings) : "none";
+            return landings.Any() ? string.Join("\r\n", landings) : "none";
         }
     }
 }
