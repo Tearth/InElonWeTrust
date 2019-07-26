@@ -9,6 +9,7 @@ using InElonWeTrust.Core.Services.TimeZone;
 using Oddity.API.Models.Launch;
 using Oddity.API.Models.Launch.Rocket.FirstStage;
 using Oddity.API.Models.Launch.Rocket.SecondStage;
+using Oddity.API.Models.Launchpad;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -21,7 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             _timeZoneService = timeZoneService;
         }
 
-        public DiscordEmbed Build(LaunchInfo launch, ulong? guildId, bool informAboutSubscription)
+        public DiscordEmbed Build(LaunchInfo launch, LaunchpadInfo launchpad, ulong? guildId, bool informAboutSubscription)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -55,7 +56,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 }
             }
 
-            embed.AddField(":stadium: Launchpad", launch.LaunchSite.SiteName);
+            var googleMapsLink = $"[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Location.Latitude ?? 0, launchpad.Location.Longitude ?? 0)})";
+            embed.AddField(":stadium: Launchpad", $"{launch.LaunchSite.SiteName} **[{googleMapsLink}]**");
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
             embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));

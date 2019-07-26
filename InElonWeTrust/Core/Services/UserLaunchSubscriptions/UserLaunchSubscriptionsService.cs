@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using InElonWeTrust.Core.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Oddity.API.Models.Launch;
+using Oddity.API.Models.Launchpad;
 
 namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 {
@@ -187,7 +189,10 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task SendLaunchNotificationToUserAsync(DiscordMember member, LaunchInfo nextLaunch)
         {
-            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
+            var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
+            var launchpad = launchpadsList.First(p => p.Id == nextLaunch.LaunchSite.SiteId);
+            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, launchpad, null, false);
+
             await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
 
             if (nextLaunch.Links.VideoLink != null)

@@ -16,22 +16,22 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             _messagesOnAdd = new Dictionary<SubscriptionType, string>
             {
-                {SubscriptionType.ElonTwitter, "Twitter has been subscribed! Now bot will post all newest tweets from [Elon Musk](https://twitter.com/elonmusk) profile."},
-                {SubscriptionType.SpaceXTwitter, "Twitter has been subscribed! Now bot will post all newest tweets from [SpaceX](https://twitter.com/SpaceX) profile."},
-                {SubscriptionType.SpaceXFleetTwitter, "Twitter has been subscribed! Now bot will post all newest tweets from [SpaceXFleet](https://twitter.com/SpaceXFleet) profile."},
-                {SubscriptionType.Flickr, "Flickr has been subscribed! Now bot will post all newest photos from [SpaceX](https://www.flickr.com/photos/spacex/) profile."},
-                {SubscriptionType.Reddit, "Reddit has been subscribed! Now bot will post all newest photos from [/r/spacex](https://www.reddit.com/r/spacex/)."},
-                {SubscriptionType.NextLaunch, "Launch notifications has been subscribed! Now bot will post all newest information about upcoming launch."}
+                {SubscriptionType.ElonTwitter, "Elon Musk's Twitter notifications has been enabled! Now bot will post here all newest tweets from [Elon Musk](https://twitter.com/elonmusk) profile."},
+                {SubscriptionType.SpaceXTwitter, "SpaceX Twitter notifications has been enabled! Now bot will post here all newest tweets from [SpaceX](https://twitter.com/SpaceX) profile."},
+                {SubscriptionType.SpaceXFleetTwitter, "SpaceXFleet Twitter notifications has been enabled! Now bot will post here all newest tweets from [SpaceXFleet](https://twitter.com/SpaceXFleet) profile."},
+                {SubscriptionType.Flickr, "Flickr notifications has been enabled! Now bot will post here all newest photos from [SpaceX](https://www.flickr.com/photos/spacex/) profile."},
+                {SubscriptionType.Reddit, "Reddit notifications has been enabled! Now bot will post here all newest photos from [/r/spacex](https://www.reddit.com/r/spacex/)."},
+                {SubscriptionType.NextLaunch, "Launch notifications has been enabled! Now bot will post here all newest information about upcoming launch."}
             };
 
             _messagesOnRemove = new Dictionary<SubscriptionType, string>
             {
-                {SubscriptionType.ElonTwitter, "Elon Twitter subscription has been removed."},
-                {SubscriptionType.SpaceXTwitter, "SpaceX Twitter subscription has been removed."},
-                {SubscriptionType.SpaceXFleetTwitter, "SpaceXFleet Twitter subscription has been removed."},
-                {SubscriptionType.Flickr, "Flickr subscription has been removed."},
-                {SubscriptionType.Reddit, "Reddit subscription has been removed."},
-                {SubscriptionType.NextLaunch, "Launch notifications subscription has been removed."}
+                {SubscriptionType.ElonTwitter, "Elon Twitter notifications has been disabled."},
+                {SubscriptionType.SpaceXTwitter, "SpaceX Twitter notifications has been disabled."},
+                {SubscriptionType.SpaceXFleetTwitter, "SpaceXFleet Twitter notifications has been disabled."},
+                {SubscriptionType.Flickr, "Flickr notifications has been disabled."},
+                {SubscriptionType.Reddit, "Reddit notifications has been disabled."},
+                {SubscriptionType.NextLaunch, "Launch notifications has been disabled."}
             };
         }
 

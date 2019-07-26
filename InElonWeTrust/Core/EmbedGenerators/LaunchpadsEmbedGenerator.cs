@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
+using InElonWeTrust.Core.Helpers.Formatters;
 using Oddity.API.Models.Launchpad;
 
 namespace InElonWeTrust.Core.EmbedGenerators
@@ -24,10 +25,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             foreach (var launchpad in sortedLaunchpads)
             {
                 var responseBuilder = new StringBuilder();
-                var latitude = launchpad.Location.Latitude?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-                var longitude = launchpad.Location.Longitude?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
 
-                responseBuilder.Append($"**[GOOGLE MAPS](https://maps.google.com/maps?q={latitude}+{longitude}&t=k)**. ");
+                responseBuilder.Append($"**[[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Location.Latitude ?? 0, launchpad.Location.Longitude ?? 0)})]** ");
                 responseBuilder.Append(launchpad.Details);
                 responseBuilder.Append("\r\n");
 

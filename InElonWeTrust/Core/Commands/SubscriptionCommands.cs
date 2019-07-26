@@ -94,7 +94,7 @@ namespace InElonWeTrust.Core.Commands
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            embed.AddField(":rocket: Success!", "All notifications has been subscribed.");
+            embed.AddField(":rocket: Success!", "All notifications has been enabled.");
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
@@ -111,7 +111,7 @@ namespace InElonWeTrust.Core.Commands
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            embed.AddField(":rocket: Success!", "All subscriptions has been removed.");
+            embed.AddField(":rocket: Success!", "All notifications has been disabled.");
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
