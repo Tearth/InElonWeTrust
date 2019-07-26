@@ -33,7 +33,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
+                    descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.AddField(":rocket: Launch is coming!", descriptionBuilder.ToString());
                     break;
@@ -56,7 +56,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     descriptionBuilder.Append($"**{oldLaunchDate}** to ");
                     descriptionBuilder.Append($"**{newLaunchDate}**. ");
 
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
+                    descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.AddField(":warning: Scrub!", descriptionBuilder.ToString());
                     break;
@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     var descriptionBuilder = new StringBuilder();
                     descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
                     descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** on **{nextLaunchDate}**. ");
-                    descriptionBuilder.Append($"Type `e!nextlaunch` or `e!getlaunch {launch.FlightNumber ?? 0}` to get more information.");
+                    descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());
                     break;

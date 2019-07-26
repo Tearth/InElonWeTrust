@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.TableGenerators
             }
 
             launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append("Type `e!getlaunch [number]` to get more information.");
+            launchesListBuilder.Append("Type `e!GetLaunch [number]` to get more information.");
             launchesListBuilder.Append("\r\n");
             launchesListBuilder.Append(paginationFooter);
             launchesListBuilder.Append("\r\n");

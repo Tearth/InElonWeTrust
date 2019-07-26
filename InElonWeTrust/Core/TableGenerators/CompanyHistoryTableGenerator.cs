@@ -37,7 +37,7 @@ namespace InElonWeTrust.Core.TableGenerators
             }
 
             historyBuilder.Append("\r\n");
-            historyBuilder.Append("Type `e!getevent [number]` to get more information.");
+            historyBuilder.Append("Type `e!GetEvent [number]` to get more information.");
 
             historyBuilder.Append("\r\n");
             historyBuilder.Append(paginationFooter);
