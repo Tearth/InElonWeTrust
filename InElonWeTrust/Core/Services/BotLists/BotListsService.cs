@@ -8,7 +8,9 @@ namespace InElonWeTrust.Core.Services.BotLists
 {
     public class BotListsService
     {
+#if !DEBUG
         private readonly Timer _statusRefreshTimer;
+#endif
         private readonly List<BotListUpdater> _botListDefinitions;
         private const int StatusUpdateIntervalMinutes = 5;
 
