@@ -115,7 +115,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
-        [Command("NotificationStatus"), Aliases("NotificationsStatus")]
+        [Command("NotificationStatus"), Aliases("Notifications", "NotificationsStatus")]
         [Description("Get an information about subscriptions related to this channel.")]
         public async Task NotificationStatusAsync(CommandContext ctx)
         {
