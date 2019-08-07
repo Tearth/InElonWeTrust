@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Helpers.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NLog;
@@ -36,7 +37,7 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         public async Task<RedditChildData> GetRandomTopicAsync()
         {
-            var response = await _httpClient.GetStringAsync(RandomTopicUrl);
+            var response = await _httpClient.GetStringWithRetriesAsync(RandomTopicUrl);
 
             var parsedResponse = JsonConvert.DeserializeObject<List<RedditResponse>>(response);
             return parsedResponse.First().Data.Children.First().Data;
@@ -89,7 +90,7 @@ namespace InElonWeTrust.Core.Services.Reddit
 
         private async Task<List<RedditChildData>> GetAllHotThreadsNames()
         {
-            var response = await _httpClient.GetStringAsync(HotTopicsUrl);
+            var response = await _httpClient.GetStringWithRetriesAsync(HotTopicsUrl);
             var hotThreads = JsonConvert.DeserializeObject<RedditResponse>(response).Data.Children.Select(p => p.Data).ToList();
 
             hotThreads.Reverse();
