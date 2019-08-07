@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
+using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
 using NLog;
@@ -54,7 +56,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
                 if (!_items.ContainsKey(new Tuple<CacheContentType, string>(type, parameter)))
                 {
-                    var data = await dataProvider(parameter);
+                    var data = await FetchDataFromProvider(dataProvider, parameter);
 
                     _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
                     _cacheItemsAdded++;
@@ -67,7 +69,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
                 if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= lifetimeAttribute.Lifetime)
                 {
-                    var data = await dataProvider(parameter);
+                    var data = await FetchDataFromProvider(dataProvider, parameter);
                     cachedItem.Update(data);
 
                     _cacheItemsUpdated++;
@@ -83,6 +85,33 @@ namespace InElonWeTrust.Core.Services.Cache
             {
                 _cacheLock.Release();
             }
+        }
+
+        private async Task<object> FetchDataFromProvider(Func<string, Task<object>> provider, string parameter)
+        {
+            Exception lastException = null;
+            for (var i = 0; i < Constants.MaxHttpAttempts; i++)
+            {
+                try
+                {
+                    return await provider(parameter);
+                }
+                catch (Exception e)
+                {
+                    _logger.Warn($"Failed to retrieve data from the provider during attempt {i + 1} " +
+                                 $"({e.GetType().Name}: {e.Message})");
+                    lastException = e;
+
+                    await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
+                }
+            }
+
+            if (lastException != null)
+            {
+                throw lastException;
+            }
+
+            return null;
         }
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
