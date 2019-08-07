@@ -35,5 +35,32 @@ namespace InElonWeTrust.Core.Helpers.Extensions
 
             return null;
         }
+
+        public static async Task<HttpResponseMessage> PostWithRetriesAsync(this HttpClient httpClient, string requestUri, HttpContent content)
+        {
+            Exception lastException = null;
+            for (var i = 0; i < Constants.MaxHttpAttempts; i++)
+            {
+                try
+                {
+                    return await httpClient.PostAsync(requestUri, content);
+                }
+                catch (Exception e)
+                {
+                    Logger.Warn($"Failed to post data to the HTTP client during attempt {i + 1} " +
+                                $"({e.GetType().Name}: {e.Message})");
+                    lastException = e;
+
+                    await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
+                }
+            }
+
+            if (lastException != null)
+            {
+                throw lastException;
+            }
+
+            return null;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,9 +18,8 @@ namespace InElonWeTrust.Core.Services.Diagnostic
 
         public async Task PostStatsAsync()
         {
-            using (var webClient = new WebClient())
+            using (var httpClient = new HttpClient())
             {
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
                 var botStats = new BotStats
                 {
                     BotId = SettingsLoader.Data.BotId.ToString(),
@@ -27,9 +29,11 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 };
 
                 var json = JsonConvert.SerializeObject(botStats);
-                var response = webClient.UploadString("https://discord.tearth.dev:4000/api/stats", json);
+                var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
+                requestContent.Headers.ContentType.CharSet = string.Empty;
 
-                if (response != string.Empty)
+                var response = await httpClient.PostWithRetriesAsync("https://discord.tearth.dev:4000/api/stats", requestContent);
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
                     _logger.Error("Can't send diagnostic data to panel");
                 }

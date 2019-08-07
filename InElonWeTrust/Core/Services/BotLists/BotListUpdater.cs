@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Settings;
 using NLog;
 
@@ -39,7 +40,7 @@ namespace InElonWeTrust.Core.Services.BotLists
 
             var link = string.Format(Link, SettingsLoader.Data.BotId);
 
-            var result = await _httpClient.PostAsync(link, requestContent);
+            var result = await _httpClient.PostWithRetriesAsync(link, requestContent);
             if (!result.IsSuccessStatusCode)
             {
                 _logger.Warn($"Bad status code when updating {Link} list");
