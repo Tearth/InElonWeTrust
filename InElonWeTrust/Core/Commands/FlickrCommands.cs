@@ -35,7 +35,7 @@ namespace InElonWeTrust.Core.Commands
             _flickrService.OnNewFlickrPhoto += FlickrServiceOnNewFlickrServicePhotoAsync;
         }
 
-        [Command("RandomFlickrPhoto"), Aliases("RandomPhoto", "FlickrPhoto")]
+        [Command("RandomFlickrPhoto"), Aliases("RandomPhoto", "FlickrPhoto", "RandomFlickr")]
         [Description("Get a random photo from the SpaceX Flickr profile.")]
         public async Task RandomFlickrPhotoAsync(CommandContext ctx)
         {
