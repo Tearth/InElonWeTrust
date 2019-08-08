@@ -33,9 +33,9 @@ namespace InElonWeTrust.Core.Services.Diagnostic
                 requestContent.Headers.ContentType.CharSet = string.Empty;
 
                 var response = await httpClient.PostWithRetriesAsync("https://discord.tearth.dev:4000/api/stats", requestContent);
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.NoContent)
                 {
-                    _logger.Error("Can't send diagnostic data to panel");
+                    _logger.Error($"Can't send diagnostic data to panel (status code: {response.StatusCode})");
                 }
             }
         }
