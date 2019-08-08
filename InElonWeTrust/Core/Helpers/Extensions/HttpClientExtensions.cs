@@ -20,10 +20,7 @@ namespace InElonWeTrust.Core.Helpers.Extensions
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn($"Failed to retrieve data from the HTTP client during attempt {i + 1} " +
-                                 $"({e.GetType().Name}: {e.Message})");
                     lastException = e;
-
                     await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
                 }
             }
@@ -47,10 +44,7 @@ namespace InElonWeTrust.Core.Helpers.Extensions
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn($"Failed to post data to the HTTP client during attempt {i + 1} " +
-                                $"({e.GetType().Name}: {e.Message})");
                     lastException = e;
-
                     await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
                 }
             }
