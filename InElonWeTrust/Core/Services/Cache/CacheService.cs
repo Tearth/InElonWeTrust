@@ -56,7 +56,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
                 if (!_items.ContainsKey(new Tuple<CacheContentType, string>(type, parameter)))
                 {
-                    var data = await FetchDataFromProvider(dataProvider, parameter);
+                    var data = await FetchDataFromProvider(dataProvider, parameter, null);
 
                     _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
                     _cacheItemsAdded++;
@@ -69,8 +69,11 @@ namespace InElonWeTrust.Core.Services.Cache
 
                 if ((DateTime.Now - cachedItem.UpdateTime).TotalMinutes >= lifetimeAttribute.Lifetime)
                 {
-                    var data = await FetchDataFromProvider(dataProvider, parameter);
-                    cachedItem.Update(data);
+                    var data = await FetchDataFromProvider(dataProvider, parameter, cachedItem.Data);
+                    if (data != cachedItem.Data)
+                    {
+                        cachedItem.Update(data);
+                    }
 
                     _cacheItemsUpdated++;
                 }
@@ -87,7 +90,7 @@ namespace InElonWeTrust.Core.Services.Cache
             }
         }
 
-        private async Task<object> FetchDataFromProvider(Func<string, Task<object>> provider, string parameter)
+        private async Task<object> FetchDataFromProvider(Func<string, Task<object>> provider, string parameter, object oldData)
         {
             Exception lastException = null;
             for (var i = 0; i < Constants.MaxHttpAttempts; i++)
@@ -104,6 +107,11 @@ namespace InElonWeTrust.Core.Services.Cache
 
                     await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
                 }
+            }
+
+            if (oldData != null)
+            {
+                return oldData;
             }
 
             if (lastException != null)
