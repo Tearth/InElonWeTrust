@@ -106,7 +106,7 @@ namespace InElonWeTrust.Core.Helpers.Formatters
         {
             var helpBuilder = new StringBuilder();
             helpBuilder.Append("SpaceX Discord bot providing a lot of stuff related to SpaceX and Elon Musk. " +
-                               "Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help [command_name]` to get " +
+                               "Example usage: `e!ping`, `e! ping`, `elon! ping`. Type `e!help command_name` to get " +
                                "more detailed information about the specified command. The bot is case-insensitive and has " +
                                "no troubles with spaces between the prefix and the command. Data provided by "+
                                "[Unofficial SpaceX API](https://github.com/r-spacex/SpaceX-API).\r\n\r\n");

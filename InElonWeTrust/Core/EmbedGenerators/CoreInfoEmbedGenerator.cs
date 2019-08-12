@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField(":stadium: Current status", core.Status.ToString(), true);
             embed.AddField(":recycle: Landings", GetLandingsData(core));
             embed.AddField($":rocket: Missions ({core.Missions.Count})", GetMissionsList(core.Missions));
-            embed.AddField("\u200b", "*Type `e!GetLaunch [ID]` to get more detailed info about the mission.*");
+            embed.AddField("\u200b", "*Type `e!GetLaunch number` to get more detailed info about the mission.*");
 
             return embed;
         }
