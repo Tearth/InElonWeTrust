@@ -61,6 +61,7 @@ namespace InElonWeTrust.Core.Services.Cache
                     _items.TryAdd(new Tuple<CacheContentType, string>(type, parameter), new CacheItem(data));
                     _cacheItemsAdded++;
 
+                    _logger.Info($"Cache data added ({type})");
                     return (TData)data;
                 }
 
@@ -73,6 +74,7 @@ namespace InElonWeTrust.Core.Services.Cache
                     if (data != cachedItem.Data)
                     {
                         cachedItem.Update(data);
+                        _logger.Info($"Cache data updated ({type})");
                     }
 
                     _cacheItemsUpdated++;
@@ -111,6 +113,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
             if (oldData != null)
             {
+                _logger.Warn("Returned old data from cache");
                 return oldData;
             }
 
