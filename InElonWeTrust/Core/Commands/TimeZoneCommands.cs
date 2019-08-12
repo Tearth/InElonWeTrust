@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.Commands
         }
 
         [Command("SetTimeZone"), Aliases("TimeZone")]
-        [Description("Set a local timezone (local time will be displayed in the launch information).")]
+        [Description("Set a local timezone (local time will be displayed in the launch information, e.g. `e!NextLaunch`).")]
         [RequireUserPermissions(Permissions.ManageMessages)]
         public async Task SetTimeZoneAsync(CommandContext ctx, [Description(SetTimeZoneParameterDescription), RemainingText] string timeZoneName)
         {
