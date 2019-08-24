@@ -59,6 +59,7 @@ namespace InElonWeTrust.Core
             _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
 
+            _oddity.SetTimeout(2);
             _oddity.OnRequestSend += Oddity_OnRequestSend;
             _oddity.OnResponseReceive += Oddity_OnResponseReceive;
             _oddity.OnDeserializationError += Oddity_OnDeserializationError;

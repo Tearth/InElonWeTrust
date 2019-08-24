@@ -94,21 +94,16 @@ namespace InElonWeTrust.Core.Services.Cache
 
         private async Task<object> FetchDataFromProvider(Func<string, Task<object>> provider, string parameter, object oldData)
         {
-            Exception lastException = null;
-            for (var i = 0; i < Constants.MaxHttpAttempts; i++)
-            {
-                try
-                {
-                    return await provider(parameter);
-                }
-                catch (Exception e)
-                {
-                    _logger.Warn($"Failed to retrieve data from the provider during attempt {i + 1} " +
-                                 $"({e.GetType().Name}: {e.Message})");
-                    lastException = e;
+            Exception lastException;
 
-                    await Task.Delay(Constants.DelayMsBetweenHttpAttempts);
-                }
+            try
+            {
+                return await provider(parameter);
+            }
+            catch (Exception e)
+            {
+                _logger.Warn($"Failed to retrieve data from the provider ({e.GetType().Name}: {e.Message})");
+                lastException = e;
             }
 
             if (oldData != null)
