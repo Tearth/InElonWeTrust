@@ -66,7 +66,7 @@ namespace InElonWeTrust.Core
 
             Client = new DiscordClient(GetClientConfiguration());
             LogExecutedCommands = true;
-
+            
             Client.Ready += Client_Ready;
             Client.Heartbeated += Client_Heartbeat;
             Client.GuildCreated += Client_GuildCreated;
@@ -285,7 +285,7 @@ namespace InElonWeTrust.Core
                         })
                         .Where(p => 
                             !p.Command.IsHidden &&
-                            p.Distance <= (commandNotFoundException.CommandName ?? string.Empty).Length / 6 + 1)
+                            p.Distance <= (commandNotFoundException.CommandName ?? string.Empty).Length / 10 + 1)
                         .OrderBy(p => p.Distance)
                         .FirstOrDefault();
 
