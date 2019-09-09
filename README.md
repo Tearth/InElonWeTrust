@@ -12,7 +12,7 @@
 
 Discord bot providing commands related to SpaceX and Elon Musk.
 
-Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
+Application is written in C# and uses [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) as Discord client and [Oddity](https://github.com/Tearth/Oddity) as [unofficial SpaceX API](https://github.com/r-spacex/SpaceX-API) wrapper.
 
 **Main features**:
   * information about the next launch
