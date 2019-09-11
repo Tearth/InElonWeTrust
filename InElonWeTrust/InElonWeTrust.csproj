@@ -24,15 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00614" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00614" />
-    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00614" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
-    <PackageReference Include="NLog" Version="4.6.3" />
-    <PackageReference Include="Oddity" Version="1.0.10.5" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00624" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00624" />
+    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00624" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
+    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="Oddity" Version="1.0.11" />
     <PackageReference Include="TimeZoneConverter" Version="3.2.0" />
-    <PackageReference Include="TweetinviAPI" Version="4.0.1" />
+    <PackageReference Include="TweetinviAPI" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>
