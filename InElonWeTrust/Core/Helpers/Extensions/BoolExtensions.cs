@@ -5,8 +5,8 @@
         public static string ConvertToYesNo(this bool b, bool capitalize = true)
         {
             return capitalize ?
-                (b ? "Yes" : "No") :
-                (b ? "yes" : "no");
+                b ? "Yes" : "No" :
+                b ? "yes" : "no";
         }
     }
 }
