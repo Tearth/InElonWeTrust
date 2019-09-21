@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Oddity.API.Models.DetailedCore;
 
@@ -31,7 +32,7 @@ namespace InElonWeTrust.Core.TableGenerators
             {
                 historyBuilder.Append(core.CoreSerial.PadRight(SerialLength));
                 historyBuilder.Append((core.Block?.ToString() ?? "none").PadRight(BlockLength));
-                historyBuilder.Append((core.OriginalLaunch?.ToString("D") ?? "none").PadRight(OriginalLaunchLength));
+                historyBuilder.Append((core.OriginalLaunch?.ToString("D", CultureInfo.InvariantCulture) ?? "none").PadRight(OriginalLaunchLength));
                 historyBuilder.Append(core.Missions.Count.ToString().PadRight(MissionsCountLength));
                 historyBuilder.Append(core.Status.ToString().PadRight(StatusLength));
                 historyBuilder.Append("\r\n");

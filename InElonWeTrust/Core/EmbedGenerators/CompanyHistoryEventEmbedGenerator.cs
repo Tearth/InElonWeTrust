@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
@@ -16,7 +17,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             };
 
             eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1024));
-            eventEmbedBuilder.AddField("Date", historyEvent.EventDate?.ToString("D"), true);
+            eventEmbedBuilder.AddField("Date", historyEvent.EventDate?.ToString("D", CultureInfo.InvariantCulture), true);
             eventEmbedBuilder.AddField("Links", GetLinksData(historyEvent), true);
 
             return eventEmbedBuilder;
