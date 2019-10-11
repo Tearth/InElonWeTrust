@@ -50,7 +50,7 @@ namespace InElonWeTrust.Core.Services.Description
             var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             string description;
 
-            if (nextLaunch.LaunchDateUtc == null)
+            if (nextLaunch.LaunchDateUtc == null || nextLaunch.TentativeMaxPrecision != TentativeMaxPrecision.Hour)
             {
                 description = DescriptionPattern;
             }
