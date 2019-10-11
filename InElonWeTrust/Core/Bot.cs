@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -207,6 +208,8 @@ namespace InElonWeTrust.Core
             _logger.Info("In Elon We Trust, In Thrust We Trust");
             _logger.Info($"DSharpPlus v{Client.VersionString}");
             _logger.Info($"Gateway v{Client.GatewayVersion} ({Client.GatewayUri})");
+            _logger.Info(GetOsInfo());
+            _logger.Info(GetDotNetCoreInfo());
 
             return Task.CompletedTask;
         }
@@ -406,6 +409,16 @@ namespace InElonWeTrust.Core
             };
 
             return string.Join(", ", infoList);
+        }
+
+        private string GetOsInfo()
+        {
+            return System.Runtime.InteropServices.RuntimeInformation.OSDescription.Trim();
+        }
+
+        private string GetDotNetCoreInfo()
+        {
+            return Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName.Trim();
         }
     }
 }
