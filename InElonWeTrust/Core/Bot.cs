@@ -144,6 +144,9 @@ namespace InElonWeTrust.Core
                 .AddScoped<LaunchNotificationEmbedBuilder>()
                 .AddScoped<RoadsterEmbedBuilder>()
                 .AddScoped<CoreInfoEmbedGenerator>()
+                .AddScoped<UptimeEmbedGenerator>()
+                .AddScoped<PingEmbedGenerator>()
+                .AddScoped<TimeZoneEmbedGenerator>()
 
                 // Singleton services
                 .AddSingleton(new DescriptionService(_cacheService, _oddity))

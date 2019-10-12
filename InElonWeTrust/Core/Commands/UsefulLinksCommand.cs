@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Commands
 
         [Command("Links")]
         [Description("Get a list of useful links.")]
-        public async Task UptimeAsync(CommandContext ctx)
+        public async Task LinksAsync(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
 

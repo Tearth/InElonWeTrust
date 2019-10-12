@@ -24,9 +24,9 @@ namespace InElonWeTrust.Core.Commands
             _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await oddity.DetailedCores.GetAbout(p).ExecuteAsync());
         }
 
-        [Command("CoreInfo"), Aliases("Core", "GetCore")]
+        [Command("GetCore"), Aliases("Core", "CoreInfo")]
         [Description("Get an information about the specified core.")]
-        public async Task CoreInfoAsync(CommandContext ctx, [Description("Core serial number (type `e!Cores` to list them all).")] string coreSerial)
+        public async Task GetCoreAsync(CommandContext ctx, [Description("Core serial number (type `e!Cores` to list them all).")] string coreSerial)
         {
             await ctx.TriggerTypingAsync();
 

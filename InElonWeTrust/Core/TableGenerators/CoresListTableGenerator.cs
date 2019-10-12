@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.TableGenerators
             }
 
             historyBuilder.Append("\r\n");
-            historyBuilder.Append("Type \"e!Core serial\" to get more information.");
+            historyBuilder.Append("Type \"e!GetCore serial\" (e.g. e!GetCore B1050) to get more information.");
 
             historyBuilder.Append("\r\n");
             historyBuilder.Append(paginationFooter);

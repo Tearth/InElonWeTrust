@@ -113,7 +113,7 @@ namespace InElonWeTrust.Core.Commands
             if (launchData == null)
             {
                 var embed = new DiscordEmbedBuilder {Color = new DiscordColor(Constants.EmbedErrorColor)};
-                embed.AddField("Error", $"Invalid parameter, type `e!help {ctx.Command.Name}` to get more information.");
+                embed.AddField(":octagonal_sign: Error", $"Invalid parameter, type `e!help {ctx.Command.Name}` to get more information.");
 
                 await ctx.RespondAsync(string.Empty, false, embed);
                 return;

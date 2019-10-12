@@ -4,16 +4,19 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
+using InElonWeTrust.Core.EmbedGenerators;
 
 namespace InElonWeTrust.Core.Commands
 {
     [CommandsGroup(GroupType.Miscellaneous)]
     public class UptimeCommand : BaseCommandModule
     {
+        private readonly UptimeEmbedGenerator _uptimeEmbedGenerator;
         private readonly DateTime _startTime;
 
-        public UptimeCommand()
+        public UptimeCommand(UptimeEmbedGenerator uptimeEmbedGenerator)
         {
+            _uptimeEmbedGenerator = uptimeEmbedGenerator;
             _startTime = DateTime.Now;
         }
 
@@ -25,8 +28,9 @@ namespace InElonWeTrust.Core.Commands
 
             var uptime = DateTime.Now - _startTime;
             var formattedTime = $"{uptime.Days} days, {uptime.Hours} hours, {uptime.Minutes} minutes, {uptime.Seconds} seconds";
+            var embed = _uptimeEmbedGenerator.Build(formattedTime);
 
-            await ctx.RespondAsync($"Uptime: {formattedTime}");
+            await ctx.RespondAsync(embed: embed);
         }
     }
 }
