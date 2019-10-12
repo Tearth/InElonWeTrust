@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Commands.Attributes;
@@ -14,7 +15,15 @@ namespace InElonWeTrust.Core.Commands
         [Description("Say something as Elon")]
         public async Task Say(CommandContext ctx, string content)
         {
-            await ctx.Message.DeleteAsync();
+            try
+            {
+                await ctx.Message.DeleteAsync();
+            }
+            catch
+            {
+                // Do nothing, message needs to be deleted manually by the owner
+            }
+
             await ctx.RespondAsync(content);
         }
     }

@@ -77,7 +77,7 @@ namespace InElonWeTrust.Core.Services.Pagination
 
         public string GetPaginationFooter(int currentPage, int maxPagesCount)
         {
-            return $"page {currentPage} from {maxPagesCount}";
+            return $"Page {currentPage} from {maxPagesCount}";
         }
 
         public async Task<bool> DoActionAsync(DiscordMessage message, DiscordEmoji clickedEmoji, int totalItemsCount)

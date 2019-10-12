@@ -66,13 +66,20 @@ namespace InElonWeTrust.Core.TableGenerators
                 launchesListBuilder.Append(launchDateTime.PadRight(LaunchDateLength));
                 launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(SiteNameLength));
 
-                var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
-                launchesListBuilder.Append((landing ? "yes" : "no").PadRight(LandingLength));
-                launchesListBuilder.Append("\r\n");
+                if (launch.TentativeMaxPrecision == TentativeMaxPrecision.Hour && launch.LaunchDateUtc < DateTime.UtcNow)
+                {
+                    var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
+                    launchesListBuilder.Append(landing.ConvertToYesNo(false).PadRight(LandingLength));
+                    launchesListBuilder.Append("\r\n");
+                }
+                else
+                {
+                    launchesListBuilder.Append("?\r\n");
+                }
             }
 
             launchesListBuilder.Append("\r\n");
-            launchesListBuilder.Append("Type \"e!GetLaunch number\" to get more information.");
+            launchesListBuilder.Append("Type \"e!GetLaunch number\" (e.g. e!GetLaunch 45) to get more information.");
             launchesListBuilder.Append("\r\n");
             launchesListBuilder.Append(paginationFooter);
             launchesListBuilder.Append("\r\n");
