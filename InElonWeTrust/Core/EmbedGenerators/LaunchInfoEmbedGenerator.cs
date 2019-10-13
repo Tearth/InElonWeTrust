@@ -78,7 +78,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         private string GetLocalLaunchDateTime(ulong guildId, DateTime utc, TentativeMaxPrecision precision)
         {
-            var convertedToLocal = _timeZoneService.ConvertUtcToLocalTime(guildId, utc);
+            var convertedToLocal = precision == TentativeMaxPrecision.Hour
+                ? _timeZoneService.ConvertUtcToLocalTime(guildId, utc)
+                : utc;
+
             if (convertedToLocal == null)
             {
                 return null;
