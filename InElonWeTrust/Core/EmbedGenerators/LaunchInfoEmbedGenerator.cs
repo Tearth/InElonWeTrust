@@ -50,7 +50,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 var timeZoneName = _timeZoneService.GetTimeZoneForGuild(guildId.Value);
 
-                if (localLaunchDateTime != null)
+                if (timeZoneName != null)
                 {
                     embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime);
                 }
