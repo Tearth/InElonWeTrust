@@ -137,8 +137,12 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         {
             var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             var nextLaunchDateUtc = nextLaunch.LaunchDateUtc ?? DateTime.MaxValue;
-
             var minutesToLaunch = (nextLaunchDateUtc - DateTime.Now.ToUniversalTime()).TotalMinutes;
+
+            if (nextLaunch.TentativeMaxPrecision != TentativeMaxPrecision.Hour)
+            {
+                return;
+            }
 
             if (_notified && minutesToLaunch > MinutesToLaunchToNotify)
             {

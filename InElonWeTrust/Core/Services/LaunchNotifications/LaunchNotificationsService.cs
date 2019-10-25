@@ -109,6 +109,11 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private bool CheckIfReminderShouldBeSend(LaunchInfo launch)
         {
+            if (launch.TentativeMaxPrecision != TentativeMaxPrecision.Hour)
+            {
+                return false;
+            }
+
             var minutesToLaunch = ((launch.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
             var previousStateMinutesToLaunch = minutesToLaunch + 1;
