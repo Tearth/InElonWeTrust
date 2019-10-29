@@ -82,7 +82,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                 var newLaunchState = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
                 if (LaunchComparer.IsLaunchTheSame(_savedNextLaunchState, newLaunchState))
                 {
-                    if (newLaunchState.LaunchDateUtc == _savedNextLaunchState.LaunchDateUtc)
+                    if (!HasLaunchDateChanged(_savedNextLaunchState, newLaunchState))
                     {
                         if (CheckIfReminderShouldBeSend(newLaunchState))
                         {
@@ -105,6 +105,49 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             {
                 _updateSemaphore.Release();
             }
+        }
+
+        private bool HasLaunchDateChanged(LaunchInfo savedLaunch, LaunchInfo currentLaunch)
+        {
+            if (savedLaunch.LaunchDateUtc == null || currentLaunch.LaunchDateUtc == null)
+            {
+                return false;
+            }
+
+            if (savedLaunch.TentativeMaxPrecision != currentLaunch.TentativeMaxPrecision)
+            {
+                return true;
+            }
+
+            var oldDate = savedLaunch.LaunchDateUtc.Value;
+            var newDate = currentLaunch.LaunchDateUtc.Value;
+
+            switch (savedLaunch.TentativeMaxPrecision)
+            {
+                case TentativeMaxPrecision.Year:
+                case TentativeMaxPrecision.Half:
+                case TentativeMaxPrecision.Quarter:
+                {
+                    return oldDate.Year != newDate.Year;
+                }
+
+                case TentativeMaxPrecision.Month:
+                {
+                    return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month;
+                }
+
+                case TentativeMaxPrecision.Day:
+                {
+                    return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day;
+                }
+
+                case TentativeMaxPrecision.Hour:
+                {
+                    return oldDate != newDate;
+                }
+            }
+
+            return false;
         }
 
         private bool CheckIfReminderShouldBeSend(LaunchInfo launch)
