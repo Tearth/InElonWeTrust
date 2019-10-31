@@ -51,7 +51,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             tableBuilder.Append("```");
             tableBuilder.Append($"Diameter: {rocket.Diameter.Meters ?? 0} m".PadRight(FieldLength));
-            tableBuilder.Append($"Launch cost: ${(rocket.CostPerLaunch ?? 0) / 1_000_000}kk\r\n");
+            tableBuilder.Append($"Launch cost: ${(rocket.CostPerLaunch ?? 0) / 1_000_000}M\r\n");
             tableBuilder.Append($"First flight: {rocket.FirstFlight:dd-MM-yyyy}".PadRight(FieldLength));
             tableBuilder.Append($"Success rate: {rocket.SuccessRate ?? 0} %\r\n");
             tableBuilder.Append($"Mass: {(int)((rocket.Mass.Kilograms ?? 0f) / 1000)} t".PadRight(FieldLength));
@@ -59,7 +59,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             if (rocket.Engines.ThrustSeaLevel != null && rocket.Engines.ThrustToWeight.HasValue)
             {
-                tableBuilder.Append($"Thrust: {(int)((rocket.Engines.ThrustSeaLevel.Kilonewtons ?? 0) * (rocket.Engines.Number ?? 1))} kn".PadRight(FieldLength));
+                tableBuilder.Append($"Thrust: {(int)((rocket.Engines.ThrustSeaLevel.Kilonewtons ?? 0) * (rocket.Engines.Number ?? 1))} kN".PadRight(FieldLength));
                 tableBuilder.Append($"TWR: {(int)rocket.Engines.ThrustToWeight.Value}\r\n");
             }
 
