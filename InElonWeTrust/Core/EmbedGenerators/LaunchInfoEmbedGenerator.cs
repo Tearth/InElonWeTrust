@@ -39,7 +39,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
                 launch.Details.ShortenString(1024) ?? "*No description at this moment :(*");
 
-            embed.AddField(":clock4: Launch date (UTC)", launchDateTime, true);
+            embed.AddField(":clock4: Launch time (UTC)", launchDateTime, true);
 
             if (guildId != null)
             {
@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                 if (timeZoneName != null)
                 {
-                    embed.AddField($":clock230: Launch date ({timeZoneName})", localLaunchDateTime);
+                    embed.AddField($":clock230: Launch time ({timeZoneName})", localLaunchDateTime);
                 }
             }
 

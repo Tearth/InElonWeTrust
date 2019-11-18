@@ -47,7 +47,7 @@ namespace InElonWeTrust.Core.TableGenerators
 
             launchesListBuilder.Append("No. ".PadRight(MissionNumberLength));
             launchesListBuilder.Append("Mission name".PadRight(MissionNameLength));
-            launchesListBuilder.Append("Launch date UTC".PadRight(LaunchDateLength));
+            launchesListBuilder.Append("Launch time UTC".PadRight(LaunchDateLength));
             launchesListBuilder.Append("Launch site".PadRight(SiteNameLength));
             launchesListBuilder.Append("Landing".PadRight(LandingLength));
             launchesListBuilder.Append("\r\n");
