@@ -238,7 +238,7 @@ namespace InElonWeTrust.Core
 
         private Task Client_ClientError(ClientErrorEventArgs e)
         {
-            if (e.Exception.InnerException?.Message.Contains("The given key") == false)
+            //if (e.Exception.InnerException?.Message.Contains("The given key") == false)
             {
                 _logger.Error(e.Exception, $"Event Name: {e.EventName}");
             }
