@@ -143,7 +143,8 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
                 case TentativeMaxPrecision.Hour:
                 {
-                    return oldDate != newDate;
+                    return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day ||
+                           oldDate.Hour != newDate.Hour || oldDate.Minute != newDate.Minute;
                 }
             }
 
