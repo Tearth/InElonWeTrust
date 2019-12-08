@@ -72,5 +72,25 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedColor)
             };
         }
+
+        public DiscordEmbed BuildMessageOnAddAll()
+        {
+            return new DiscordEmbedBuilder
+            {
+                Title = ":rocket: Success!",
+                Description = "All notifications has been enabled.",
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
+        }
+
+        public DiscordEmbed BuildMessageOnRemoveAll()
+        {
+            return new DiscordEmbedBuilder
+            {
+                Title = ":rocket: Success!",
+                Description = "All notifications has been disabled.",
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
+        }
     }
 }

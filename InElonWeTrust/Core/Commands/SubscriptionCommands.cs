@@ -7,7 +7,6 @@ using DSharpPlus.EventArgs;
 using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Subscriptions;
 
 namespace InElonWeTrust.Core.Commands
@@ -89,12 +88,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
             await _subscriptionsService.AddAllSubscriptionsAsync(ctx.Guild.Id, ctx.Channel.Id);
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
-            embed.AddField(":rocket: Success!", "All notifications has been enabled.");
+            var embed = _subscriptionEmbedGenerator.BuildMessageOnAddAll();
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
@@ -106,12 +100,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
             await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ctx.Channel.Id);
 
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
-            embed.AddField(":rocket: Success!", "All notifications has been disabled.");
+            var embed = _subscriptionEmbedGenerator.BuildMessageOnRemoveAll();
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
