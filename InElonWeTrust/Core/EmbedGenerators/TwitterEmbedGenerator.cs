@@ -13,24 +13,24 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(CachedTweet tweet)
         {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = tweet.AvatarUrl,
-                ImageUrl = tweet.ImageUrl
-            };
-
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append(HttpUtility.HtmlDecode(tweet.FullText));
-            contentBuilder.Append("\r\n\r\n");
-            contentBuilder.Append(tweet.Url);
-            
             var polandTimeZone = TZConvert.GetTimeZoneInfo("Europe/Warsaw");
             var createdAtWithKind = DateTime.SpecifyKind(tweet.CreatedAt, DateTimeKind.Unspecified);
             var createdAtUtc = TimeZoneInfo.ConvertTimeToUtc(createdAtWithKind, polandTimeZone);
-
             var date = createdAtUtc.ToString("F", CultureInfo.InvariantCulture);
-            embed.AddField($"Twitter: {tweet.CreatedByDisplayName} on {date} UTC", contentBuilder.ToString());
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = $"{tweet.CreatedByDisplayName} Twitter",
+                Url = tweet.Url,
+                Description = HttpUtility.HtmlDecode(tweet.FullText),
+                Color = new DiscordColor(Constants.EmbedColor),
+                ThumbnailUrl = tweet.AvatarUrl,
+                ImageUrl = tweet.ImageUrl,
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    Text = $"{date} UTC"
+                }
+            };
 
             return embed;
         }
