@@ -37,14 +37,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         public DiscordEmbed BuildUnauthorizedError()
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops!",
+                Description = "It seems that bot has not enough permissions to post tweet. Check it and subscribe Twitter again.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has not enough permissions to post tweet. Check it and subscribe Twitter again.");
-
-            return embed;
         }
     }
 }

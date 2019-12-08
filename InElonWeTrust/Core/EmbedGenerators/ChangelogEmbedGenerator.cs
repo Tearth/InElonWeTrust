@@ -7,14 +7,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(string changelog)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
                 Title = "Changelog",
                 Description = changelog
             };
-
-            return embed;
         }
     }
 }

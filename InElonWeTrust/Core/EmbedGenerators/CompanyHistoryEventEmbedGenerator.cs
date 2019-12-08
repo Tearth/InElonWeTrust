@@ -13,10 +13,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var eventEmbedBuilder = new DiscordEmbedBuilder
             {
+                Title = historyEvent.Title,
+                Description = historyEvent.Details.ShortenString(1024),
                 Color = new DiscordColor(Constants.EmbedColor)
             };
 
-            eventEmbedBuilder.AddField(historyEvent.Title, historyEvent.Details.ShortenString(1024));
             eventEmbedBuilder.AddField("Date", historyEvent.EventDate?.ToString("D", CultureInfo.InvariantCulture), true);
             eventEmbedBuilder.AddField("Links", GetLinksData(historyEvent), true);
 
@@ -26,14 +27,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         public DiscordEmbed BuildError()
         {
-            var errorEmbedBuilder = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops",
+                Description = "History event with the specified id doesn't exists, type `e!CompanyHistory` to list them.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            errorEmbedBuilder.AddField(":octagonal_sign: Oops", "History event with the specified id doesn't exists, type `e!CompanyHistory` to list them.");
-
-            return errorEmbedBuilder;
         }
 
         private string GetLinksData(HistoryEvent historyEvent)

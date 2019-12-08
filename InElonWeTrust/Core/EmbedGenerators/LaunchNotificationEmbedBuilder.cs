@@ -35,7 +35,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
-                    embed.AddField(":rocket: Launch is coming!", descriptionBuilder.ToString());
+                    embed.Title = ":rocket: Launch is coming!";
+                    embed.Description = descriptionBuilder.ToString();
                     break;
                 }
 
@@ -58,7 +59,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
-                    embed.AddField(":warning: Scrub!", descriptionBuilder.ToString());
+                    embed.Title = ":warning: Scrub!";
+                    embed.Description = descriptionBuilder.ToString();
                     break;
                 }
 
@@ -74,27 +76,24 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** on **{nextLaunchDate}**. ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
-                    embed.AddField(":rocket: Liftoff!", descriptionBuilder.ToString());
+                    embed.Title = ":rocket: Liftoff!";
+                    embed.Description = descriptionBuilder.ToString();
                     break;
                 }
             }
 
             embed.AddField("\u200b", "*Click below reaction to subscribe this flight and be notified on DM 10 minutes before the launch.*");
-
             return embed;
         }
 
-
         public DiscordEmbed BuildUnauthorizedError()
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops!",
+                Description = "It seems that bot has not enough permissions to post launch notification. Check it and subscribe launch notifications again.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has not enough permissions to post launch notification. Check it and subscribe launch notifications again.");
-
-            return embed;
         }
     }
 }

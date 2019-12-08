@@ -13,11 +13,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
+                Title = $"{core.CoreSerial} (block {core.Block?.ToString() ?? "none"})",
+                Description = $"{core.Details ?? "*No description at this moment :(*"}",
                 Color = new DiscordColor(Constants.EmbedColor),
                 ThumbnailUrl = Constants.SpaceXLogoImage
             };
 
-            embed.AddField($"{core.CoreSerial} (block {core.Block?.ToString() ?? "none"})", $"{core.Details ?? "*No description at this moment :(*"}");
             embed.AddField(":clock4: First launch time (UTC)", core.OriginalLaunch?.ToUniversalTime().ToString("D", CultureInfo.InvariantCulture) ?? "not launched yet", true);
             embed.AddField(":stadium: Current status", core.Status.ToString(), true);
             embed.AddField(":recycle: Landings", GetLandingsData(core));
@@ -29,13 +30,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         public DiscordEmbed BuildError()
         {
-            var errorEmbedBuilder = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops",
+                Description = "Core with the specified serial number doesn't exists! Type `e!Cores` to list them.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            errorEmbedBuilder.AddField(":octagonal_sign: Oops", "Core with the specified serial number doesn't exists! Type `e!Cores` to list them.");
-            return errorEmbedBuilder;
         }
 
         private string GetMissionsList(List<CoreMissionInfo> missions)

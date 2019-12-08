@@ -10,7 +10,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
         public DiscordEmbed Build(CachedFlickrPhoto photo)
         {
             var date = photo.UploadDate.ToString("F", CultureInfo.InvariantCulture);
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
                 Title = $"{photo.Title}",
                 Url = $"https://www.flickr.com/photos/spacex/{photo.Id}",
@@ -21,20 +21,16 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     Text = $"{date} UTC"
                 }
             };
-
-            return embed;
         }
 
         public DiscordEmbed BuildUnauthorizedError()
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops!",
+                Description = "It seems that bot has not enough permissions to post Flickr photos. Check it and subscribe Flickr again.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has not enough permissions to post Flickr photos. Check it and subscribe Flickr again.");
-
-            return embed;
         }
     }
 }

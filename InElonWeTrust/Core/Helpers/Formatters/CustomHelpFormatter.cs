@@ -114,7 +114,8 @@ namespace InElonWeTrust.Core.Helpers.Formatters
             helpBuilder.Append(":computer: Profile on **[GitHub](https://github.com/Tearth/InElonWeTrust)**, **[discordbots.org](https://discordbots.org/bot/462742130016780337)** and **[bots.ondiscord.xyz](https://bots.ondiscord.xyz/bots/462742130016780337)**\r\n");
             helpBuilder.Append(":love_letter: **[Invite me](https://discordapp.com/oauth2/authorize?client_id=462742130016780337&permissions=27712&scope=bot) to your guild!**");
 
-            embed.AddField(":rocket: In Elon We Trust", helpBuilder.ToString());
+            embed.Title = ":rocket: In Elon We Trust";
+            embed.Description = helpBuilder.ToString();
             helpBuilder.Clear();
 
             var orderedSubCommands = _subCommands.OrderBy(p => p.Key);
@@ -136,7 +137,8 @@ namespace InElonWeTrust.Core.Helpers.Formatters
 
         private CommandHelpMessage BuildCommandHelp(DiscordEmbedBuilder embed)
         {
-            embed.AddField(_commandName, _commandDescription);
+            embed.Title = _commandName;
+            embed.Description = _commandDescription;
 
             if (_aliases.Count > 0)
             {

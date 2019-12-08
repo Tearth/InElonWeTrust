@@ -7,14 +7,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(string user, string avatar)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
                 ImageUrl = avatar,
                 Title = $"{user} avatar"
             };
-
-            return embed;
         }
     }
 }

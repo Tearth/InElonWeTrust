@@ -26,6 +26,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
+                Title = $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
+                Description = launch.Details.ShortenString(1024) ?? "*No description at this moment :(*",
                 Color = new DiscordColor(Constants.EmbedColor),
                 ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
             };
@@ -34,10 +36,6 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 launch.LaunchDateUtc ?? DateTime.MinValue,
                 launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
                 true, true, true);
-
-            embed.AddField(
-                $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
-                launch.Details.ShortenString(1024) ?? "*No description at this moment :(*");
 
             embed.AddField(":clock4: Launch time (UTC)", launchDateTime, true);
 

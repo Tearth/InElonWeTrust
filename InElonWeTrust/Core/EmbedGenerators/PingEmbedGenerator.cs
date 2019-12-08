@@ -7,14 +7,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(int responseTime)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = "Pong",
+                Description = $"{responseTime} ms",
                 Color = new DiscordColor(Constants.EmbedColor)
             };
-
-            embed.AddField("Pong", $"{responseTime} ms");
-
-            return embed;
         }
     }
 }

@@ -7,14 +7,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(string quote)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = "Elon Musk said",
+                Description = $"*{quote}*",
                 Color = new DiscordColor(Constants.EmbedColor)
             };
-
-            embed.AddField("Elon Musk said", $"*{quote}*\r\n");
-
-            return embed;
         }
     }
 }

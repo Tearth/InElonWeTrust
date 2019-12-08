@@ -7,14 +7,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(string formattedTime)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = "Uptime",
+                Description = formattedTime,
                 Color = new DiscordColor(Constants.EmbedColor)
             };
-
-            embed.AddField("Uptime", formattedTime);
-
-            return embed;
         }
     }
 }

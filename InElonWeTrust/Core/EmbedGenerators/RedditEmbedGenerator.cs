@@ -32,14 +32,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         public DiscordEmbed BuildUnauthorizedError()
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":octagonal_sign: Oops!",
+                Description = "It seems that bot has not enough permissions to post Reddit topic. Check it and subscribe Reddit again.",
                 Color = new DiscordColor(Constants.EmbedErrorColor)
             };
-
-            embed.AddField(":octagonal_sign: Oops!", "It seems that bot has not enough permissions to post Reddit topic. Check it and subscribe Reddit again.");
-
-            return embed;
         }
     }
 }

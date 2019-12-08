@@ -37,11 +37,6 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
         public DiscordEmbed BuildStatus(SubscriptionStatus status)
         {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(Constants.EmbedColor)
-            };
-
             var contentBuilder = new StringBuilder();
             contentBuilder.Append($"**Elon Twitter:** {status.ElonTwitter.ConvertToYesNo()}\r\n");
             contentBuilder.Append($"**SpaceX Twitter:** {status.SpaceXTwitter.ConvertToYesNo()}\r\n");
@@ -50,31 +45,32 @@ namespace InElonWeTrust.Core.EmbedGenerators
             contentBuilder.Append($"**Launches:** {status.Launches.ConvertToYesNo()}\r\n");
             contentBuilder.Append($"**Reddit:** {status.Reddit.ConvertToYesNo()}");
 
-            embed.AddField("Notifications status", contentBuilder.ToString());
-
-            return embed;
+            return new DiscordEmbedBuilder
+            {
+                Title = "Notifications status",
+                Description = contentBuilder.ToString(),
+                Color = new DiscordColor(Constants.EmbedColor)
+            };
         }
 
         public DiscordEmbed BuildMessageOnAdd(SubscriptionType type)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":rocket: Success!",
+                Description = _messagesOnAdd[type],
                 Color = new DiscordColor(Constants.EmbedColor)
             };
-
-            embed.AddField(":rocket: Success!", _messagesOnAdd[type]);
-            return embed;
         }
 
         public DiscordEmbed BuildMessageOnRemove(SubscriptionType type)
         {
-            var embed = new DiscordEmbedBuilder
+            return new DiscordEmbedBuilder
             {
+                Title = ":rocket: Success!",
+                Description = _messagesOnRemove[type],
                 Color = new DiscordColor(Constants.EmbedColor)
             };
-
-            embed.AddField(":rocket: Success!", _messagesOnRemove[type]);
-            return embed;
         }
     }
 }

@@ -10,11 +10,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
+                Title = companyInfo.Name,
+                Description = companyInfo.Summary + " [Read more on Wikipedia](https://en.wikipedia.org/wiki/SpaceX).",
                 Color = new DiscordColor(Constants.EmbedColor),
                 ThumbnailUrl = Constants.SpaceXLogoImage
             };
 
-            embed.AddField(companyInfo.Name, companyInfo.Summary + " [Read more on Wikipedia](https://en.wikipedia.org/wiki/SpaceX).");
             embed.AddField("CEO", $"[{companyInfo.Ceo}](https://en.wikipedia.org/wiki/Elon_Musk)", true);
             embed.AddField("COO", $"[{companyInfo.Coo}](https://en.wikipedia.org/wiki/Gwynne_Shotwell)", true);
             embed.AddField("CTO", $"[{companyInfo.Cto}](https://en.wikipedia.org/wiki/Elon_Musk)", true);
