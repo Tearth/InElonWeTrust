@@ -12,10 +12,14 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var date = photo.UploadDate.ToString("F", CultureInfo.InvariantCulture);
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor),
-                Title = $"Flickr: {photo.Title} ({date} UTC)",
+                Title = $"{photo.Title}",
                 Url = $"https://www.flickr.com/photos/spacex/{photo.Id}",
-                ImageUrl = photo.Source
+                Color = new DiscordColor(Constants.EmbedColor),
+                ImageUrl = photo.Source,
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    Text = $"{date} UTC"
+                }
             };
 
             return embed;
