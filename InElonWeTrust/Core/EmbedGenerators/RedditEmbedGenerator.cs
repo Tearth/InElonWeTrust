@@ -13,19 +13,19 @@ namespace InElonWeTrust.Core.EmbedGenerators
     {
         public DiscordEmbed Build(RedditChildData topic)
         {
+            var date = new DateTime().UnixTimeStampToDateTime(topic.Created).ToString("F", CultureInfo.InvariantCulture) + " UTC";
+
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor(Constants.EmbedColor),
-                Title = $"Reddit: {HttpUtility.HtmlDecode(topic.Title).ShortenString(230)}",
+                Title = HttpUtility.HtmlDecode(topic.Title).ShortenString(230),
                 Url = "https://www.reddit.com" + topic.Permalink,
-                ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
+                Color = new DiscordColor(Constants.EmbedColor),
+                ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail,
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    Text = date
+                }
             };
-
-            var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"{topic.Author} | {topic.Upvotes} upvotes\r\n");
-            contentBuilder.Append(new DateTime().UnixTimeStampToDateTime(topic.Created).ToString("F", CultureInfo.InvariantCulture) + " UTC");
-
-            embed.AddField("\u200b", contentBuilder.ToString());
 
             return embed;
         }
