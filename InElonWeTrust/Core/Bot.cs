@@ -311,7 +311,9 @@ namespace InElonWeTrust.Core
                     }
                     else
                     {
-                        errorEmbedBuilder.AddField(":octagonal_sign: Error", "Can't recognize this command, type `e!help` to get full list of them.");
+                        errorEmbedBuilder.Title = ":octagonal_sign: Error";
+                        errorEmbedBuilder.Description = "Can't recognize this command, type `e!help` to get full list of them.";
+
                         _logger.Warn(e.Exception, GetCommandInfo(e.Context));
                     }
 
@@ -321,23 +323,28 @@ namespace InElonWeTrust.Core
 
                 case ArgumentException _:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Error", $"Invalid parameter, type `e!help {e.Command.Name}` to get more info.");
-                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+                    errorEmbedBuilder.Title = ":octagonal_sign: Error";
+                    errorEmbedBuilder.Description = $"Invalid parameter, type `e!help {e.Command.Name}` to get more info.";
 
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
                     break;
                 }
 
                 case ChecksFailedException _:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Error", "You have no permissions to do this action. Remember that some commands (related to notifications) require \"Manage Messages\" permission.");
-                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
+                    errorEmbedBuilder.Title = ":octagonal_sign: Error";
+                    errorEmbedBuilder.Description = "You have no permissions to do this action. Remember that some commands " +
+                                                    "(related to notifications) require \"Manage Messages\" permission.";
 
+                    _logger.Warn(e.Exception, GetCommandInfo(e.Context));
                     break;
                 }
 
                 case UnauthorizedException _:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Error", $"It seems that bot has no required permission to write on channel {e.Context.Channel.Name}.");
+                    errorEmbedBuilder.Title = ":octagonal_sign: Error";
+                    errorEmbedBuilder.Description = $"It seems that bot has no required permission to write on channel {e.Context.Channel.Name}.";
+
                     _logger.Warn(e.Exception, GetCommandInfo(e.Context));
 
                     await e.Context.Member.SendMessageAsync(embed: errorEmbedBuilder);
@@ -348,9 +355,12 @@ namespace InElonWeTrust.Core
 
                 default:
                 {
-                    errorEmbedBuilder.AddField(":octagonal_sign: Oops", $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. Owner has been notified about this accident and will fix it as soon as possible. Thanks for your patience!");
-                    _logger.Error(e.Exception, GetCommandInfo(e.Context));
+                    errorEmbedBuilder.Title = ":octagonal_sign: Oops";
+                    errorEmbedBuilder.Description = $"Something strange happened when bot was trying to execute `{e.Command.Name}` command. " +
+                                                    $"Owner has been notified about this accident and will fix it as soon as possible. " +
+                                                    $"Thanks for your patience!";
 
+                    _logger.Error(e.Exception, GetCommandInfo(e.Context));
                     break;
                 }
             }
