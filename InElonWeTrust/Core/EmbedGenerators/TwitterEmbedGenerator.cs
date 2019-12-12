@@ -20,7 +20,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"{tweet.CreatedByDisplayName} Twitter",
+                Title = $"{tweet.CreatedByDisplayName} - Twitter",
                 Url = tweet.Url,
                 Description = HttpUtility.HtmlDecode(tweet.FullText),
                 Color = new DiscordColor(Constants.EmbedColor),
