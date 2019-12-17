@@ -72,11 +72,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
                         true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"Good luck **{launchNotification.OldLaunchState.MissionName}**! ");
-                    descriptionBuilder.Append($"Next launch will be **{launchNotification.NewLaunchState.MissionName}** on **{nextLaunchDate}**. ");
+                    descriptionBuilder.Append($"The next launch will be **{launchNotification.NewLaunchState.MissionName}** on **{nextLaunchDate}**. ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
-                    embed.Title = ":rocket: Liftoff!";
+                    embed.Title = ":rocket: New target!";
                     embed.Description = descriptionBuilder.ToString();
                     break;
                 }
