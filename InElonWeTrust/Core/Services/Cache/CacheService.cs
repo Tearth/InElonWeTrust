@@ -7,6 +7,7 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
 using NLog;
+using Oddity.API.Models.Launch;
 
 namespace InElonWeTrust.Core.Services.Cache
 {
@@ -62,6 +63,8 @@ namespace InElonWeTrust.Core.Services.Cache
                     _cacheItemsAdded++;
 
                     _logger.Info($"Cache data added ({type})");
+
+                    ApplyPatches(data);
                     return (TData)data;
                 }
 
@@ -73,7 +76,9 @@ namespace InElonWeTrust.Core.Services.Cache
                     var data = await FetchDataFromProvider(dataProvider, parameter, cachedItem.Data);
                     if (data != cachedItem.Data)
                     {
+                        ApplyPatches(data);
                         cachedItem.Update(data);
+
                         _logger.Info($"Cache data updated ({type})");
                     }
 
@@ -118,6 +123,22 @@ namespace InElonWeTrust.Core.Services.Cache
             }
 
             return null;
+        }
+
+        private void ApplyPatches<TData>(TData data)
+        {
+            var patchesApplied = 0;
+            switch (data)
+            {
+                case LaunchInfo launch when launch.FlightNumber == 87 && launch.Links.VideoLink == "https://youtu.be/pIDuv0Ta0XQ":
+                {
+                    launch.Links.VideoLink = null;
+                    patchesApplied++;
+                    break;
+                }
+            }
+
+            _logger.Info($"{patchesApplied} patches applied");
         }
 
         private void CacheStatsTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
