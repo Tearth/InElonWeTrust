@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     var timeLeftDescription = timeLeft > 60 ? Math.Ceiling(timeLeft / 60) + " hours" : Math.Ceiling(timeLeft) + " minutes";
 
                     var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"**{timeLeftDescription}** to launch {launch.MissionName}! ");
+                    descriptionBuilder.Append($"**{timeLeftDescription}** to launch **{launch.MissionName}**! ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.Title = ":rocket: Launch is coming!";
