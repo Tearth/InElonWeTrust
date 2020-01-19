@@ -68,7 +68,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
 
             if (informAboutSubscription)
             {
-                embed.AddField("\u200b", "*Click below reaction to subscribe this flight and be notified on DM 10 minutes before the launch.*");
+                embed.AddField("\u200b", "*Click the reaction below to subscribe this flight and be notified on DM 10 minutes before the launch.*");
             }
 
             return embed;
