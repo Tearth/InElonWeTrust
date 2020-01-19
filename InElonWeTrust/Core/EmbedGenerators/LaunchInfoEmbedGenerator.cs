@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
@@ -58,7 +59,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             embed.AddField(":stadium: Launchpad", $"{launch.LaunchSite.SiteName} **[{googleMapsLink}]**");
             embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
             embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
-            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse));
+            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse, launch.Rocket.FirstStage.Cores));
 
             var linksData = GetLinksData(launch);
             if (linksData.Length > 0)
@@ -194,11 +195,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return string.Join(", ", links);
         }
 
-        private string GetReusedPartsData(ReuseInfo reused)
+        private string GetReusedPartsData(ReuseInfo reused, List<CoreInfo> cores)
         {
             var reusedPartsList = new List<string>();
 
-            if (reused.Core ?? false)
+            if ((reused.Core ?? false) || cores.Any(p => p.Flight > 1))
             {
                 reusedPartsList.Add("Core");
             }
