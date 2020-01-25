@@ -64,7 +64,7 @@ namespace InElonWeTrust.Core.TableGenerators
                 launchesListBuilder.Append($"{launch.FlightNumber ?? 0}.".PadRight(MissionNumberLength));
                 launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 2).PadRight(MissionNameLength));
                 launchesListBuilder.Append(launchDateTime.PadRight(LaunchDateLength));
-                launchesListBuilder.Append(launch.LaunchSite.SiteName.PadRight(SiteNameLength));
+                launchesListBuilder.Append((launch.LaunchSite.SiteName ?? "?").PadRight(SiteNameLength));
 
                 if (launch.TentativeMaxPrecision == TentativeMaxPrecision.Hour && launch.LaunchDateUtc < DateTime.UtcNow)
                 {
