@@ -46,10 +46,10 @@ namespace InElonWeTrust.Core
         public static DiscordClient Client { get; set; }
         public static bool LogExecutedCommands { get; set; }
         public static int HandledMessagesCount { get; set; }
+        public CacheService CacheService { get; set; }
 
         private readonly CommandsNextExtension _commands;
         private readonly OddityCore _oddity;
-        private readonly CacheService _cacheService;
         private readonly DiagnosticService _diagnosticService;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -57,7 +57,6 @@ namespace InElonWeTrust.Core
         public Bot()
         {
             _oddity = new OddityCore();
-            _cacheService = new CacheService();
             _diagnosticService = new DiagnosticService();
 
             _oddity.SetTimeout(2);
@@ -66,6 +65,7 @@ namespace InElonWeTrust.Core
             _oddity.OnDeserializationError += Oddity_OnDeserializationError;
 
             Client = new DiscordClient(GetClientConfiguration());
+            CacheService = new CacheService();
             LogExecutedCommands = true;
             
             Client.Ready += Client_Ready;
@@ -122,7 +122,7 @@ namespace InElonWeTrust.Core
         {
             return new ServiceCollection()
                 .AddSingleton(_oddity)
-                .AddSingleton(_cacheService)
+                .AddSingleton(CacheService)
 
                 // Embed generators
                 .AddScoped<AvatarEmbedGenerator>()
@@ -149,8 +149,8 @@ namespace InElonWeTrust.Core
                 .AddScoped<TimeZoneEmbedGenerator>()
 
                 // Singleton services
-                .AddSingleton(new DescriptionService(_cacheService, _oddity))
-                .AddSingleton(new UserLaunchSubscriptionsService(_cacheService, new LaunchInfoEmbedGenerator(new TimeZoneService())))
+                .AddSingleton(new DescriptionService(CacheService, _oddity))
+                .AddSingleton(new UserLaunchSubscriptionsService(CacheService, new LaunchInfoEmbedGenerator(new TimeZoneService())))
                 .AddSingleton(new BotListsService())
 
                 // Normal services

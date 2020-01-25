@@ -2,7 +2,7 @@
 {
     public enum CacheContentType
     {
-        [CacheLifetime(15)] NextLaunch,
+        [CacheLifetime(5)] NextLaunch,
         [CacheLifetime(15)] LatestLaunch,
         [CacheLifetime(15)] AllLaunches,
         [CacheLifetime(15)] PastLaunches,

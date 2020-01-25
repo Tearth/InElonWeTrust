@@ -20,6 +20,7 @@ namespace InElonWeTrust.Core.Services.Cache
         private int _cacheItemsAdded;
         private int _cacheItemsHit;
         private int _cacheItemsUpdated;
+        private TimeSpan? _customLaunchTime;
         private readonly System.Threading.SemaphoreSlim _cacheLock;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -64,7 +65,7 @@ namespace InElonWeTrust.Core.Services.Cache
 
                     _logger.Info($"Cache data added ({type})");
 
-                    ApplyPatches(data);
+                    ApplyPatches(type, data);
                     return (TData)data;
                 }
 
@@ -76,7 +77,7 @@ namespace InElonWeTrust.Core.Services.Cache
                     var data = await FetchDataFromProvider(dataProvider, parameter, cachedItem.Data);
                     if (data != cachedItem.Data)
                     {
-                        ApplyPatches(data);
+                        ApplyPatches(type, data);
                         cachedItem.Update(data);
 
                         _logger.Info($"Cache data updated ({type})");
@@ -95,6 +96,21 @@ namespace InElonWeTrust.Core.Services.Cache
             {
                 _cacheLock.Release();
             }
+        }
+
+        public void SetCustomLaunchTime(TimeSpan time)
+        {
+            _customLaunchTime = time;
+        }
+
+        public void ResetCustomLaunchTime()
+        {
+            _customLaunchTime = null;
+        }
+
+        public TimeSpan? GetCustomLaunchTime()
+        {
+            return _customLaunchTime;
         }
 
         private async Task<object> FetchDataFromProvider(Func<string, Task<object>> provider, string parameter, object oldData)
@@ -125,7 +141,7 @@ namespace InElonWeTrust.Core.Services.Cache
             return null;
         }
 
-        private void ApplyPatches<TData>(TData data)
+        private void ApplyPatches<TData>(CacheContentType type, TData data)
         {
             var patchesApplied = 0;
             switch (data)
@@ -136,6 +152,30 @@ namespace InElonWeTrust.Core.Services.Cache
                     patchesApplied++;
                     break;
                 }
+
+                case LaunchInfo launch when type == CacheContentType.NextLaunch && _customLaunchTime.HasValue:
+                {
+                    launch.LaunchDateUtc = new DateTime(
+                        launch.LaunchDateUtc.Value.Year,
+                        launch.LaunchDateUtc.Value.Month,
+                        launch.LaunchDateUtc.Value.Day,
+                        _customLaunchTime.Value.Hours,
+                        _customLaunchTime.Value.Minutes,
+                        _customLaunchTime.Value.Seconds
+                    );
+                    patchesApplied++;
+                    break;
+                }
+
+                /*
+                case LaunchInfo launch when type == CacheContentType.NextLaunch && !_customLaunchTime.HasValue:
+                {
+                    launch.TentativeMaxPrecision = TentativeMaxPrecision.Month;
+                    launch.LaunchDateUtc = new DateTime(2020, 01, 1, 0, 0, 0, DateTimeKind.Utc);
+                    patchesApplied++;
+                    break;
+                }
+                */
             }
 
             _logger.Info($"{patchesApplied} patches applied");
