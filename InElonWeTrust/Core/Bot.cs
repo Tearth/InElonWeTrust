@@ -186,7 +186,7 @@ namespace InElonWeTrust.Core
             var assemblyTypes = assembly.GetTypes();
 
             var registerCommandsMethod = _commands.GetType().GetMethods().FirstOrDefault(p => p.Name == "RegisterCommands" && p.IsGenericMethod);
-
+            
             foreach (var type in assemblyTypes)
             {
                 var attributes = type.GetCustomAttributes();

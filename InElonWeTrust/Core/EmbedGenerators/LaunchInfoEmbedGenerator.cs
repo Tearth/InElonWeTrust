@@ -136,7 +136,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     coresDataBuilder.Append($", {numerals[core.Flight.Value - 1]} flight");
                 }
 
-                if (core.LandingType != null && core.LandingType != LandingType.Ocean)
+                if (core.LandingType != null && core.LandingVehicle != null && core.LandingType != LandingType.Ocean)
                 {
                     coresDataBuilder.Append($", landing on {core.LandingVehicle}");
                 }

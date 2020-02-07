@@ -38,7 +38,7 @@ namespace InElonWeTrust.Core.TableGenerators
         public string Build(List<LaunchInfo> launches, CacheContentType contentType, int currentPage, string paginationFooter)
         {
             launches = launches.OrderBy(p => p.FlightNumber ?? 0).ToList();
-
+          
             var launchesListBuilder = new StringBuilder();
             launchesListBuilder.Append($":rocket:  **{_listHeader[contentType]}**");
             launchesListBuilder.Append("\r\n");
