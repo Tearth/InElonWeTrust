@@ -1,0 +1,9 @@
+language: csharp
+dist: bionic
+mono: none
+dotnet: 2.2.105
+script:
+  - dotnet restore
+  - dotnet build -c Release
+notifications:
+  email: false
