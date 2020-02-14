@@ -4,11 +4,11 @@
 </p>
 
 <p align="center">
+<a href="https://travis-ci.org/Tearth/InElonWeTrust"><img src="https://api.travis-ci.org/Tearth/InElonWeTrust.svg" alt="InElonWeTrust" /></a>
 <img src="https://discordbots.org/api/widget/status/462742130016780337.svg" alt="InElonWeTrust" />
 <img src="https://discordbots.org/api/widget/servers/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
 <img src="https://discordbots.org/api/widget/lib/462742130016780337.svg?noavatar=true" alt="InElonWeTrust" />
 </p>
-
 
 Discord bot providing commands related to SpaceX and Elon Musk.
 
