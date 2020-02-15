@@ -10,7 +10,6 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
-using DSharpPlus.Net.WebSocket;
 using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Helpers;

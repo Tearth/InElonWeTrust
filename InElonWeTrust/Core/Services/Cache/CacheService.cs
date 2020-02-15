@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
-using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
 using NLog;

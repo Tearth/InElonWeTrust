@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Text;
 using System.Web;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Database.Models;

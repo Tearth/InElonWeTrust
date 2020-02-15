@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Helpers.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace InElonWeTrust.Core.Services.Quotes
 {
