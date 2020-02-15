@@ -97,7 +97,6 @@ namespace InElonWeTrust.Core
             {
                 Token = SettingsLoader.Data.Token,
                 TokenType = TokenType.Bot,
-                WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew,
 
                 AutoReconnect = true,
                 UseInternalLogHandler = false
