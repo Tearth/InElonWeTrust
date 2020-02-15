@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using InElonWeTrust.Core.Database;
 using InElonWeTrust.Core.Database.Models;
+using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Subscriptions;
 using InElonWeTrust.Core.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -62,12 +63,14 @@ namespace InElonWeTrust.Core.Services.Twitter
             return _userSubscriptionMap[userType];
         }
 
-        public async Task<CachedTweet> GetRandomTweetAsync(TwitterUserType userType)
+        public CachedTweet GetRandomTweetAsync(TwitterUserType userType)
         {
             using (var databaseContext = new DatabaseContext())
             {
                 var username = _users[userType];
-                return await databaseContext.CachedTweets.Where(p => p.CreatedByRealName == username).OrderBy(r => Guid.NewGuid()).FirstAsync();
+                return databaseContext.CachedTweets
+                    .RandomRow("CachedTweets", $"CreatedByRealName = \"{username}\"")
+                    .First();
             }
         }
 

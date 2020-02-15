@@ -41,7 +41,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.ElonMusk);
+            var tweet = _twitterService.GetRandomTweetAsync(TwitterUserType.ElonMusk);
             var embed = _twitterEmbedGenerator.Build(tweet);
 
             await ctx.RespondAsync(embed: embed);
@@ -53,7 +53,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceX);
+            var tweet = _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceX);
             var embed = _twitterEmbedGenerator.Build(tweet);
 
             await ctx.RespondAsync(embed: embed);
@@ -65,7 +65,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var tweet = await _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceXFleet);
+            var tweet = _twitterService.GetRandomTweetAsync(TwitterUserType.SpaceXFleet);
             var embed = _twitterEmbedGenerator.Build(tweet);
 
             await ctx.RespondAsync(embed: embed);

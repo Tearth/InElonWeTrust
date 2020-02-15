@@ -44,11 +44,11 @@ namespace InElonWeTrust.Core.Services.Flickr
             _notificationsUpdateTimer.Start();
         }
 
-        public async Task<CachedFlickrPhoto> GetRandomPhotoAsync()
+        public CachedFlickrPhoto GetRandomPhotoAsync()
         {
             using (var databaseContext = new DatabaseContext())
             {
-                return await databaseContext.CachedFlickrPhotos.OrderBy(r => Guid.NewGuid()).FirstAsync();
+                return databaseContext.CachedFlickrPhotos.RandomRow("CachedFlickrPhotos").First();
             }
         }
 

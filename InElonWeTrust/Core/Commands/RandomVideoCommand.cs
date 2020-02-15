@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Commands.Attributes;
 using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.Database;
+using InElonWeTrust.Core.Helpers.Extensions;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -20,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
 
             using (var databaseContext = new DatabaseContext())
             {
-                var video = databaseContext.VideoLinks.OrderBy(p => Guid.NewGuid()).First();
+                var video = databaseContext.VideoLinks.RandomRow("VideoLinks").First();
                 await ctx.RespondAsync(video.Link);
             }
         }

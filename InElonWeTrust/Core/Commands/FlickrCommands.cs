@@ -41,7 +41,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var photo = await _flickrService.GetRandomPhotoAsync();
+            var photo = _flickrService.GetRandomPhotoAsync();
             var embed = _flickrEmbedGenerator.Build(photo);
 
             await ctx.RespondAsync(string.Empty, false, embed);
