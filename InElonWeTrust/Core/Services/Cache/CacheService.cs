@@ -144,12 +144,14 @@ namespace InElonWeTrust.Core.Services.Cache
             var patchesApplied = 0;
             switch (data)
             {
+                /*
                 case LaunchInfo launch when launch.FlightNumber == 87 && launch.Links.VideoLink == "https://youtu.be/pIDuv0Ta0XQ":
                 {
                     launch.Links.VideoLink = null;
                     patchesApplied++;
                     break;
                 }
+                */
 
                 case LaunchInfo launch when type == CacheContentType.NextLaunch && _customLaunchTime.HasValue:
                 {
