@@ -271,6 +271,11 @@ namespace InElonWeTrust.Core
             {
                 case CommandNotFoundException commandNotFoundException:
                 {
+                    if (commandNotFoundException.CommandName == null)
+                    {
+                        return;
+                    }
+
                     var messageContent = e.Context.Message.Content;
                     var messageWithoutPrefix = messageContent.Replace(e.Context.Prefix, "");
                     var splitMessage = messageWithoutPrefix.Split(' ');
