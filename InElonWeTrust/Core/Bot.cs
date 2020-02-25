@@ -381,10 +381,16 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Client_MessageCreated(MessageCreateEventArgs e)
+        private async Task Client_MessageCreated(MessageCreateEventArgs e)
         {
             HandledMessagesCount++;
-            return Task.CompletedTask;
+
+            if (SettingsLoader.Data.Prefixes.Contains(e.Message.Content))
+            {
+                var helpCommand = _commands.RegisteredCommands.First(p => p.Key == "help").Value;
+                var fakeContext = _commands.CreateFakeContext(e.Author, e.Channel, e.Message.Content, "help", helpCommand);
+                await _commands.ExecuteCommandAsync(fakeContext);
+            }
         }
 
         private void Oddity_OnRequestSend(object sender, RequestSendEventArgs e)
