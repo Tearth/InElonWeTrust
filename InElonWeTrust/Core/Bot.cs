@@ -271,10 +271,12 @@ namespace InElonWeTrust.Core
             {
                 case CommandNotFoundException commandNotFoundException:
                 {
+                    /*
                     if (commandNotFoundException.CommandName == null)
                     {
                         return;
                     }
+                    */
 
                     var messageContent = e.Context.Message.Content;
                     var messageWithoutPrefix = messageContent.Replace(e.Context.Prefix, "");
@@ -390,12 +392,14 @@ namespace InElonWeTrust.Core
         {
             HandledMessagesCount++;
 
+            /*
             if (SettingsLoader.Data.Prefixes.Contains(e.Message.Content))
             {
                 var helpCommand = _commands.RegisteredCommands.First(p => p.Key == "help").Value;
                 var fakeContext = _commands.CreateFakeContext(e.Author, e.Channel, e.Message.Content, "help", helpCommand);
                 await _commands.ExecuteCommandAsync(fakeContext);
             }
+            */
         }
 
         private void Oddity_OnRequestSend(object sender, RequestSendEventArgs e)
