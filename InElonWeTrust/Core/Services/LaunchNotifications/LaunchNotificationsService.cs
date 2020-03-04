@@ -141,7 +141,8 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
                     return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day;
                 }
 
-                case TentativeMaxPrecision.Hour:
+                // Notify only if difference is bigger than 5 minutes (prevent from sending notifications when date has changed by one minute)
+                case TentativeMaxPrecision.Hour when Math.Abs((oldDate - newDate).TotalMinutes) >= 5:
                 {
                     return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day ||
                            oldDate.Hour != newDate.Hour || oldDate.Minute != newDate.Minute;
