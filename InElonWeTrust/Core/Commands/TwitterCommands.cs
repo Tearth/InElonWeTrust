@@ -95,7 +95,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "General error occurred when trying to send Twitter notification");
+                    _logger.Error(ex, $"General error occurred when trying to send Twitter notification (channel [{channelData.ChannelId}], guild [{channelData.GuildId}])");
                 }
             }
 

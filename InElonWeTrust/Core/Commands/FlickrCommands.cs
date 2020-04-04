@@ -69,7 +69,7 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex, "General error occurred when trying to send Flickr notification");
+                    _logger.Error(ex, $"General error occurred when trying to send Flickr notification (channel [{channelData.ChannelId}], guild [{channelData.GuildId}])");
                 }
             }
 
