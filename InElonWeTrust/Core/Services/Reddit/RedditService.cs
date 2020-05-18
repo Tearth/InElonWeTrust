@@ -43,7 +43,7 @@ namespace InElonWeTrust.Core.Services.Reddit
             return parsedResponse.First().Data.Children.First().Data;
         }
 
-        public async Task ReloadCachedTopicsAsync()
+        public async Task ReloadCachedTopicsAsync(bool dontSend)
         {
             if (!await _updateSemaphore.WaitAsync(0))
             {
@@ -61,7 +61,7 @@ namespace InElonWeTrust.Core.Services.Reddit
                     var hotThreadsToSend = GetHotThreadsNamesToSend(allHotThreads);
                     await AddHotThreadsToDatabase(hotThreadsToSend);
 
-                    if (hotThreadsToSend.Count > 0 && sendNotifies)
+                    if (hotThreadsToSend.Count > 0 && sendNotifies && !dontSend)
                     {
                         OnNewHotTopic?.Invoke(this, hotThreadsToSend);
                     }
@@ -80,7 +80,7 @@ namespace InElonWeTrust.Core.Services.Reddit
         {
             try
             {
-                await ReloadCachedTopicsAsync();
+                await ReloadCachedTopicsAsync(false);
             }
             catch (Exception ex)
             {

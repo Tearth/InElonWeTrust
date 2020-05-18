@@ -52,7 +52,7 @@ namespace InElonWeTrust.Core.Commands
         [Description("Reload cached Reddit topics in the database.")]
         public async Task ReloadRedditCacheAsync(CommandContext ctx)
         {
-            await _redditService.ReloadCachedTopicsAsync();
+            await _redditService.ReloadCachedTopicsAsync(true);
         }
 
         private async void Reddit_OnNewHotTopicAsync(object sender, List<RedditChildData> topics)
