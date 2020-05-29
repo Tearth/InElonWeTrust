@@ -26,7 +26,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var quote = _quotesService.GetRandomQuoteAsync();
+            var quote = _quotesService.GetRandomQuote();
             var embed = _quoteEmbedGenerator.Build(quote);
 
             await ctx.RespondAsync(embed: embed);

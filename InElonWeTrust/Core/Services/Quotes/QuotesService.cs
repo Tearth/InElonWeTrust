@@ -6,7 +6,7 @@ namespace InElonWeTrust.Core.Services.Quotes
 {
     public class QuotesService
     {
-        public string GetRandomQuoteAsync()
+        public string GetRandomQuote()
         {
             using (var databaseContext = new DatabaseContext())
             {
