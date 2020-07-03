@@ -19,13 +19,12 @@ namespace InElonWeTrust.Core.Commands
             _snService = snService;
         }
 
-        [Hidden]
         [Command("Sn")]
         [Description("Get the latest SN status.")]
-        public async Task SnAsync(CommandContext ctx, int? number = null)
+        public async Task AvatarAsync(CommandContext ctx, int? number)
         {
             await ctx.TriggerTypingAsync();
-            var text = _snService.GetSnText(number);
+            var text = _snService.GetSnText();
             await ctx.RespondAsync(text);
         }
     }
