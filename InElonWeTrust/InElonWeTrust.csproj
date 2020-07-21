@@ -24,12 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00697" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00697" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00709" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00709" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.3" />
     <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="Oddity" Version="1.0.12" />
+    <PackageReference Include="Oddity" Version="2.0.1" />
     <PackageReference Include="TimeZoneConverter" Version="3.2.0" />
     <PackageReference Include="TweetinviAPI" Version="4.0.3" />
   </ItemGroup>
