@@ -13,8 +13,8 @@ using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 using NLog;
-using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launchpad;
+using Oddity.Models.Launches;
+using Oddity.Models.Launchpads;
 
 namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 {
@@ -136,10 +136,10 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
         private async Task UpdateLaunchNotifications()
         {
             var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
-            var nextLaunchDateUtc = nextLaunch.LaunchDateUtc ?? DateTime.MaxValue;
+            var nextLaunchDateUtc = nextLaunch.DateUtc ?? DateTime.MaxValue;
             var minutesToLaunch = (nextLaunchDateUtc - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
-            if (nextLaunch.TentativeMaxPrecision != TentativeMaxPrecision.Hour)
+            if (nextLaunch.DatePrecision != DatePrecision.Hour)
             {
                 return;
             }
@@ -193,15 +193,12 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
 
         private async Task SendLaunchNotificationToUserAsync(DiscordMember member, LaunchInfo nextLaunch)
         {
-            var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-            var launchpad = launchpadsList.First(p => p.Id == nextLaunch.LaunchSite.SiteId);
-            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, launchpad, null, false);
-
+            var launchInfoEmbed = _launchInfoEmbedGenerator.Build(nextLaunch, null, false);
             await member.SendMessageAsync($"**{MinutesToLaunchToNotify} minutes to launch!**", false, launchInfoEmbed);
 
-            if (nextLaunch.Links.VideoLink != null)
+            if (nextLaunch.Links.Webcast != null)
             {
-                await member.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.VideoLink}");
+                await member.SendMessageAsync($"Watch launch at stream: {nextLaunch.Links.Webcast}");
             }
 
             await member.SendMessageAsync("*You received this message because we noticed that you subscribed this launch. Remember that " +

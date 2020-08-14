@@ -20,11 +20,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Color = new DiscordColor(Constants.EmbedColor),
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
-                    Url = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
+                    Url = launch.Links.Patch.Large ?? Constants.SpaceXLogoImage
                 }
             };
 
-            var launchTme = launch.LaunchDateUtc ?? DateTime.MinValue;
+            var launchTme = launch.DateUtc ?? DateTime.MinValue;
             var now = DateTime.Now.ToUniversalTime();
             var timeLeft = (launchTme - now).TotalMinutes;
 
@@ -35,7 +35,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                     var timeLeftDescription = timeLeft > 60 ? Math.Ceiling(timeLeft / 60) + " hours" : Math.Ceiling(timeLeft) + " minutes";
 
                     var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"**{timeLeftDescription}** to launch **{launch.MissionName}**! ");
+                    descriptionBuilder.Append($"**{timeLeftDescription}** to launch **{launch.Name}**! ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.Title = ":rocket: Launch is coming!";
@@ -46,17 +46,17 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 case LaunchNotificationType.Scrub:
                 {
                     var oldLaunchDate = DateFormatter.GetDateStringWithPrecision(
-                        oldLaunchState.LaunchDateUtc ?? DateTime.MinValue,
-                        oldLaunchState.TentativeMaxPrecision ?? DatePrecision.Year,
+                        oldLaunchState.DateUtc ?? DateTime.MinValue,
+                        oldLaunchState.DatePrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var newLaunchDate = DateFormatter.GetDateStringWithPrecision(
-                        launch.LaunchDateUtc ?? DateTime.MinValue,
-                        launch.TentativeMaxPrecision ?? DatePrecision.Year,
+                        launch.DateUtc ?? DateTime.MinValue,
+                        launch.DatePrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"**{launch.MissionName}** launch time has been changed from ");
+                    descriptionBuilder.Append($"**{launch.Name}** launch time has been changed from ");
                     descriptionBuilder.Append($"**{oldLaunchDate}** to ");
                     descriptionBuilder.Append($"**{newLaunchDate}**. ");
 
@@ -70,12 +70,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 case LaunchNotificationType.NewTarget:
                 {
                     var nextLaunchDate = DateFormatter.GetDateStringWithPrecision(
-                        launchNotification.NewLaunchState.LaunchDateUtc ?? DateTime.MinValue,
-                        launchNotification.NewLaunchState.TentativeMaxPrecision ?? DatePrecision.Year,
+                        launchNotification.NewLaunchState.DateUtc ?? DateTime.MinValue,
+                        launchNotification.NewLaunchState.DatePrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
-                    descriptionBuilder.Append($"The next launch will be **{launchNotification.NewLaunchState.MissionName}** on **{nextLaunchDate}**. ");
+                    descriptionBuilder.Append($"The next launch will be **{launchNotification.NewLaunchState.Name}** on **{nextLaunchDate}**. ");
                     descriptionBuilder.Append($"Type `e!NextLaunch` to get more information.");
 
                     embed.Title = ":rocket: New target!";

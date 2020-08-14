@@ -11,7 +11,7 @@ using InElonWeTrust.Core.Helpers.Comparers;
 using InElonWeTrust.Core.Services.Cache;
 using NLog;
 using Oddity;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Services.LaunchNotifications
 {
@@ -38,7 +38,7 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
             _notificationsUpdateTimer.Elapsed += Notifications_UpdateTimerOnElapsed;
             _notificationsUpdateTimer.Start();
 
-            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.LaunchesEndpoint.GetNext().ExecuteAsync());
         }
 
         public async Task AddMessageToSubscribe(DiscordChannel channel, DiscordMessage message)
@@ -109,40 +109,40 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private bool HasLaunchDateChanged(LaunchInfo savedLaunch, LaunchInfo currentLaunch)
         {
-            if (savedLaunch.LaunchDateUtc == null || currentLaunch.LaunchDateUtc == null)
+            if (savedLaunch.DateUtc == null || currentLaunch.DateUtc == null)
             {
                 return false;
             }
 
-            if (savedLaunch.TentativeMaxPrecision != currentLaunch.TentativeMaxPrecision)
+            if (savedLaunch.DatePrecision != currentLaunch.DatePrecision)
             {
                 return true;
             }
 
-            var oldDate = savedLaunch.LaunchDateUtc.Value;
-            var newDate = currentLaunch.LaunchDateUtc.Value;
+            var oldDate = savedLaunch.DateUtc.Value;
+            var newDate = currentLaunch.DateUtc.Value;
 
-            switch (savedLaunch.TentativeMaxPrecision)
+            switch (savedLaunch.DatePrecision)
             {
-                case TentativeMaxPrecision.Year:
-                case TentativeMaxPrecision.Half:
-                case TentativeMaxPrecision.Quarter:
+                case DatePrecision.Year:
+                case DatePrecision.Half:
+                case DatePrecision.Quarter:
                 {
                     return oldDate.Year != newDate.Year;
                 }
 
-                case TentativeMaxPrecision.Month:
+                case DatePrecision.Month:
                 {
                     return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month;
                 }
 
-                case TentativeMaxPrecision.Day:
+                case DatePrecision.Day:
                 {
                     return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day;
                 }
 
                 // Notify only if difference is bigger than 5 minutes (prevent from sending notifications when date has changed by one minute)
-                case TentativeMaxPrecision.Hour when Math.Abs((oldDate - newDate).TotalMinutes) >= 5:
+                case DatePrecision.Hour when Math.Abs((oldDate - newDate).TotalMinutes) >= 5:
                 {
                     return oldDate.Year != newDate.Year || oldDate.Month != newDate.Month || oldDate.Day != newDate.Day ||
                            oldDate.Hour != newDate.Hour || oldDate.Minute != newDate.Minute;
@@ -154,12 +154,12 @@ namespace InElonWeTrust.Core.Services.LaunchNotifications
 
         private bool CheckIfReminderShouldBeSend(LaunchInfo launch)
         {
-            if (launch.TentativeMaxPrecision != TentativeMaxPrecision.Hour)
+            if (launch.DatePrecision != DatePrecision.Hour)
             {
                 return false;
             }
 
-            var minutesToLaunch = ((launch.LaunchDateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
+            var minutesToLaunch = ((launch.DateUtc ?? DateTime.MaxValue) - DateTime.Now.ToUniversalTime()).TotalMinutes;
 
             var previousStateMinutesToLaunch = minutesToLaunch + 1;
             var newStateMinutesToLaunch = minutesToLaunch;

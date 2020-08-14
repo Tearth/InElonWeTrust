@@ -5,7 +5,7 @@ using DSharpPlus.Entities;
 using InElonWeTrust.Core.Services.Cache;
 using NLog;
 using Oddity;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Services.Description
 {
@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.Services.Description
 
             _cacheService = cacheService;
 
-            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.Launches.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await oddity.LaunchesEndpoint.GetNext().ExecuteAsync());
         }
 
         private async void DescriptionRefreshTimer_ElapsedAsync(object sender, ElapsedEventArgs e)
@@ -50,15 +50,15 @@ namespace InElonWeTrust.Core.Services.Description
             var nextLaunch = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
             string description;
 
-            if (nextLaunch.LaunchDateUtc == null ||
-                (nextLaunch.TentativeMaxPrecision != TentativeMaxPrecision.Hour &&
-                 nextLaunch.TentativeMaxPrecision != TentativeMaxPrecision.Day))
+            if (nextLaunch.DateUtc == null ||
+                (nextLaunch.DatePrecision != DatePrecision.Hour &&
+                 nextLaunch.DatePrecision != DatePrecision.Day))
             {
                 description = DescriptionPattern;
             }
             else
             {
-                var timeToLaunch = nextLaunch.LaunchDateUtc.Value - DateTime.UtcNow;
+                var timeToLaunch = nextLaunch.DateUtc.Value - DateTime.UtcNow;
                 if (timeToLaunch.TotalMinutes <= 0)
                 {
                     description = DescriptionPattern;

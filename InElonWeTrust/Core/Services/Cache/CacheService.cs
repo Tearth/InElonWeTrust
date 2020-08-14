@@ -5,7 +5,7 @@ using System.Timers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Services.Cache.Exceptions;
 using NLog;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Services.Cache
 {
@@ -155,10 +155,10 @@ namespace InElonWeTrust.Core.Services.Cache
 
                 case LaunchInfo launch when type == CacheContentType.NextLaunch && _customLaunchTime.HasValue:
                 {
-                    launch.LaunchDateUtc = new DateTime(
-                        launch.LaunchDateUtc.Value.Year,
-                        launch.LaunchDateUtc.Value.Month,
-                        launch.LaunchDateUtc.Value.Day,
+                    launch.DateUtc = new DateTime(
+                        launch.DateUtc.Value.Year,
+                        launch.DateUtc.Value.Month,
+                        launch.DateUtc.Value.Day,
                         _customLaunchTime.Value.Hours,
                         _customLaunchTime.Value.Minutes,
                         _customLaunchTime.Value.Seconds

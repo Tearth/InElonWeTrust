@@ -1,4 +1,4 @@
-﻿using Oddity.API.Models.Launch;
+﻿using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Services.LaunchNotifications
 {
