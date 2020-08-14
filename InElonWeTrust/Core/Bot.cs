@@ -35,7 +35,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using NLog;
 using Oddity;
-using Oddity.API.Builders;
+using Oddity.Events;
 using StringComparer = InElonWeTrust.Core.Helpers.Comparers.StringComparer;
 
 namespace InElonWeTrust.Core
@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core
             _oddity = new OddityCore();
             _diagnosticService = new DiagnosticService();
 
-            _oddity.SetTimeout(2);
+            _oddity.Timeout = new TimeSpan(0, 0, 2);
             _oddity.OnRequestSend += Oddity_OnRequestSend;
             _oddity.OnResponseReceive += Oddity_OnResponseReceive;
             _oddity.OnDeserializationError += Oddity_OnDeserializationError;
@@ -127,8 +127,6 @@ namespace InElonWeTrust.Core
                 .AddScoped<LaunchInfoEmbedGenerator>()
                 .AddScoped<ChangelogEmbedGenerator>()
                 .AddScoped<CompanyInfoEmbedGenerator>()
-                .AddScoped<CompanyHistoryTableGenerator>()
-                .AddScoped<CompanyHistoryEventEmbedGenerator>()
                 .AddScoped<FlickrEmbedGenerator>()
                 .AddScoped<RedditEmbedGenerator>()
                 .AddScoped<TwitterEmbedGenerator>()
@@ -405,9 +403,9 @@ namespace InElonWeTrust.Core
         private void Oddity_OnRequestSend(object sender, RequestSendEventArgs e)
         {
             var message = $"Oddity request sent to {e.Url}";
-            if (e.Filters.Any())
+            if (e.Query != null)
             {
-                message += $" with filters: {string.Join(", ", e.Filters)}";
+                message += $" with filters: {e.Query}";
             }
 
             _logger.Info(message);
