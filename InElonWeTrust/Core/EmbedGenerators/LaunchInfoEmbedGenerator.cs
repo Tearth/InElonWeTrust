@@ -7,10 +7,10 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.TimeZone;
-using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launch.Rocket.FirstStage;
-using Oddity.API.Models.Launch.Rocket.SecondStage;
-using Oddity.API.Models.Launchpad;
+using Oddity.Models.Cores;
+using Oddity.Models.Launches;
+using Oddity.Models.Launchpads;
+using Oddity.Models.Payloads;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -27,15 +27,18 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var embed = new DiscordEmbedBuilder
             {
-                Title = $"{launch.FlightNumber}. {launch.MissionName} ({launch.Rocket.RocketName} {launch.Rocket.RocketType})",
+                Title = $"{launch.FlightNumber}. {launch.Name} ({launch.Rocket.Value.Name} {launch.Rocket.Value.Type})",
                 Description = launch.Details.ShortenString(1024) ?? "*No description at this moment :(*",
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = launch.Links.Patch.Large ?? Constants.SpaceXLogoImage
+                }
             };
 
             var launchDateTime = DateFormatter.GetDateStringWithPrecision(
-                launch.LaunchDateUtc ?? DateTime.MinValue,
-                launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                launch.DateUtc ?? DateTime.MinValue,
+                launch.DatePrecision ?? DatePrecision.Year,
                 true, true, true);
 
             embed.AddField(":clock4: Launch time (UTC)", launchDateTime, true);
@@ -44,8 +47,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             {
                 var localLaunchDateTime = GetLocalLaunchDateTime(
                     guildId.Value,
-                    launch.LaunchDateUtc ?? DateTime.MinValue,
-                    launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year);
+                    launch.DateUtc ?? DateTime.MinValue,
+                    launch.DatePrecision ?? DatePrecision.Year);
 
                 var timeZoneName = _timeZoneService.GetTimeZoneForGuild(guildId.Value);
 
@@ -55,11 +58,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 }
             }
 
-            var googleMapsLink = $"[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Location.Latitude ?? 0, launchpad.Location.Longitude ?? 0)})";
-            embed.AddField(":stadium: Launchpad", $"{launch.LaunchSite.SiteName} **[{googleMapsLink}]**");
-            embed.AddField($":rocket: First stages ({launch.Rocket.FirstStage.Cores.Count})", GetCoresData(launch.Rocket.FirstStage.Cores));
-            embed.AddField($":package: Payloads ({launch.Rocket.SecondStage.Payloads.Count})", GetPayloadsData(launch.Rocket.SecondStage.Payloads));
-            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch.Reuse, launch.Rocket.FirstStage.Cores));
+            var googleMapsLink = $"[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Latitude ?? 0.0, launchpad.Longitude ?? 0.0)})";
+            embed.AddField(":stadium: Launchpad", $"{launch.Launchpad.Value.FullName} **[{googleMapsLink}]**");
+            embed.AddField($":rocket: First stages ({1 + launch.Rocket.Value.Boosters})", GetCoresData(launch.Cores));
+            embed.AddField($":package: Payloads ({launch.Payloads.Count})", GetPayloadsData(launch.Payloads));
+            embed.AddField(":recycle: Reused parts", GetReusedPartsData(launch));
 
             var linksData = GetLinksData(launch);
             if (linksData.Length > 0)
@@ -75,9 +78,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return embed;
         }
 
-        private string GetLocalLaunchDateTime(ulong guildId, DateTime utc, TentativeMaxPrecision precision)
+        private string GetLocalLaunchDateTime(ulong guildId, DateTime utc, DatePrecision precision)
         {
-            var convertedToLocal = precision == TentativeMaxPrecision.Hour
+            var convertedToLocal = precision == DatePrecision.Hour
                 ? _timeZoneService.ConvertUtcToLocalTime(guildId, utc)
                 : utc;
 
@@ -89,21 +92,21 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return DateFormatter.GetDateStringWithPrecision(convertedToLocal.Value, precision, false, true, true);
         }
 
-        private string GetPayloadsData(List<PayloadInfo> payloads)
+        private string GetPayloadsData(List<Lazy<PayloadInfo>> payloads)
         {
             var payloadsDataBuilder = new StringBuilder();
             foreach (var payload in payloads)
             {
-                payloadsDataBuilder.Append(payload.PayloadId);
+                payloadsDataBuilder.Append(payload.Value.Name);
 
-                if (payload.PayloadMassKilograms != null)
+                if (payload.Value.MassKilograms != null)
                 {
-                    payloadsDataBuilder.Append($" ({payload.PayloadMassKilograms} kg)");
+                    payloadsDataBuilder.Append($" ({payload.Value.MassKilograms} kg)");
                 }
 
-                if (payload.Orbit != null)
+                if (payload.Value.Orbit != null)
                 {
-                    payloadsDataBuilder.Append($" to {payload.Orbit}");
+                    payloadsDataBuilder.Append($" to {payload.Value.Orbit}");
                 }
 
                 payloadsDataBuilder.Append("\r\n");
@@ -118,32 +121,34 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return payloadsDataBuilder.ToString();
         }
 
-        private string GetCoresData(List<CoreInfo> cores)
+        private string GetCoresData(List<LaunchCoreInfo> launchCores)
         {
             var coresDataBuilder = new StringBuilder();
             var numerals = new[] {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"};
 
-            foreach (var core in cores)
+            foreach (var launchCore in launchCores)
             {
-                coresDataBuilder.Append($"{core.CoreSerial ?? "Unknown"}");
-                if (core.Block != null)
+                var coreDefinition = launchCore.Core.Value;
+
+                coresDataBuilder.Append($"{launchCore.Core.Value.Serial ?? "Unknown"}");
+                if (launchCore.Core.Value.Block != null)
                 {
-                    coresDataBuilder.Append($" (block {core.Block})");
+                    coresDataBuilder.Append($" (block {coreDefinition.Block})");
                 }
 
-                if (core.Flight != null && core.Flight > 0)
+                if (coreDefinition.Launches != null && coreDefinition.Launches.Count > 0)
                 {
-                    coresDataBuilder.Append($", {numerals[core.Flight.Value - 1]} flight");
+                    coresDataBuilder.Append($", {numerals[coreDefinition.Launches.Count - 1]} flight");
                 }
 
-                if (core.LandingType != null && core.LandingVehicle != null && core.LandingType != LandingType.Ocean)
+                if (launchCore.LandingType != null && launchCore.Landpad != null && launchCore.LandingType != "Ocean")
                 {
-                    coresDataBuilder.Append($", landing on {core.LandingVehicle}");
+                    coresDataBuilder.Append($", landing on {launchCore.Landpad.Value.Name}");
                 }
 
-                if (core.LandSuccess != null)
+                if (launchCore.LandingSuccess != null)
                 {
-                    coresDataBuilder.Append($" ({(core.LandSuccess.Value ? "success" : "fail")})");
+                    coresDataBuilder.Append($" ({(launchCore.LandingSuccess.Value ? "success" : "fail")})");
                 }
 
                 coresDataBuilder.Append("\r\n");
@@ -162,9 +167,9 @@ namespace InElonWeTrust.Core.EmbedGenerators
         {
             var links = new List<string>();
 
-            if (info.Links.VideoLink != null)
+            if (info.Links.Webcast != null)
             {
-                links.Add($"__**[YT stream]({info.Links.VideoLink})**__");
+                links.Add($"__**[YT stream]({info.Links.Webcast})**__");
             }
 
             if (info.Links.Presskit != null)
@@ -172,54 +177,49 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 links.Add($"[Presskit]({info.Links.Presskit})");
             }
 
-            if (info.Telemetry.FlightClub != null)
+            if (info.Links.Reddit.Campaign != null)
             {
-                links.Add($"[Telemetry]({info.Telemetry.FlightClub})");
+                links.Add($"[Campaign]({info.Links.Reddit.Campaign})");
             }
 
-            if (info.Links.RedditCampaign != null)
+            if (info.Links.Reddit.Launch != null)
             {
-                links.Add($"[Campaign]({info.Links.RedditCampaign})");
+                links.Add($"[Launch]({info.Links.Reddit.Launch})");
             }
 
-            if (info.Links.RedditLaunch != null)
+            if (info.Links.Reddit.Media != null)
             {
-                links.Add($"[Launch]({info.Links.RedditLaunch})");
-            }
-
-            if (info.Links.RedditMedia != null)
-            {
-                links.Add($"[Media]({info.Links.RedditMedia})");
+                links.Add($"[Media]({info.Links.Reddit.Media})");
             }
 
             return string.Join(", ", links);
         }
 
-        private string GetReusedPartsData(ReuseInfo reused, List<CoreInfo> cores)
+        private string GetReusedPartsData(LaunchInfo launch)
         {
             var reusedPartsList = new List<string>();
 
-            if ((reused.Core ?? false) || cores.Any(p => p.Flight > 1))
+            if (launch.Cores[0].Reused ?? false)
             {
                 reusedPartsList.Add("Core");
             }
 
-            if (reused.Capsule ?? false)
+            if (launch.Capsules.Count > 0 && launch.Capsules[0].Value.ReuseCount > 0)
             {
                 reusedPartsList.Add("Capsule");
             }
 
-            if (reused.Fairings ?? false)
+            if (launch.Fairings.Reused ?? false)
             {
                 reusedPartsList.Add("Fairings");
             }
 
-            if (reused.FirstSideCore ?? false)
+            if (launch.Cores.Count == 3 && (launch.Cores[1].Reused ?? false))
             {
                 reusedPartsList.Add("First side core");
             }
 
-            if (reused.SecondSideCore ?? false)
+            if (launch.Cores.Count == 3 && (launch.Cores[2].Reused ?? false))
             {
                 reusedPartsList.Add("Second side core");
             }

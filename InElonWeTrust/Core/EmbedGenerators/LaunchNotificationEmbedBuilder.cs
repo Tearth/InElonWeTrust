@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.LaunchNotifications;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -18,7 +18,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
             var embed = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = launch.Links.MissionPatch ?? Constants.SpaceXLogoImage
+                }
             };
 
             var launchTme = launch.LaunchDateUtc ?? DateTime.MinValue;
@@ -44,12 +47,12 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 {
                     var oldLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         oldLaunchState.LaunchDateUtc ?? DateTime.MinValue,
-                        oldLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                        oldLaunchState.TentativeMaxPrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var newLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         launch.LaunchDateUtc ?? DateTime.MinValue,
-                        launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                        launch.TentativeMaxPrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var descriptionBuilder = new StringBuilder();
@@ -68,7 +71,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 {
                     var nextLaunchDate = DateFormatter.GetDateStringWithPrecision(
                         launchNotification.NewLaunchState.LaunchDateUtc ?? DateTime.MinValue,
-                        launchNotification.NewLaunchState.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                        launchNotification.NewLaunchState.TentativeMaxPrecision ?? DatePrecision.Year,
                         true, true, true);
 
                     var descriptionBuilder = new StringBuilder();

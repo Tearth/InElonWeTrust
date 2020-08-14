@@ -4,7 +4,7 @@ using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Helpers.Formatters;
-using Oddity.API.Models.Launchpad;
+using Oddity.Models.Launchpads;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -25,8 +25,8 @@ namespace InElonWeTrust.Core.EmbedGenerators
             {
                 var responseBuilder = new StringBuilder();
 
-                responseBuilder.Append($"**[[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Location.Latitude ?? 0, launchpad.Location.Longitude ?? 0)})]** ");
-                responseBuilder.Append(launchpad.Details);
+                responseBuilder.Append($"**[[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Latitude ?? 0, launchpad.Longitude ?? 0)})]** ");
+                responseBuilder.Append(launchpad.Status);
                 responseBuilder.Append("\r\n");
 
                 if (launchpad != lastLaunchpad)
