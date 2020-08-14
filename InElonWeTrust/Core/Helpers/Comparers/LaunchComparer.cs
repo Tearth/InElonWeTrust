@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Helpers.Comparers
 {
@@ -7,6 +7,9 @@ namespace InElonWeTrust.Core.Helpers.Comparers
     {
         public static bool IsLaunchTheSame(LaunchInfo first, LaunchInfo second)
         {
+            return first.Id == second.Id;
+
+            /*
             if (first.MissionName == second.MissionName && first.FlightNumber == second.FlightNumber)
             {
                 return true;
@@ -22,8 +25,10 @@ namespace InElonWeTrust.Core.Helpers.Comparers
             var similarity = CalculateSimilarity(firstLaunchFeatures, secondLaunchFeatures);
 
             return similarity.similar >= similarity.total / 2;
+            */
         }
 
+        /*
         private static List<string> GetLaunchFeatures(LaunchInfo launch)
         {
             return new List<string>
@@ -63,5 +68,6 @@ namespace InElonWeTrust.Core.Helpers.Comparers
 
             return (similar, total);
         }
+        */
     }
 }
