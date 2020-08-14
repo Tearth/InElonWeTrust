@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InElonWeTrust.Core.Commands.Attributes;
@@ -21,7 +22,13 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _coreInfoEmbedGenerator = coreInfoEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await oddity.CoresEndpoint.Get(p).ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p =>
+            {
+                var result = await oddity.CoresEndpoint.Query()
+                    .WithFieldEqual(q => q.Serial, p)
+                    .ExecuteAsync();
+                return result.Data.FirstOrDefault();
+            });
         }
 
         [Command("GetCore"), Aliases("Core", "CoreInfo")]

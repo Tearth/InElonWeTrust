@@ -46,7 +46,7 @@ namespace InElonWeTrust.Core.Commands
             var embed = _launchNotificationEmbedBuilder.Build(launchNotification);
             var channels = _subscriptionsService.GetSubscribedChannels(SubscriptionType.NextLaunch);
 
-            var launchTime = launchNotification.NewLaunchState.LaunchDateUtc ?? DateTime.MinValue;
+            var launchTime = launchNotification.NewLaunchState.DateUtc ?? DateTime.MinValue;
             if (launchTime == DateTime.MinValue)
             {
                 return;
@@ -64,9 +64,9 @@ namespace InElonWeTrust.Core.Commands
                     await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
                     await _launchNotificationsService.AddMessageToSubscribe(channel, sentMessage);
 
-                    if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launchNotification.NewLaunchState.Links.VideoLink != null)
+                    if (launchNotification.Type == LaunchNotificationType.Reminder && timeLeft < 60 && launchNotification.NewLaunchState.Links.Webcast != null)
                     {
-                        await channel.SendMessageAsync($"**YouTube stream:** {launchNotification.NewLaunchState.Links.VideoLink}");
+                        await channel.SendMessageAsync($"**YouTube stream:** {launchNotification.NewLaunchState.Links.Webcast}");
                     }
                 }
                 catch (UnauthorizedException ex)

@@ -130,13 +130,13 @@ namespace InElonWeTrust.Core.EmbedGenerators
             {
                 var coreDefinition = launchCore.Core.Value;
 
-                coresDataBuilder.Append($"{launchCore.Core.Value.Serial ?? "Unknown"}");
-                if (launchCore.Core.Value.Block != null)
+                coresDataBuilder.Append($"{launchCore.Core.Value?.Serial ?? "Unknown"}");
+                if (launchCore.Core.Value?.Block != null)
                 {
                     coresDataBuilder.Append($" (block {coreDefinition.Block})");
                 }
 
-                if (coreDefinition.Launches != null && coreDefinition.Launches.Count > 0)
+                if (coreDefinition?.Launches != null && coreDefinition.Launches.Count > 0)
                 {
                     coresDataBuilder.Append($", {numerals[coreDefinition.Launches.Count - 1]} flight");
                 }
