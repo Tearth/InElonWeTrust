@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Oddity.API.Models.DetailedCore;
+using Oddity.Models.Cores;
 
 namespace InElonWeTrust.Core.TableGenerators
 {
@@ -14,7 +14,7 @@ namespace InElonWeTrust.Core.TableGenerators
         private const int StatusLength = 10;
         private const int TotalLength = SerialLength + BlockLength + OriginalLaunchLength + MissionsCountLength + StatusLength;
 
-        public string Build(List<DetailedCoreInfo> cores, int currentPage, string paginationFooter)
+        public string Build(List<CoreInfo> cores, int currentPage, string paginationFooter)
         {
             var historyBuilder = new StringBuilder();
             historyBuilder.Append("```");
@@ -30,10 +30,12 @@ namespace InElonWeTrust.Core.TableGenerators
 
             foreach (var core in cores)
             {
-                historyBuilder.Append(core.CoreSerial.PadRight(SerialLength));
+                var firstLaunch = core.Launches.Count > 0 ? core.Launches[0].Value : null;
+
+                historyBuilder.Append(core.Serial.PadRight(SerialLength));
                 historyBuilder.Append((core.Block?.ToString() ?? "none").PadRight(BlockLength));
-                historyBuilder.Append((core.OriginalLaunch?.ToString("D", CultureInfo.InvariantCulture) ?? "none").PadRight(OriginalLaunchLength));
-                historyBuilder.Append(core.Missions.Count.ToString().PadRight(MissionsCountLength));
+                historyBuilder.Append((firstLaunch.DateUtc?.ToString("D", CultureInfo.InvariantCulture) ?? "none").PadRight(OriginalLaunchLength));
+                historyBuilder.Append(core.Launches.Count.ToString().PadRight(MissionsCountLength));
                 historyBuilder.Append(core.Status.ToString().PadRight(StatusLength));
                 historyBuilder.Append("\r\n");
             }

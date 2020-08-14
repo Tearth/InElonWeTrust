@@ -5,8 +5,7 @@ using System.Text;
 using InElonWeTrust.Core.Helpers.Extensions;
 using InElonWeTrust.Core.Helpers.Formatters;
 using InElonWeTrust.Core.Services.Cache;
-using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launch.Rocket.FirstStage;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.TableGenerators
 {
@@ -57,18 +56,18 @@ namespace InElonWeTrust.Core.TableGenerators
             foreach (var launch in launches)
             {
                 var launchDateTime = DateFormatter.GetDateStringWithPrecision(
-                    launch.LaunchDateUtc ?? DateTime.MinValue,
-                    launch.TentativeMaxPrecision ?? TentativeMaxPrecision.Year,
+                    launch.DateUtc ?? DateTime.MinValue,
+                    launch.DatePrecision ?? DatePrecision.Year,
                     false, false, false);
 
                 launchesListBuilder.Append($"{launch.FlightNumber ?? 0}.".PadRight(MissionNumberLength));
-                launchesListBuilder.Append(launch.MissionName.ShortenString(MissionNameLength - 2).PadRight(MissionNameLength));
+                launchesListBuilder.Append(launch.Name.ShortenString(MissionNameLength - 2).PadRight(MissionNameLength));
                 launchesListBuilder.Append(launchDateTime.PadRight(LaunchDateLength));
-                launchesListBuilder.Append((launch.LaunchSite.SiteName ?? "?").PadRight(SiteNameLength));
+                launchesListBuilder.Append((launch.Launchpad.Value.FullName ?? "?").PadRight(SiteNameLength));
 
-                if (launch.TentativeMaxPrecision == TentativeMaxPrecision.Hour && launch.LaunchDateUtc < DateTime.UtcNow)
+                if (launch.DatePrecision == DatePrecision.Hour && launch.DateUtc < DateTime.UtcNow)
                 {
-                    var landing = launch.Rocket.FirstStage.Cores.Any(p => p.LandingType != null && p.LandingType != LandingType.Ocean);
+                    var landing = launch.Cores.Any(p => p.LandingType != null && p.LandingType != "Ocean");
                     launchesListBuilder.Append(landing.ConvertToYesNo(false).PadRight(LandingLength));
                     launchesListBuilder.Append("\r\n");
                 }
