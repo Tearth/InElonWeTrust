@@ -6,7 +6,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
-using Oddity.API.Models.DetailedCore;
+using Oddity.Models.Cores;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _coreInfoEmbedGenerator = coreInfoEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await oddity.DetailedCores.GetAbout(p).ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.CoreInfo, async p => await oddity.CoresEndpoint.Get(p).ExecuteAsync());
         }
 
         [Command("GetCore"), Aliases("Core", "CoreInfo")]
@@ -30,7 +30,7 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var coreInfo = await _cacheService.GetAsync<DetailedCoreInfo>(CacheContentType.CoreInfo, coreSerial);
+            var coreInfo = await _cacheService.GetAsync<CoreInfo>(CacheContentType.CoreInfo, coreSerial);
 
             if (coreInfo != null)
             {

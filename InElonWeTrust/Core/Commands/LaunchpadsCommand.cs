@@ -7,7 +7,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
-using Oddity.API.Models.Launchpad;
+using Oddity.Models.Launchpads;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _launchpadsEmbedGenerator = launchpadsEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await oddity.Launchpads.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Launchpads, async p => await oddity.LaunchpadsEndpoint.GetAll().ExecuteAsync());
         }
 
         [Command("Launchpads"), Aliases("GetLaunchpads", "LaunchpadList")]

@@ -7,7 +7,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
-using Oddity.API.Models.Rocket;
+using Oddity.Models.Rockets;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -22,7 +22,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _rocketsEmbedGenerator = rocketsEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Rockets, async p => await oddity.Rockets.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Rockets, async p => await oddity.RocketsEndpoint.GetAll().ExecuteAsync());
         }
 
         [Command("Rockets"), Aliases("GetRockets")]

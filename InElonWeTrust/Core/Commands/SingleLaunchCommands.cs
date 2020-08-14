@@ -12,8 +12,8 @@ using InElonWeTrust.Core.Helpers;
 using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.LaunchNotifications;
 using Oddity;
-using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launchpad;
+using Oddity.Models.Launches;
+using Oddity.Models.Launchpads;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -32,9 +32,9 @@ namespace InElonWeTrust.Core.Commands
             _launchNotificationsService = launchNotificationsService;
             _launchInfoEmbedGenerator = launchInfoEmbedGenerator;
 
-            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.Launches.GetNext().ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.Launches.GetLatest().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.LaunchesEndpoint.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.NextLaunch, async p => await _oddity.LaunchesEndpoint.GetNext().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.LatestLaunch, async p => await _oddity.LaunchesEndpoint.GetLatest().ExecuteAsync());
         }
 
         [Command("NextLaunch"), Aliases("Next")]
@@ -44,13 +44,9 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.NextLaunch);
-            var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-            var launchpad = launchpadsList.First(p => p.Id == launchData.LaunchSite.SiteId);
-
-            var embed = _launchInfoEmbedGenerator.Build(launchData, launchpad, ctx.Guild.Id, true);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, true);
 
             var sentMessage = await ctx.RespondAsync(string.Empty, false, embed);
-
             await sentMessage.CreateReactionAsync(DiscordEmoji.FromName(Bot.Client, ":regional_indicator_s:"));
             await _launchNotificationsService.AddMessageToSubscribe(ctx.Channel, sentMessage);
         }
@@ -62,10 +58,8 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var launchData = await _cacheService.GetAsync<LaunchInfo>(CacheContentType.LatestLaunch);
-            var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-            var launchpad = launchpadsList.First(p => p.Id == launchData.LaunchSite.SiteId);
+            var embed = _launchInfoEmbedGenerator.Build(launchData, ctx.Guild.Id, false);
 
-            var embed = _launchInfoEmbedGenerator.Build(launchData, launchpad, ctx.Guild.Id, false);
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
@@ -78,9 +72,8 @@ namespace InElonWeTrust.Core.Commands
             var launchData = await _cacheService.GetAsync<List<LaunchInfo>>(CacheContentType.AllLaunches);
             var randomLaunch = launchData.OrderBy(p => Guid.NewGuid()).First();
             var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-            var launchpad = launchpadsList.First(p => p.Id == randomLaunch.LaunchSite.SiteId);
 
-            var embed = _launchInfoEmbedGenerator.Build(randomLaunch, launchpad, ctx.Guild.Id, false);
+            var embed = _launchInfoEmbedGenerator.Build(randomLaunch, ctx.Guild.Id, false);
             await ctx.RespondAsync(string.Empty, false, embed);
         }
 
@@ -90,14 +83,12 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var launchData = await _oddity.Launches.GetAll().WithFlightNumber(id).ExecuteAsync();
-            if (launchData.Any())
+            var launchData = await _oddity.LaunchesEndpoint.Query().WithFieldEqual(p => p.FlightNumber, (uint) id).ExecuteAsync();
+            if (launchData.Data.Count > 0)
             {
-                var launch = launchData.First();
-                var launchpadsList = await _cacheService.GetAsync<List<LaunchpadInfo>>(CacheContentType.Launchpads);
-                var launchpad = launchpadsList.First(p => p.Id == launch.LaunchSite.SiteId);
+                var launch = launchData.Data.First();
+                var embed = _launchInfoEmbedGenerator.Build(launch, ctx.Guild.Id, false);
 
-                var embed = _launchInfoEmbedGenerator.Build(launch, launchpad, ctx.Guild.Id, false);
                 await ctx.RespondAsync(string.Empty, false, embed);
             }
             else

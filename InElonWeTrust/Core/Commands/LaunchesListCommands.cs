@@ -13,8 +13,7 @@ using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
 using Oddity;
-using Oddity.API.Models.Launch;
-using Oddity.API.Models.Launch.Rocket.SecondStage.Orbit;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -47,11 +46,18 @@ namespace InElonWeTrust.Core.Commands
 
             Bot.Client.MessageReactionAdded += Client_MessageReactionAddedAsync;
 
-            _cacheService.RegisterDataProvider(CacheContentType.UpcomingLaunches, async p => await _oddity.Launches.GetUpcoming().ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.PastLaunches, async p => await _oddity.Launches.GetPast().ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.Launches.GetAll().ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.FailedStarts, async p => await _oddity.Launches.GetAll().WithLaunchSuccess(false).ExecuteAsync());
-            _cacheService.RegisterDataProvider(CacheContentType.LaunchesWithOrbit, async p => await GetLaunchesWithOrbitDataProviderAsync(p));
+            _cacheService.RegisterDataProvider(CacheContentType.UpcomingLaunches, async p => await _oddity.LaunchesEndpoint.GetUpcoming().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.PastLaunches, async p => await _oddity.LaunchesEndpoint.GetPast().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.AllLaunches, async p => await _oddity.LaunchesEndpoint.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.FailedStarts, async p =>
+            {
+                var result = await _oddity.LaunchesEndpoint.Query()
+                    .WithFieldEqual(q => q.Success, false)
+                    .WithLimit(1000)
+                    .ExecuteAsync();
+
+                return result.Data;
+            });
         }
 
         [Command("UpcomingLaunches"), Aliases("Upcoming", "NextLaunches")]
@@ -97,7 +103,7 @@ namespace InElonWeTrust.Core.Commands
         private string BuildTableWithPagination(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
         {
             var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);
-            itemsToDisplay = itemsToDisplay.OrderBy(p => p.LaunchDateUtc ?? DateTime.MinValue).ToList();
+            itemsToDisplay = itemsToDisplay.OrderBy(p => p.DateUtc ?? DateTime.MinValue).ToList();
 
             var maxPagesCount = _paginationService.GetPagesCount(launches.Count);
             var paginationFooter = _paginationService.GetPaginationFooter(currentPage, maxPagesCount);
@@ -128,16 +134,6 @@ namespace InElonWeTrust.Core.Commands
         private async Task<List<LaunchInfo>> GetLaunchesAsync(CacheContentType contentType, string parameter = null)
         {
             return await _cacheService.GetAsync<List<LaunchInfo>>(contentType, parameter);
-        }
-
-        private async Task<object> GetLaunchesWithOrbitDataProviderAsync(string parameter)
-        {
-            if (Enum.TryParse(typeof(OrbitType), parameter, true, out var output))
-            {
-                return await _oddity.Launches.GetAll().WithOrbit((OrbitType)output).ExecuteAsync();
-            }
-
-            return null;
         }
 
         private async Task Client_MessageReactionAddedAsync(MessageReactionAddEventArgs e)

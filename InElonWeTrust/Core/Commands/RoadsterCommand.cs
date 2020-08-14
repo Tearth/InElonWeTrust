@@ -6,7 +6,7 @@ using InElonWeTrust.Core.Commands.Definitions;
 using InElonWeTrust.Core.EmbedGenerators;
 using InElonWeTrust.Core.Services.Cache;
 using Oddity;
-using Oddity.API.Models.Roadster;
+using Oddity.Models.Roadster;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -21,7 +21,7 @@ namespace InElonWeTrust.Core.Commands
             _cacheService = cacheService;
             _roadsterEmbedBuilder = roadsterEmbedBuilder;
 
-            _cacheService.RegisterDataProvider(CacheContentType.Roadster, async p => await oddity.Roadster.Get().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Roadster, async p => await oddity.RoadsterEndpoint.Get().ExecuteAsync());
         }
 
         [Command("Roadster"), Aliases("TeslaRoadster", "Tesla", "Starman")]

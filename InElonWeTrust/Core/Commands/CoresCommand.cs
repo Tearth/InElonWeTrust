@@ -9,7 +9,7 @@ using InElonWeTrust.Core.Services.Cache;
 using InElonWeTrust.Core.Services.Pagination;
 using InElonWeTrust.Core.TableGenerators;
 using Oddity;
-using Oddity.API.Models.DetailedCore;
+using Oddity.Models.Cores;
 
 namespace InElonWeTrust.Core.Commands
 {
@@ -32,7 +32,7 @@ namespace InElonWeTrust.Core.Commands
             {
                 CacheContentType.Cores
             };
-            _cacheService.RegisterDataProvider(CacheContentType.Cores, async p => await oddity.DetailedCores.GetAll().ExecuteAsync());
+            _cacheService.RegisterDataProvider(CacheContentType.Cores, async p => await oddity.CoresEndpoint.GetAll().ExecuteAsync());
 
             Bot.Client.MessageReactionAdded += ClientOnMessageReactionAddedAsync;
         }
@@ -43,14 +43,14 @@ namespace InElonWeTrust.Core.Commands
         {
             await ctx.TriggerTypingAsync();
 
-            var cores = await _cacheService.GetAsync<List<DetailedCoreInfo>>(CacheContentType.Cores);
+            var cores = await _cacheService.GetAsync<List<CoreInfo>>(CacheContentType.Cores);
             var tableWithPagination = BuildTableWithPagination(cores, 1);
 
             var message = await ctx.RespondAsync(tableWithPagination);
             await _paginationService.InitPaginationAsync(message, CacheContentType.Cores, string.Empty);
         }
 
-        private string BuildTableWithPagination(List<DetailedCoreInfo> cores, int currentPage)
+        private string BuildTableWithPagination(List<CoreInfo> cores, int currentPage)
         {
             cores.Sort(CoreLaunchDateComparer);
 
@@ -72,7 +72,7 @@ namespace InElonWeTrust.Core.Commands
             var paginationData = await _paginationService.GetPaginationDataForMessageAsync(e.Message);
             if (_allowedPaginationTypes.Contains(paginationData.ContentType))
             {
-                var items = await _cacheService.GetAsync<List<DetailedCoreInfo>>(CacheContentType.Cores);
+                var items = await _cacheService.GetAsync<List<CoreInfo>>(CacheContentType.Cores);
                 var editedMessage = e.Message;
 
                 if (await _paginationService.DoActionAsync(editedMessage, e.Emoji, items.Count))
@@ -87,21 +87,24 @@ namespace InElonWeTrust.Core.Commands
             }
         }
 
-        private int CoreLaunchDateComparer(DetailedCoreInfo a, DetailedCoreInfo b)
+        private int CoreLaunchDateComparer(CoreInfo a, CoreInfo b)
         {
-            if (a.OriginalLaunch.HasValue && !b.OriginalLaunch.HasValue)
+            var firstOriginalLaunch = a.Launches.Count > 0 ? a.Launches[0].Value.DateUtc : null;
+            var secondOriginalLaunch = b.Launches.Count > 0 ? b.Launches[0].Value.DateUtc : null;
+
+            if (firstOriginalLaunch.HasValue && !secondOriginalLaunch.HasValue)
             {
                 return -1;
             }
 
-            if (b.OriginalLaunch.HasValue && !a.OriginalLaunch.HasValue)
+            if (secondOriginalLaunch.HasValue && !firstOriginalLaunch.HasValue)
             {
                 return 1;
             }
 
-            if (a.OriginalLaunch.HasValue && b.OriginalLaunch.HasValue)
+            if (firstOriginalLaunch.HasValue && secondOriginalLaunch.HasValue)
             {
-                return a.OriginalLaunch.Value > b.OriginalLaunch.Value ? 1 : -1;
+                return firstOriginalLaunch.Value > secondOriginalLaunch.Value ? 1 : -1;
             }
 
             return 0;

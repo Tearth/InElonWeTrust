@@ -23,7 +23,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             _timeZoneService = timeZoneService;
         }
 
-        public DiscordEmbed Build(LaunchInfo launch, LaunchpadInfo launchpad, ulong? guildId, bool informAboutSubscription)
+        public DiscordEmbed Build(LaunchInfo launch, ulong? guildId, bool informAboutSubscription)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -58,7 +58,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 }
             }
 
-            var googleMapsLink = $"[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launchpad.Latitude ?? 0.0, launchpad.Longitude ?? 0.0)})";
+            var googleMapsLink = $"[Map]({GoogleMapsLinkFormatter.GetGoogleMapsLink(launch.Launchpad.Value.Latitude ?? 0.0, launch.Launchpad.Value.Longitude ?? 0.0)})";
             embed.AddField(":stadium: Launchpad", $"{launch.Launchpad.Value.FullName} **[{googleMapsLink}]**");
             embed.AddField($":rocket: First stages ({1 + launch.Rocket.Value.Boosters})", GetCoresData(launch.Cores));
             embed.AddField($":package: Payloads ({launch.Payloads.Count})", GetPayloadsData(launch.Payloads));
