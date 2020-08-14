@@ -4,7 +4,7 @@ namespace InElonWeTrust.Core.Helpers.Formatters
 {
     public static class GoogleMapsLinkFormatter
     {
-        public static string GetGoogleMapsLink(float latitude, float longitude)
+        public static string GetGoogleMapsLink(double latitude, double longitude)
         {
             var numberFormat = new NumberFormatInfo {NumberDecimalSeparator = "."};
             var latitudeString = latitude.ToString(numberFormat);

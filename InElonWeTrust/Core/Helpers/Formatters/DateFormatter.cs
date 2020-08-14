@@ -1,31 +1,31 @@
 ﻿using System;
 using System.Globalization;
-using Oddity.API.Models.Launch;
+using Oddity.Models.Launches;
 
 namespace InElonWeTrust.Core.Helpers.Formatters
 {
     public static class DateFormatter
     {
-        public static string GetDateStringWithPrecision(DateTime date, TentativeMaxPrecision precision, bool includeUtc, bool displayPrecision, bool longDate)
+        public static string GetDateStringWithPrecision(DateTime date, DatePrecision precision, bool includeUtc, bool displayPrecision, bool longDate)
         {
             string format;
             switch (precision)
             {
-                case TentativeMaxPrecision.Year:
-                case TentativeMaxPrecision.Half:
-                case TentativeMaxPrecision.Quarter:
+                case DatePrecision.Year:
+                case DatePrecision.Half:
+                case DatePrecision.Quarter:
                     format = "yyyy";
                     break;
 
-                case TentativeMaxPrecision.Month:
+                case DatePrecision.Month:
                     format = longDate ? "MMMM yyyy" : "MM-yyyy";
                     break;
 
-                case TentativeMaxPrecision.Day:
+                case DatePrecision.Day:
                     format = longDate ? "dddd, dd MMMM yyyy" : "dd-MM-yyyy";
                     break;
 
-                case TentativeMaxPrecision.Hour:
+                case DatePrecision.Hour:
                     format = longDate ? "dddd, dd MMMM yyyy HH:mm" : "dd-MM-yyyy HH:mm";
                     break;
 
@@ -35,12 +35,12 @@ namespace InElonWeTrust.Core.Helpers.Formatters
             }
 
             var output = date.ToString(format, CultureInfo.InvariantCulture);
-            if (includeUtc && precision == TentativeMaxPrecision.Hour)
+            if (includeUtc && precision == DatePrecision.Hour)
             {
                 output += " UTC";
             }
 
-            if (displayPrecision && precision != TentativeMaxPrecision.Hour)
+            if (displayPrecision && precision != DatePrecision.Hour)
             {
                 output += $" ({precision.ToString().ToLower(CultureInfo.InvariantCulture)} precision)";
             }
