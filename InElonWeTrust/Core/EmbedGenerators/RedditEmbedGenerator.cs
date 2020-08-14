@@ -19,7 +19,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Title = HttpUtility.HtmlDecode(topic.Title).ShortenString(230),
                 Url = "https://www.reddit.com" + topic.Permalink,
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail,
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = topic.Thumbnail == "self" || topic.Thumbnail == "default" ? Constants.SpaceXLogoImage : topic.Thumbnail
+                },
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     Text = date

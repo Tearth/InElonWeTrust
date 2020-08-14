@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
-using Oddity.API.Models.Company;
+using Oddity.Models.Company;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -13,7 +13,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Title = companyInfo.Name,
                 Description = companyInfo.Summary + " [Read more on Wikipedia](https://en.wikipedia.org/wiki/SpaceX).",
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = Constants.SpaceXLogoImage
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = Constants.SpaceXLogoImage
+                }
             };
 
             embed.AddField("CEO", $"[{companyInfo.Ceo}](https://en.wikipedia.org/wiki/Elon_Musk)", true);

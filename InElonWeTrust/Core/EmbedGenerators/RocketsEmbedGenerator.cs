@@ -3,8 +3,7 @@ using System.Linq;
 using System.Text;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
-using Oddity.API.Models.Rocket;
-using Oddity.API.Models.Rocket.PayloadWeights;
+using Oddity.Models.Rockets;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {
@@ -70,10 +69,10 @@ namespace InElonWeTrust.Core.EmbedGenerators
             return tableBuilder.ToString();
         }
 
-        private string GetRocketPayload(List<PayloadWeightInfo> payloads)
+        private string GetRocketPayload(List<RocketPotentialPayloadWeightInfo> payloads)
         {
             var payloadsFormatted = new List<string>();
-            payloads.ForEach(p => payloadsFormatted.Add($"{(float)(p.Kilograms ?? 0) / 1000:0.#} tons to {p.Type}"));
+            payloads.ForEach(p => payloadsFormatted.Add($"{(float)(p.Kilograms ?? 0) / 1000:0.#} tons to {p.Name}"));
 
             return string.Join("\r\n", payloadsFormatted);
         }

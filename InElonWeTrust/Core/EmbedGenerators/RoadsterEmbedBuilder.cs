@@ -1,7 +1,7 @@
 ﻿using System;
 using DSharpPlus.Entities;
 using InElonWeTrust.Core.Helpers;
-using Oddity.API.Models.Roadster;
+using Oddity.Models.Roadster;
 
 namespace InElonWeTrust.Core.EmbedGenerators
 {

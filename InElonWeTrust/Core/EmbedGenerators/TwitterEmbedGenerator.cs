@@ -23,8 +23,11 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 Url = tweet.Url,
                 Description = HttpUtility.HtmlDecode(tweet.FullText),
                 Color = new DiscordColor(Constants.EmbedColor),
-                ThumbnailUrl = tweet.AvatarUrl,
                 ImageUrl = tweet.ImageUrl,
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = tweet.AvatarUrl
+                },
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     Text = $"{date} UTC"
