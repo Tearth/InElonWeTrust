@@ -209,7 +209,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
                 reusedPartsList.Add("Capsule");
             }
 
-            if (launch.Fairings.Reused ?? false)
+            if (launch.Fairings?.Reused ?? false)
             {
                 reusedPartsList.Add("Fairings");
             }
