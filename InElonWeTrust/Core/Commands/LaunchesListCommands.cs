@@ -92,14 +92,6 @@ namespace InElonWeTrust.Core.Commands
             await DisplayLaunchesAsync(ctx, CacheContentType.FailedStarts);
         }
 
-        [Command("LaunchesWithOrbit")]
-        [Description("Get a list of all launches with the specified orbit.")]
-        public async Task LaunchesWithOrbitAsync(CommandContext ctx, [Description("Available orbits: PO, LEO, VLEO, MEO, ISS, GTO, SSO, HCO, HEO, SO, ESL1")] string orbitType)
-        {
-            await ctx.TriggerTypingAsync();
-            await DisplayLaunchesAsync(ctx, CacheContentType.LaunchesWithOrbit, orbitType);
-        }
-
         private string BuildTableWithPagination(List<LaunchInfo> launches, CacheContentType contentType, int currentPage)
         {
             var itemsToDisplay = _paginationService.GetItemsToDisplay(launches, currentPage);

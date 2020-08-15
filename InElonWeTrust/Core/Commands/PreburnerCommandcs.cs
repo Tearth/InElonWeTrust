@@ -51,7 +51,6 @@ namespace InElonWeTrust.Core.Commands
                     case "id": output += "10 "; break;
                     case "timeZoneName": output += "Europe/Warsaw "; break;
                     case "coreSerial": output += "B1050 "; break;
-                    case "orbitType": output += "GEO "; break;
                 }
             }
 
