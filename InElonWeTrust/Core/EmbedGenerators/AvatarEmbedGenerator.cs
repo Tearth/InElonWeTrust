@@ -11,7 +11,7 @@ namespace InElonWeTrust.Core.EmbedGenerators
             {
                 Color = new DiscordColor(Constants.EmbedColor),
                 ImageUrl = avatar,
-                Title = $"{user} avatar"
+                Title = $"{user}'s avatar"
             };
         }
     }
