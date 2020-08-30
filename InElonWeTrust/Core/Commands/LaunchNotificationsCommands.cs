@@ -71,19 +71,27 @@ namespace InElonWeTrust.Core.Commands
                 }
                 catch (UnauthorizedException ex)
                 {
-                    var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
-                    var guildOwner = guild.Owner;
-
-                    _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
-                                 $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
-                    _logger.Warn($"JSON: {ex.JsonMessage}");
-
                     await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(ulong.Parse(channelData.ChannelId));
 
-                    var ownerDm = await guildOwner.CreateDmChannelAsync();
-                    var errorEmbed = _launchNotificationEmbedBuilder.BuildUnauthorizedError();
+                    try
+                    {
+                        var guild = await Bot.Client.GetGuildAsync(ulong.Parse(channelData.GuildId));
+                        var guildOwner = guild.Owner;
 
-                    await ownerDm.SendMessageAsync(embed: errorEmbed);
+                        _logger.Warn($"No permissions to send message to channel [{channelData.ChannelId}], " +
+                                     $"removing all subscriptions and sending message to {guildOwner.Username} [{guildOwner.Id}]");
+                        _logger.Warn($"JSON: {ex.JsonMessage}");
+
+
+                        var ownerDm = await guildOwner.CreateDmChannelAsync();
+                        var errorEmbed = _launchNotificationEmbedBuilder.BuildUnauthorizedError();
+
+                        await ownerDm.SendMessageAsync(embed: errorEmbed);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Fatal(e);
+                    }
                 }
                 catch (NotFoundException ex)
                 {
