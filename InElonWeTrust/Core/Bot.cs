@@ -97,8 +97,7 @@ namespace InElonWeTrust.Core
                 Token = SettingsLoader.Data.Token,
                 TokenType = TokenType.Bot,
 
-                AutoReconnect = true,
-                UseInternalLogHandler = false
+                AutoReconnect = true
             };
         }
 
