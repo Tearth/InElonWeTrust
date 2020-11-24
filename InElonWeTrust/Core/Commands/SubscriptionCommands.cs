@@ -133,12 +133,12 @@ namespace InElonWeTrust.Core.Commands
             await ctx.RespondAsync(embed: embed);
         }
 
-        private async Task Client_GuildDeletedAsync(GuildDeleteEventArgs e)
+        private async Task Client_GuildDeletedAsync(DiscordClient client, GuildDeleteEventArgs e)
         {
             await _subscriptionsService.RemoveAllSubscriptionsFromGuildAsync(e.Guild.Id);
         }
 
-        private async Task Client_ChannelDeletedAsync(ChannelDeleteEventArgs e)
+        private async Task Client_ChannelDeletedAsync(DiscordClient client, ChannelDeleteEventArgs e)
         {
             await _subscriptionsService.RemoveAllSubscriptionsFromChannelAsync(e.Channel.Id);
         }

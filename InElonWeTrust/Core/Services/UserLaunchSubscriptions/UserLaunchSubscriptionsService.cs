@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
@@ -91,7 +92,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
         }
 
-        private async Task ClientOnMessageReactionAdded(MessageReactionAddEventArgs e)
+        private async Task ClientOnMessageReactionAdded(DiscordClient client, MessageReactionAddEventArgs e)
         {
             string emojiName;
             try
@@ -112,7 +113,7 @@ namespace InElonWeTrust.Core.Services.UserLaunchSubscriptions
             }
         }
 
-        private async Task ClientOnMessageReactionRemoved(MessageReactionRemoveEventArgs e)
+        private async Task ClientOnMessageReactionRemoved(DiscordClient client, MessageReactionRemoveEventArgs e)
         {
             string emojiName;
             try

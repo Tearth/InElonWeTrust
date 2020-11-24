@@ -201,7 +201,7 @@ namespace InElonWeTrust.Core
             }
         }
 
-        private Task Client_Ready(ReadyEventArgs e)
+        private Task Client_Ready(DiscordClient client, ReadyEventArgs e)
         {
             _logger.Info("In Elon We Trust, In Thrust We Trust");
             _logger.Info($"DSharpPlus v{Client.VersionString}");
@@ -212,26 +212,26 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Client_Heartbeat(HeartbeatEventArgs e)
+        private Task Client_Heartbeat(DiscordClient client, HeartbeatEventArgs e)
         {
             _logger.Info($"Heartbeat - ping: {e.Ping} ms");
             return Task.CompletedTask;
         }
 
-        private Task Client_GuildCreated(GuildCreateEventArgs e)
+        private Task Client_GuildCreated(DiscordClient client, GuildCreateEventArgs e)
         {
             _logger.Info($"$$$$ Bot has joined to the new guild, welcome {e.Guild.Name} [{e.Guild.Id}] " +
                          $"({e.Guild.MemberCount} members) $$$$");
             return Task.CompletedTask;
         }
 
-        private Task Client_GuildDeleted(GuildDeleteEventArgs e)
+        private Task Client_GuildDeleted(DiscordClient client, GuildDeleteEventArgs e)
         {
             _logger.Info($"Bot has been removed from {e.Guild.Name} [{e.Guild.Id}] ({e.Guild.MemberCount} members)");
             return Task.CompletedTask;
         }
 
-        private Task Client_ClientError(ClientErrorEventArgs e)
+        private Task Client_ClientError(DiscordClient client, ClientErrorEventArgs e)
         {
             //if (e.Exception.InnerException?.Message.Contains("The given key") == false)
             {
@@ -241,13 +241,13 @@ namespace InElonWeTrust.Core
             return Task.CompletedTask;
         }
 
-        private Task Client_SocketError(SocketErrorEventArgs e)
+        private Task Client_SocketError(DiscordClient client, SocketErrorEventArgs e)
         {
             _logger.Warn(e.Exception);
             return Task.CompletedTask;
         }
 
-        private async Task Commands_CommandExecuted(CommandExecutionEventArgs e)
+        private async Task Commands_CommandExecuted(CommandsNextExtension extension, CommandExecutionEventArgs e)
         {
             if (LogExecutedCommands)
             {
@@ -256,7 +256,7 @@ namespace InElonWeTrust.Core
             }
         }
 
-        private async Task Commands_CommandError(CommandErrorEventArgs e)
+        private async Task Commands_CommandError(CommandsNextExtension extension, CommandErrorEventArgs e)
         {
             var errorEmbedBuilder = new DiscordEmbedBuilder
             {
@@ -373,19 +373,19 @@ namespace InElonWeTrust.Core
             }
         }
 
-        private Task Client_SocketClosed(SocketCloseEventArgs e)
+        private Task Client_SocketClosed(DiscordClient client, SocketCloseEventArgs e)
         {
             _logger.Warn($"Client socket error. Message: {e.CloseMessage} ({e.CloseCode})");
             return Task.CompletedTask;
         }
 
-        private Task Client_Resumed(ReadyEventArgs e)
+        private Task Client_Resumed(DiscordClient client, ReadyEventArgs e)
         {
             _logger.Warn("Client resumed");
             return Task.CompletedTask;
         }
 
-        private async Task Client_MessageCreated(MessageCreateEventArgs e)
+        private async Task Client_MessageCreated(DiscordClient client, MessageCreateEventArgs e)
         {
             HandledMessagesCount++;
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.EventArgs;
@@ -62,7 +63,7 @@ namespace InElonWeTrust.Core.Commands
             return _coresListTableGenerator.Build(itemsToDisplay, currentPage, paginationFooter);
         }
 
-        private async Task ClientOnMessageReactionAddedAsync(MessageReactionAddEventArgs e)
+        private async Task ClientOnMessageReactionAddedAsync(DiscordClient client, MessageReactionAddEventArgs e)
         {
             if (e.User.IsBot || !await _paginationService.IsPaginationSetAsync(e.Message))
             {

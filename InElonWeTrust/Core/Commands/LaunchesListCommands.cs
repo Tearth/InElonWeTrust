@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -128,7 +129,7 @@ namespace InElonWeTrust.Core.Commands
             return await _cacheService.GetAsync<List<LaunchInfo>>(contentType, parameter);
         }
 
-        private async Task Client_MessageReactionAddedAsync(MessageReactionAddEventArgs e)
+        private async Task Client_MessageReactionAddedAsync(DiscordClient client, MessageReactionAddEventArgs e)
         {
             if (e.User.IsBot || !await _paginationService.IsPaginationSetAsync(e.Message))
             {
