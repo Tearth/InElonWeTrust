@@ -27,7 +27,7 @@ namespace InElonWeTrust.Core.Commands
             await ctx.TriggerTypingAsync();
 
             var avatar = _twitterService.GetAvatar(TwitterUserType.ElonMusk);
-            var embed = _avatarEmbedGenerator.Build("Elon Musk's", avatar);
+            var embed = _avatarEmbedGenerator.Build("Elon Musk", avatar);
 
             await ctx.RespondAsync(string.Empty, false, embed);
         }
